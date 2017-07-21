@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.hussainmukadam.watchit"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
+            buildConfigField 'String', 'apiKey', '"07ebecba1d66dde4bda8ea1a0abbc436"'
+            buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/original/"'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
+            buildConfigField 'String', 'apiKey', '"07ebecba1d66dde4bda8ea1a0abbc436"'
+            buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/original/"'
+        }
+    }
+}
+
+ext{
+    supportLibVersion = "25.3.1"
+    picassoLibVersion = "2.5.2"
+    retrofitLibVersion = "2.3.0"
+    loggingLibVersion = "3.6.0"
+    butterknifeLibVer = "8.7.0"
+    leakCanaryVersion = "1.5.1"
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:'+supportLibVersion
+    compile 'com.android.support:recyclerview-v7:'+supportLibVersion
+    compile 'com.android.support:cardview-v7:'+supportLibVersion
+    compile 'com.google.android:flexbox:0.3.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+
+    //Retrofit and OkHttp for Networking
+    compile 'com.squareup.retrofit2:retrofit:'+retrofitLibVersion
+    compile 'com.squareup.retrofit2:converter-gson:'+retrofitLibVersion
+    //Logging Network Calls
+    compile 'com.squareup.okhttp3:logging-interceptor:'+loggingLibVersion
+
+    //Binding Views
+    compile 'com.jakewharton:butterknife:'+butterknifeLibVer
+    annotationProcessor 'com.jakewharton:butterknife-compiler:'+butterknifeLibVer
+
+    //Chip Views
+    compile 'com.robertlevonyan.view:MaterialChipView:1.0.1'
+
+    //Swappable CardViews
+    compile 'com.lorentzos.swipecards:library:1.0.9'
+}

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Watch It!</string>
+    <string name="tv_intro_movies">MOVIES</string>
+    <string name="tv_television_series">TV SERIES</string>
+</resources>
