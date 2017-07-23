@@ -34,17 +34,22 @@ public class CustomSharedPreference {
         preferenceEditor = preference.edit();
     }
 
-    public void setGenrePreference(ArrayList<Genre> genreArrayList){
+    public void setTvGenrePreference(List<Genre> genreArrayList){
         Gson gson = new Gson();
         String json = gson.toJson(genreArrayList);
-        preferenceEditor.putString("GENRE_DATA", json);
+
+        if(BuildConfig.DEBUG){
+            Log.d(TAG, "setMoviesGenrePreference: JSON String of TV "+json);
+        }
+
+        preferenceEditor.putString("TV_GENRE_DATA", json);
         preferenceEditor.commit();
     }
 
 
-    public List<Genre> getGenrePreference(){
+    public List<Genre> getTvGenrePreference(){
         Gson gson = new Gson();
-        String json = preference.getString("GENRE_DATA", "");
+        String json = preference.getString("TV_GENRE_DATA", "");
 
         Type type = new TypeToken<List<Genre>>(){}.getType();
         List<Genre> genreList = gson.fromJson(json, type);
@@ -60,13 +65,42 @@ public class CustomSharedPreference {
         }
     }
 
+    public void setMoviesGenrePreference(List<Genre> genreArrayList){
+        Gson gson = new Gson();
+        String json = gson.toJson(genreArrayList);
+
+        if(BuildConfig.DEBUG){
+            Log.d(TAG, "setMoviesGenrePreference: JSON String of Movies "+json);
+        }
+
+        preferenceEditor.putString("MOVIES_GENRE_DATA", json);
+        preferenceEditor.commit();
+    }
+
+    public List<Genre> getMoviesGenrePreference(){
+        Gson gson = new Gson();
+        String json = preference.getString("MOVIES_GENRE_DATA", "");
+
+        Type type = new TypeToken<List<Genre>>(){}.getType();
+        List<Genre> genreList = gson.fromJson(json, type);
+
+        if(BuildConfig.DEBUG){
+            Log.d(TAG, "getGenrePreference: Genre List "+genreList);
+        }
+
+        if(genreList.size()!=0) {
+            return genreList;
+        } else {
+            return null;
+        }
+    }
 
     public boolean isIntroDisplayed(){return preference.getBoolean("HAS_INTRO_DISPLAYED", false);}
 
-    public void setIntroDisplayed(boolean login){
-        preferenceEditor.putBoolean("HAS_INTRO_DISPLAYED", login).commit();
+    public void setIntroDisplayed(boolean introDisplayed){
+        preferenceEditor.putBoolean("HAS_INTRO_DISPLAYED", introDisplayed).commit();
         if(BuildConfig.DEBUG){
-            Log.d(TAG, "setLogin: "+login);
+            Log.d(TAG, "setLogin: "+introDisplayed);
         }
     }
 

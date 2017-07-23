@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.model.Genre;
-import com.robertlevonyan.views.chip.Chip;
 
 import java.util.List;
 
