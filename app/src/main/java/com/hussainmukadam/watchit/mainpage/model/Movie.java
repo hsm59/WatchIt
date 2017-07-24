@@ -25,14 +25,6 @@ public class Movie {
     @SerializedName("backdrop_path")
     private String backdropPath;
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
-    }
-
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
-    }
-
     public int getMovieId() {
         return movieId;
     }

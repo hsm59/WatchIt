@@ -26,7 +26,7 @@ public interface MainMVPContract {
 
     interface Presenter extends BasePresenter{
 
-        void fetchMoviesBasedOnGenres();
+        void fetchMoviesBasedOnGenres(String genreIdsByMovies);
 
     }
 

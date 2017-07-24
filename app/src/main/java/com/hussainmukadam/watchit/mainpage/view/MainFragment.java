@@ -15,6 +15,8 @@ import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
 import com.hussainmukadam.watchit.mainpage.adapter.MovieAdapter;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
+import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
+import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -31,12 +33,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
     private static final String TAG = "MainFragment";
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
-
-    private ArrayList<String> al;
-    private ArrayAdapter<String> arrayAdapter;
-    private List<Movie> movieList = new ArrayList<>();
     private MovieAdapter movieAdapter;
-    private int i;
+    MainMVPContract.Presenter presenter;
+    MainPresenter mainPresenter;
+    CustomSharedPreference prefs;
 
     @Nullable
     @Override
@@ -44,22 +44,49 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
         View view = inflater.inflate(R.layout.fragment_main_movies, container, false);
         ButterKnife.bind(this, view);
 
-        al = new ArrayList<>();
-        al.add("php");
-        al.add("c");
-        al.add("python");
-        al.add("java");
-        al.add("html");
-        al.add("c++");
-        al.add("css");
-        al.add("javascript");
+        prefs = new CustomSharedPreference(getContext());
+        mainPresenter = new MainPresenter(this);
+        if (prefs.getMoviesGenrePreference().size()!=0) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < prefs.getMoviesGenrePreference().size(); i++) {
+                builder.append(prefs.getMoviesGenrePreference().get(i).getGenreId());
+
+                if(i<prefs.getMoviesGenrePreference().size()-1){
+                    builder.append(",");
+                }
+
+                Log.d(TAG, "onCreateView: String "+builder.toString());
+            }
+
+            mainPresenter.fetchMoviesBasedOnGenres(builder.toString());
+        }
 
 //        arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.movie_item, R.id.tv_movie_item, al );
-        Movie movie = new Movie();
-        movie.setMovieId(12);
-        movie.setMovieTitle("First Title");
-        movieList.add(movie);
 
+        return view;
+    }
+
+    static void makeToast(Context ctx, String s){
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setPresenter(MainMVPContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void displayMoviesCards(final List<Movie> movieList) {
         movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, R.id.tv_movie_item, movieList);
 
         swipeFlingAdapterView.setAdapter(movieAdapter);
@@ -68,7 +95,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
-                al.remove(0);
+//                al.remove(0);
+                movieList.remove(0);
                 movieAdapter.notifyDataSetChanged();
             }
 
@@ -88,10 +116,11 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                al.add("XML ".concat(String.valueOf(i)));
+//                al.add("XML ".concat(String.valueOf(i)));
+//                movieList.add(1, new Movie());
                 movieAdapter.notifyDataSetChanged();
                 Log.d("LIST", "notified");
-                i++;
+//                i++;
             }
 
             @Override
@@ -110,32 +139,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
                 makeToast(getContext(), "Clicked!");
             }
         });
-
-        return view;
-    }
-
-    static void makeToast(Context ctx, String s){
-        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void setPresenter(MainMVPContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
-    }
-
-    @Override
-    public void displayMoviesCards(List<Movie> movieList) {
-
     }
 
     @Override

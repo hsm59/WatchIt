@@ -1,6 +1,7 @@
 package com.hussainmukadam.watchit.network;
 
 import com.hussainmukadam.watchit.intropage.model.GenreResponse;
+import com.hussainmukadam.watchit.mainpage.model.MovieResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,10 +21,9 @@ public interface ApiInterface {
     @GET("genre/tv/list")
     Call<GenreResponse> getGenreByTV(@Query("api_key") String apiKey);
 
-    //Fetch Movies using /discover/movies - GET - https://api.themoviedb.org/3/discover/movie?api_key=07ebecba1d66dde4bda8ea1a0abbc436&
-    //language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=878%2C%2012%2C%2016%2C%2035%2C%2010751
-//    @GET("discover/movie")
-
+    //https://api.themoviedb.org/3/discover/movie?api_key=07ebecba1d66dde4bda8ea1a0abbc436&&page=1&with_genres=28%2C37
+    @GET("discover/movie")
+    Call<MovieResponse> getMoviesByGenre(@Query("api_key") String apiKey, @Query("page") int pageNo, @Query("with_genres") String genres);
 
     //Fetch TV Shows using /discover/tv - GET - Similar to above.
 }
