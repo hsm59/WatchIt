@@ -53,8 +53,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
                         List<Movie> movieList = response.body().getMoviesList();
-//                        mView.displayGenresByMovies(mGenreListRetrofit);
-                        Log.d(TAG, "onResponse: Songs List " + movieList.size());
+                        mView.displayMoviesCards(movieList);
+                        Log.d(TAG, "onResponse: Movies List " + movieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
                         mView.hideProgress();

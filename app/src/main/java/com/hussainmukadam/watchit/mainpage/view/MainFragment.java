@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.hussainmukadam.watchit.R;
@@ -19,7 +18,6 @@ import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,7 +31,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
     private static final String TAG = "MainFragment";
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
-    private MovieAdapter movieAdapter;
+    MovieAdapter movieAdapter;
     MainMVPContract.Presenter presenter;
     MainPresenter mainPresenter;
     CustomSharedPreference prefs;
@@ -46,20 +44,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
-        if (prefs.getMoviesGenrePreference().size()!=0) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < prefs.getMoviesGenrePreference().size(); i++) {
-                builder.append(prefs.getMoviesGenrePreference().get(i).getGenreId());
-
-                if(i<prefs.getMoviesGenrePreference().size()-1){
-                    builder.append(",");
-                }
-
-                Log.d(TAG, "onCreateView: String "+builder.toString());
-            }
-
-            mainPresenter.fetchMoviesBasedOnGenres(builder.toString());
-        }
+        mainPresenter.fetchMoviesBasedOnGenres(getGenres());
 
 //        arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.movie_item, R.id.tv_movie_item, al );
 
@@ -87,9 +72,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
 
     @Override
     public void displayMoviesCards(final List<Movie> movieList) {
-        movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, R.id.tv_movie_item, movieList);
+        Log.d(TAG, "displayMoviesCards: Movies List "+movieList.size());
+
+        movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, movieList);
 
         swipeFlingAdapterView.setAdapter(movieAdapter);
+        movieAdapter.notifyDataSetChanged();
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -144,5 +132,23 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
     @Override
     public void showError(String errorMessage) {
 
+    }
+
+    private String getGenres(){
+        if (prefs.getMoviesGenrePreference().size()!=0) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < 3; i++) {
+                builder.append(prefs.getMoviesGenrePreference().get(i).getGenreId());
+
+                if(i<2){
+                    builder.append(",");
+                }
+
+                Log.d(TAG, "onCreateView: String "+builder.toString());
+            }
+            return builder.toString();
+        } else {
+            return null;
+        }
     }
 }
