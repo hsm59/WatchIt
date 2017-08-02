@@ -8,27 +8,53 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_height="480dp"
+        android:layout_margin="28dp"
+        card_view:cardElevation="4dp"
         card_view:cardBackgroundColor="@android:color/white"
         card_view:cardCornerRadius="8dp">
 
-        <ImageView
-            android:id="@+id/iv_poster"
+        <LinearLayout
+            android:background="@color/colorDarkGray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_image_black_24dp"
-            android:scaleType="fitXY"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_movie_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:padding="8dp"
-            tools:text="Card" />
+
+            <ImageView
+                android:id="@+id/iv_poster"
+                android:layout_width="match_parent"
+                android:layout_height="410dp"
+                android:background="@drawable/ic_image_black_24dp"
+                android:scaleType="fitXY" />
+
+
+            <TextView
+                android:id="@+id/tv_movie_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:paddingTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Movie Name" />
+
+            <TextView
+                android:id="@+id/tv_movie_release"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Movie Details" />
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 </FrameLayout>

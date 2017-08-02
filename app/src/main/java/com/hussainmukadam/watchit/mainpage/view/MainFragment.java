@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hussainmukadam.watchit.R;
@@ -27,10 +29,16 @@ import butterknife.ButterKnife;
  * Created by hussain on 7/23/17.
  */
 
-public class MainFragment extends Fragment implements MainMVPContract.View{
+public class MainFragment extends Fragment implements MainMVPContract.View, View.OnClickListener{
     private static final String TAG = "MainFragment";
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.ib_favorite)
+    ImageButton imageButtonFavorite;
+    @BindView(R.id.ib_cancel)
+    ImageButton imageButtonCancel;
     MovieAdapter movieAdapter;
     MainMVPContract.Presenter presenter;
     MainPresenter mainPresenter;
@@ -44,6 +52,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
+        imageButtonFavorite.setOnClickListener(this);
+        imageButtonCancel.setOnClickListener(this);
         mainPresenter.fetchMoviesBasedOnGenres(getGenres());
 
 //        arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.movie_item, R.id.tv_movie_item, al );
@@ -62,12 +72,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -149,6 +159,18 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
             return builder.toString();
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.ib_favorite:
+                swipeFlingAdapterView.getTopCardListener().selectRight();
+                break;
+            case R.id.ib_cancel:
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+                break;
         }
     }
 }

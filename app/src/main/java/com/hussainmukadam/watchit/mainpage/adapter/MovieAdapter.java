@@ -49,6 +49,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>{
             viewHolder = new ViewHolder();
             viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_movie_title);
             viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
+            viewHolder.tvMovieRelease = (TextView) convertView.findViewById(R.id.tv_movie_release);
 
             convertView.setTag(viewHolder);
         } else {
@@ -61,6 +62,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>{
             // do whatever you want with your string and long
             Log.d(TAG, "getView: "+item.getBackdropPath());
             viewHolder.tvMovieTitle.setText(item.getMovieTitle());
+            viewHolder.tvMovieRelease.setText(item.getReleaseDate());
             Picasso.with(getContext()).load(BuildConfig.imageBaseUrl+item.getPosterPath())
                     .into(viewHolder.ivPosterImage);
 
@@ -71,6 +73,7 @@ public class MovieAdapter extends ArrayAdapter<Movie>{
 
     static class ViewHolder {
         private TextView tvMovieTitle;
+        private TextView tvMovieRelease;
         private ImageView ivPosterImage;
     }
 }
