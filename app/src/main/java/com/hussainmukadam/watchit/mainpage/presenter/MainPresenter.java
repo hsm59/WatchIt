@@ -54,7 +54,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         List<Movie> movieList = response.body().getMoviesList();
                         mView.displayMoviesCards(movieList);
-                        Log.d(TAG, "onResponse: " + movieList.size());
+                        Log.d(TAG, "onResponse: Movies List " + movieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
                         mView.hideProgress();

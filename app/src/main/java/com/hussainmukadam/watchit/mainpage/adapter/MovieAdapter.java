@@ -1,11 +1,13 @@
 package com.hussainmukadam.watchit.mainpage.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.adapter.MoviesGenreAdapter;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
+import com.hussainmukadam.watchit.mainpage.view.MainActivity;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -27,28 +32,23 @@ import butterknife.ButterKnife;
  */
 
 public class MovieAdapter extends ArrayAdapter<Movie>{
-
-    private static class ViewHolder {
-        private TextView tvMovieTitle;
-        private ImageView ivMoviePoster;
-    }
-
+    private static final String TAG = "MovieAdapter";
     ViewHolder viewHolder;
 
-    public MovieAdapter(@NonNull Context context, @LayoutRes int resource, @IdRes int textViewResourceId, @NonNull List<Movie> objects) {
-        super(context, resource, textViewResourceId, objects);
+    public MovieAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Movie> objects) {
+        super(context, resource, objects);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(this.getContext())
-                    .inflate(R.layout.movie_item, parent, false);
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.movie_item, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_movie_item);
-            viewHolder.ivMoviePoster = (ImageView) convertView.findViewById(R.id.iv_movie_poster);
+            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_movie_title);
+            viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
 
             convertView.setTag(viewHolder);
         } else {
@@ -59,10 +59,18 @@ public class MovieAdapter extends ArrayAdapter<Movie>{
         if (item!= null) {
             // My layout has only one TextView
             // do whatever you want with your string and long
+            Log.d(TAG, "getView: "+item.getBackdropPath());
             viewHolder.tvMovieTitle.setText(item.getMovieTitle());
+            Picasso.with(getContext()).load(BuildConfig.imageBaseUrl+item.getPosterPath())
+                    .into(viewHolder.ivPosterImage);
 
         }
 
         return convertView;
+    }
+
+    static class ViewHolder {
+        private TextView tvMovieTitle;
+        private ImageView ivPosterImage;
     }
 }

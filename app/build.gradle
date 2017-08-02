@@ -62,4 +62,7 @@ dependencies {
 
     //Swappable CardViews
     compile 'com.lorentzos.swipecards:library:1.0.9'
+
+    //Picasso Image Library
+    compile 'com.squareup.picasso:picasso:'+picassoLibVersion
 }
