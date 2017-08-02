@@ -48,10 +48,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
         mainPresenter = new MainPresenter(this);
         if (prefs.getMoviesGenrePreference().size()!=0) {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < prefs.getMoviesGenrePreference().size(); i++) {
+            for (int i = 0; i < 3; i++) {
                 builder.append(prefs.getMoviesGenrePreference().get(i).getGenreId());
 
-                if(i<prefs.getMoviesGenrePreference().size()-1){
+                if(i<2){
                     builder.append(",");
                 }
 
@@ -60,8 +60,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
 
             mainPresenter.fetchMoviesBasedOnGenres(builder.toString());
         }
-
-//        arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.movie_item, R.id.tv_movie_item, al );
 
         return view;
     }
@@ -90,6 +88,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
         movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, R.id.tv_movie_item, movieList);
 
         swipeFlingAdapterView.setAdapter(movieAdapter);
+        movieAdapter.notifyDataSetChanged();
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -143,6 +142,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View{
 
     @Override
     public void showError(String errorMessage) {
-
+        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 }

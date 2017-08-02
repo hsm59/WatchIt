@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hussainmukadam.watchit.R;
@@ -28,7 +29,8 @@ import butterknife.ButterKnife;
 public class MovieAdapter extends ArrayAdapter<Movie>{
 
     private static class ViewHolder {
-        private TextView itemView;
+        private TextView tvMovieTitle;
+        private ImageView ivMoviePoster;
     }
 
     ViewHolder viewHolder;
@@ -45,7 +47,8 @@ public class MovieAdapter extends ArrayAdapter<Movie>{
                     .inflate(R.layout.movie_item, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.itemView = (TextView) convertView.findViewById(R.id.tv_movie_item);
+            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_movie_item);
+            viewHolder.ivMoviePoster = (ImageView) convertView.findViewById(R.id.iv_movie_poster);
 
             convertView.setTag(viewHolder);
         } else {
@@ -56,7 +59,8 @@ public class MovieAdapter extends ArrayAdapter<Movie>{
         if (item!= null) {
             // My layout has only one TextView
             // do whatever you want with your string and long
-            viewHolder.itemView.setText(item.getMovieTitle());
+            viewHolder.tvMovieTitle.setText(item.getMovieTitle());
+
         }
 
         return convertView;

@@ -16,14 +16,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String', 'apiKey', '""'
+            buildConfigField 'String', 'apiKey', '"07ebecba1d66dde4bda8ea1a0abbc436"'
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/original/"'
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String', 'apiKey', '""'
+            buildConfigField 'String', 'apiKey', '"07ebecba1d66dde4bda8ea1a0abbc436"'
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/original/"'
         }
     }

@@ -13,11 +13,20 @@
         card_view:cardBackgroundColor="@android:color/white"
         card_view:cardCornerRadius="8dp">
 
+        <ImageView
+            android:id="@+id/iv_movie_poster"
+            android:scaleType="fitXY"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            />
+
         <TextView
             android:id="@+id/tv_movie_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:padding="8dp"
             tools:text="Card" />
 

@@ -13,7 +13,7 @@ public class Movie {
     @SerializedName("vote_count")
     private int movieVoteCount;
     @SerializedName("vote_average")
-    private int movieVoteAverage;
+    private float movieVoteAverage;
     @SerializedName("title")
     private String movieTitle;
     @SerializedName("overview")
@@ -33,7 +33,7 @@ public class Movie {
         return movieVoteCount;
     }
 
-    public int getMovieVoteAverage() {
+    public float getMovieVoteAverage() {
         return movieVoteAverage;
     }
 
