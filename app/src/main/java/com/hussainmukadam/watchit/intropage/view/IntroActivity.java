@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -38,7 +39,6 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
     IntroPresenter introPresenter;
     MoviesGenreAdapter moviesGenreAdapter;
     TvGenreAdapter tvGenreAdapter;
-    ProgressDialog progressDialog;
     List<Genre> selectedTvGenres = new ArrayList<>();
     List<Genre> selectedMoviesGenres = new ArrayList<>();
     CustomSharedPreference customSharedPreference;
@@ -46,6 +46,7 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
     @BindView(R.id.rv_genre_movies) RecyclerView rvGenreMovies;
     @BindView(R.id.rv_genre_tv) RecyclerView rvGenreTVShows;
     @BindView(R.id.btn_get_started) Button btnGetStarted;
+    @BindView(R.id.intro_progress_bar) ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +64,6 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
         } else {
             setupRecyclerView();
             introPresenter = new IntroPresenter(this);
-            setupProgressDialog();
             introPresenter.fetchGenresByMovies();
             introPresenter.fetchGenresByTV();
         }
@@ -115,12 +115,12 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
 
     @Override
     public void showProgress() {
-        progressDialog.show();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressDialog.dismiss();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -137,12 +137,6 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
         tvLayoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
         rvGenreTVShows.setLayoutManager(tvLayoutManager);
     }
-
-    private void setupProgressDialog(){
-        progressDialog = new ProgressDialog(IntroActivity.this);
-        progressDialog.setCancelable(false);
-    }
-
 
 
     @Override

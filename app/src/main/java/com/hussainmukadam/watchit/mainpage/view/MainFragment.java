@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by hussain on 7/23/17.
  */
 
-public class MainFragment extends Fragment implements MainMVPContract.View, View.OnClickListener{
+public class MainFragment extends Fragment implements MainMVPContract.View, View.OnClickListener {
     private static final String TAG = "MainFragment";
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
@@ -58,14 +58,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         mainPresenter = new MainPresenter(this);
         imageButtonFavorite.setOnClickListener(this);
         imageButtonCancel.setOnClickListener(this);
-        mainPresenter.fetchMoviesBasedOnGenres(getGenres());
-
-//        arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.movie_item, R.id.tv_movie_item, al );
+        mainPresenter.fetchFirstPageMoviesByGenres(getGenres());
 
         return view;
     }
 
-    static void makeToast(Context ctx, String s){
+    static void makeToast(Context ctx, String s) {
         Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
     }
 
@@ -85,8 +83,61 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     }
 
     @Override
-    public void displayMoviesCards(final List<Movie> movieList) {
-        Log.d(TAG, "displayMoviesCards: Movies List "+movieList.size());
+    public void displayFirstPageMovies(List<Movie> movieList) {
+        setupSwipeFlingAdapterView(movieList);
+    }
+
+    @Override
+    public void displayNextPageMovies(List<Movie> movieList) {
+
+    }
+
+    @Override
+    public void showError(String errorMessage) {
+        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    private String getGenres() {
+        List<Genre> tempList = prefs.getMoviesGenrePreference();
+        if (tempList.size() != 0) {
+
+            List<Genre> moviesList = new ArrayList<>();
+            Random r = new Random();
+            for (int i = 0; i < 3; i++) {
+                moviesList.add(tempList.get(r.nextInt(prefs.getMoviesGenrePreference().size())));
+            }
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < moviesList.size(); i++) {
+                builder.append(moviesList.get(i).getGenreId());
+
+                if (i < moviesList.size() - 1) {
+                    builder.append(",");
+                }
+
+                Log.d(TAG, "onCreateView: String " + builder.toString());
+            }
+            return builder.toString();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ib_favorite:
+                swipeFlingAdapterView.getTopCardListener().selectRight();
+                break;
+            case R.id.ib_cancel:
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+                break;
+        }
+    }
+
+
+    private void setupSwipeFlingAdapterView(final List<Movie> movieList){
+        Log.d(TAG, "displayMoviesCards: Movies List " + movieList.size());
 
         movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, movieList);
 
@@ -141,48 +192,5 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 makeToast(getContext(), "Clicked!");
             }
         });
-    }
-
-    @Override
-    public void showError(String errorMessage) {
-        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    private String getGenres(){
-        List<Genre> tempList = prefs.getMoviesGenrePreference();
-        if (tempList.size()!=0) {
-
-            List<Genre> moviesList = new ArrayList<>();
-            Random r = new Random();
-            for (int i = 0; i < 3; i++) {
-                moviesList.add(tempList.get(r.nextInt(prefs.getMoviesGenrePreference().size())));
-            }
-
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < moviesList.size(); i++) {
-                builder.append(moviesList.get(i).getGenreId());
-
-                if(i<moviesList.size()-1){
-                    builder.append(",");
-                }
-
-                Log.d(TAG, "onCreateView: String "+builder.toString());
-            }
-            return builder.toString();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.ib_favorite:
-                swipeFlingAdapterView.getTopCardListener().selectRight();
-                break;
-            case R.id.ib_cancel:
-                swipeFlingAdapterView.getTopCardListener().selectLeft();
-                break;
-        }
     }
 }

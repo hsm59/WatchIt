@@ -18,7 +18,9 @@ public interface MainMVPContract {
 
         void hideProgress();
 
-        void displayMoviesCards(List<Movie> movieList);
+        void displayFirstPageMovies(List<Movie> movieList);
+
+        void displayNextPageMovies(List<Movie> movieList);
 
         void showError(String errorMessage);
 
@@ -26,7 +28,9 @@ public interface MainMVPContract {
 
     interface Presenter extends BasePresenter{
 
-        void fetchMoviesBasedOnGenres(String genreIdsByMovies);
+        void fetchFirstPageMoviesByGenres(String genreIdsByMovies);
+
+        void fetchNextPageMoviesByGenres();
 
     }
 

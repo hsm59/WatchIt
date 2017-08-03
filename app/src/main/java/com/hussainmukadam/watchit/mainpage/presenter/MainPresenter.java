@@ -37,13 +37,15 @@ public class MainPresenter implements MainMVPContract.Presenter {
     }
 
     @Override
-    public void fetchMoviesBasedOnGenres(String genreIdsByMovies) {
+    public void fetchFirstPageMoviesByGenres(String genreIdsByMovies) {
+
+
 
         Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds "+genreIdsByMovies);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, 1, genreIdsByMovies);
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, 1, genreIdsByMovies, "en-US", "popularity.desc");
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -53,7 +55,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
                         List<Movie> movieList = response.body().getMoviesList();
-                        mView.displayMoviesCards(movieList);
+                        mView.displayFirstPageMovies(movieList);
                         Log.d(TAG, "onResponse: Movies List " + movieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
@@ -72,5 +74,10 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void fetchNextPageMoviesByGenres() {
+
     }
 }
