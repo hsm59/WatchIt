@@ -8,23 +8,23 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardview"
         android:layout_width="match_parent"
-        android:layout_height="480dp"
+        android:layout_height="400dp"
         android:layout_margin="28dp"
         card_view:cardElevation="4dp"
-        card_view:cardBackgroundColor="@android:color/white"
+        card_view:cardBackgroundColor="@color/colorLightGray"
         card_view:cardCornerRadius="8dp">
 
         <LinearLayout
             android:background="@color/colorDarkGray"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
             <ImageView
                 android:id="@+id/iv_poster"
                 android:layout_width="match_parent"
-                android:layout_height="410dp"
+                android:layout_height="340dp"
                 android:background="@drawable/ic_image_black_24dp"
                 android:scaleType="fitXY" />
 

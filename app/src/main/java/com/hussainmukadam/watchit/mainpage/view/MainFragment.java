@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.intropage.model.Genre;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
 import com.hussainmukadam.watchit.mainpage.adapter.MovieAdapter;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
@@ -20,7 +21,10 @@ import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -145,12 +149,20 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     }
 
     private String getGenres(){
-        if (prefs.getMoviesGenrePreference().size()!=0) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < 3; i++) {
-                builder.append(prefs.getMoviesGenrePreference().get(i).getGenreId());
+        List<Genre> tempList = prefs.getMoviesGenrePreference();
+        if (tempList.size()!=0) {
 
-                if(i<2){
+            List<Genre> moviesList = new ArrayList<>();
+            Random r = new Random();
+            for (int i = 0; i < 3; i++) {
+                moviesList.add(tempList.get(r.nextInt(prefs.getMoviesGenrePreference().size())));
+            }
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < moviesList.size(); i++) {
+                builder.append(moviesList.get(i).getGenreId());
+
+                if(i<moviesList.size()-1){
                     builder.append(",");
                 }
 
