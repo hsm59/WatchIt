@@ -47,6 +47,11 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     MainMVPContract.Presenter presenter;
     MainPresenter mainPresenter;
     CustomSharedPreference prefs;
+    String genresList;
+    List<Movie> nextPageArrayList = new ArrayList<>();
+    private static final int PAGE_START = 1;
+    int TOTAL_PAGES, i;
+    int currentPage = PAGE_START;
 
     @Nullable
     @Override
@@ -58,7 +63,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         mainPresenter = new MainPresenter(this);
         imageButtonFavorite.setOnClickListener(this);
         imageButtonCancel.setOnClickListener(this);
-        mainPresenter.fetchFirstPageMoviesByGenres(getGenres());
+        genresList = getGenres();
+        mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
 
         return view;
     }
@@ -83,13 +89,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     }
 
     @Override
-    public void displayFirstPageMovies(List<Movie> movieList) {
+    public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
         setupSwipeFlingAdapterView(movieList);
+        this.TOTAL_PAGES = totalPages;
     }
 
     @Override
     public void displayNextPageMovies(List<Movie> movieList) {
-
+        this.nextPageArrayList = movieList;
     }
 
     @Override
@@ -148,7 +155,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
-//                al.remove(0);
                 movieList.remove(0);
                 movieAdapter.notifyDataSetChanged();
             }
@@ -158,22 +164,35 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
+                Log.d(TAG, "onLeftCardExit: dataObject "+dataObject.toString());
                 makeToast(getContext(), "Left!");
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
+                Log.d(TAG, "onLeftCardExit: dataObject "+dataObject.toString());
                 makeToast(getContext(), "Right!");
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-//                al.add("XML ".concat(String.valueOf(i)));
-//                movieList.add(1, new Movie());
-                movieAdapter.notifyDataSetChanged();
+                if(i>0 && i!=5) {
+                    if (TOTAL_PAGES > 0) {
+                        currentPage += 1;
+                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
+                    }
+
+                    if (nextPageArrayList.size() != 0) {
+                        movieList.addAll(nextPageArrayList);
+                        movieAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    movieAdapter.notifyDataSetChanged();
+                }
                 Log.d("LIST", "notified");
-//                i++;
+
+                i++;
             }
 
             @Override

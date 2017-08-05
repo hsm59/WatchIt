@@ -37,7 +37,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     }
 
     @Override
-    public void fetchFirstPageMoviesByGenres(String genreIdsByMovies) {
+    public void fetchFirstPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
 
 
@@ -45,7 +45,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, 1, genreIdsByMovies, "en-US", "popularity.desc");
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -54,8 +54,9 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 if (response.isSuccessful()) {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
+                        int totalPages = response.body().getTotalPages();
                         List<Movie> movieList = response.body().getMoviesList();
-                        mView.displayFirstPageMovies(movieList);
+                        mView.displayFirstPageMovies(movieList, totalPages);
                         Log.d(TAG, "onResponse: Movies List " + movieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
@@ -77,7 +78,38 @@ public class MainPresenter implements MainMVPContract.Presenter {
     }
 
     @Override
-    public void fetchNextPageMoviesByGenres() {
+    public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
+        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds "+genreIdsByMovies);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                Log.d(TAG, "onResponse: Response Code " + response.code());
+                if (response.isSuccessful()) {
+                    if (response.body().getMoviesList().size() != 0) {
+
+                        int totalPages = response.body().getTotalPages();
+                        List<Movie> movieList = response.body().getMoviesList();
+                        mView.displayFirstPageMovies(movieList, totalPages);
+                        Log.d(TAG, "onResponse: Movies List " + movieList.size());
+                    } else {
+                        mView.showError("Couldn't find any movies");
+                    }
+                } else {
+                    mView.showError("Some Error Occurred");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                mView.showError(t.getMessage());
+                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
     }
 }

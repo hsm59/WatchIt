@@ -13,14 +13,22 @@ public class MovieResponse {
     @SerializedName("results")
     List<Movie> moviesList;
 
+    @SerializedName("total_pages")
+    int totalPages;
+
     public List<Movie> getMoviesList() {
         return moviesList;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
     }
 
     @Override
     public String toString() {
         return "MovieResponse{" +
                 "moviesList=" + moviesList +
+                ", totalPages=" + totalPages +
                 '}';
     }
 }

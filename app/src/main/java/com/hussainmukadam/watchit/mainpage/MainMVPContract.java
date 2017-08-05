@@ -18,7 +18,7 @@ public interface MainMVPContract {
 
         void hideProgress();
 
-        void displayFirstPageMovies(List<Movie> movieList);
+        void displayFirstPageMovies(List<Movie> movieList, int totalPages);
 
         void displayNextPageMovies(List<Movie> movieList);
 
@@ -28,9 +28,9 @@ public interface MainMVPContract {
 
     interface Presenter extends BasePresenter{
 
-        void fetchFirstPageMoviesByGenres(String genreIdsByMovies);
+        void fetchFirstPageMoviesByGenres(String genreIdsByMovies, int pageNumber);
 
-        void fetchNextPageMoviesByGenres();
+        void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber);
 
     }
 
