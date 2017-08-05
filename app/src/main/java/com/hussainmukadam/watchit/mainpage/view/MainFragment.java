@@ -177,8 +177,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                if(i>0 && i!=5) {
-                    if (TOTAL_PAGES > 0) {
+                if(i>0 && i!=5 && currentPage <= TOTAL_PAGES) {
+                    if (TOTAL_PAGES > 1) {
                         currentPage += 1;
                         mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
                     }

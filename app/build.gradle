@@ -1,5 +1,24 @@
-apply plugin: 'com.android.application'
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
 
+    dependencies {
+        // These docs use an open ended version so that our plugin
+        // can be updated quickly in response to Android tooling updates
+
+        // We recommend changing it to the latest version from our changelog:
+        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -16,14 +35,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String', 'apiKey', '"07ebecba1d66dde4bda8ea1a0abbc436"'
+            buildConfigField 'String', 'apiKey', '""'
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w500/"'
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String', 'apiKey', '"07ebecba1d66dde4bda8ea1a0abbc436"'
+            buildConfigField 'String', 'apiKey', '""'
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w500/"'
         }
     }
@@ -46,6 +65,12 @@ dependencies {
     compile 'com.android.support:appcompat-v7:'+supportLibVersion
     compile 'com.android.support:recyclerview-v7:'+supportLibVersion
     compile 'com.android.support:cardview-v7:'+supportLibVersion
+
+    //Crashlytics
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
+
     compile 'com.google.android:flexbox:0.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
