@@ -36,14 +36,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', 'apiKey', '""'
-            buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w500/"'
+            buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w342/"'
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', 'apiKey', '""'
-            buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w500/"'
+            buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w342/"'
         }
     }
 }
@@ -55,6 +55,7 @@ ext{
     loggingLibVersion = "3.6.0"
     butterknifeLibVer = "8.7.0"
     leakCanaryVersion = "1.5.1"
+    lottieVersion = "2.1.0"
 }
 
 dependencies {
@@ -90,4 +91,7 @@ dependencies {
 
     //Picasso Image Library
     compile 'com.squareup.picasso:picasso:'+picassoLibVersion
+
+    //Lottie Animation Library
+    compile 'com.airbnb.android:lottie:'+lottieVersion
 }

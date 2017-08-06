@@ -6,12 +6,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.model.Genre;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
@@ -37,12 +41,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private static final String TAG = "MainFragment";
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
+    @BindView(R.id.animated_progress_bar)
+    LottieAnimationView progressBar;
     @BindView(R.id.ib_favorite)
     ImageButton imageButtonFavorite;
     @BindView(R.id.ib_cancel)
     ImageButton imageButtonCancel;
+
     MovieAdapter movieAdapter;
     MainMVPContract.Presenter presenter;
     MainPresenter mainPresenter;
@@ -50,7 +55,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     String genresList;
     List<Movie> nextPageArrayList = new ArrayList<>();
     private static final int PAGE_START = 1;
-    int TOTAL_PAGES, i;
+    int TOTAL_PAGES;
     int currentPage = PAGE_START;
 
     @Nullable
@@ -58,7 +63,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_movies, container, false);
         ButterKnife.bind(this, view);
-
+        setHasOptionsMenu(true);
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
         imageButtonFavorite.setOnClickListener(this);
@@ -143,7 +148,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     }
 
 
-    private void setupSwipeFlingAdapterView(final List<Movie> movieList){
+    private void setupSwipeFlingAdapterView(final List<Movie> movieList) {
         Log.d(TAG, "displayMoviesCards: Movies List " + movieList.size());
 
         movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, movieList);
@@ -164,24 +169,27 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Log.d(TAG, "onLeftCardExit: dataObject "+dataObject.toString());
+                Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.toString());
                 makeToast(getContext(), "Left!");
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Log.d(TAG, "onLeftCardExit: dataObject "+dataObject.toString());
+                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.toString());
                 makeToast(getContext(), "Right!");
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                if(i>0 && i!=5 && currentPage <= TOTAL_PAGES) {
-                    if (TOTAL_PAGES > 1) {
-                        currentPage += 1;
-                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-                    }
+
+                Log.d(TAG, "onAdapterAboutToEmpty: itemsInAdapter " + itemsInAdapter);
+
+                if (itemsInAdapter <= 3 && currentPage <= 5 && TOTAL_PAGES > 1) {
+
+                    Log.d(TAG, "onAdapterAboutToEmpty: currentPage " + currentPage + " totalPages " + TOTAL_PAGES);
+                    currentPage += 1;
+                    mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
 
                     if (nextPageArrayList.size() != 0) {
                         movieList.addAll(nextPageArrayList);
@@ -189,11 +197,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                     }
                 } else {
                     movieAdapter.notifyDataSetChanged();
+                    currentPage = PAGE_START;
+                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
                 }
                 Log.d("LIST", "notified");
-
-                i++;
             }
+
 
             @Override
             public void onScroll(float scrollProgressPercent) {

@@ -7,3 +7,18 @@
 /build
 /captures
 .externalNativeBuild
+
+# Intellij project files
+*.ipr
+*.iws
+.idea/**/*
+
+# Gradle
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Fabric plugin
+fabric.properties
