@@ -160,8 +160,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
-                movieList.remove(0);
-                movieAdapter.notifyDataSetChanged();
+                if(movieList.size()!=0) {
+                    movieList.remove(0);
+                    movieAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -169,13 +171,17 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.toString());
+                Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Movie movie = (Movie) dataObject;
+                mainPresenter.storeMovieData(false, movie);
                 makeToast(getContext(), "Left!");
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.toString());
+                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Movie movie = (Movie) dataObject;
+                mainPresenter.storeMovieData(true, movie);
                 makeToast(getContext(), "Right!");
             }
 

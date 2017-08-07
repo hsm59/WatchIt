@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        jcenter()
     }
 
     dependencies {
@@ -15,6 +16,7 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -39,7 +41,8 @@ android {
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w342/"'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', 'apiKey', '""'

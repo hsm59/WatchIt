@@ -1,5 +1,6 @@
 package com.hussainmukadam.watchit.mainpage.presenter;
 
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import com.hussainmukadam.watchit.network.ApiInterface;
 
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,6 +27,7 @@ import retrofit2.Response;
 public class MainPresenter implements MainMVPContract.Presenter {
     private static final String TAG = "MainPresenter";
     MainMVPContract.View mView;
+    Realm realm = null;
 
     public MainPresenter(MainMVPContract.View mView) {
         this.mView = mView;
@@ -112,4 +115,47 @@ public class MainPresenter implements MainMVPContract.Presenter {
             }
         });
     }
+
+    @Override
+    public void storeMovieData(boolean isWatchLater, final Movie movie) {
+
+        movie.setWatchLater(isWatchLater);
+        Log.d(TAG, "storeMovieData: Inside Store Movie Data "+isWatchLater);
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                Realm realm = null;
+                String status;
+
+                try { // I could use try-with-resources here
+                    realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.insertOrUpdate(movie);
+                        }
+                    });
+
+                    Movie movie = realm.where(Movie.class).findFirst();
+                    Log.d(TAG, "execute: First Movie Saved "+movie.getMovieId());
+
+                    status = "Movie stored "+movie.getMovieTitle();
+                } finally {
+                    if(realm != null) {
+                        realm.close();
+                    }
+                }
+                return status;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                mView.showError(result);
+            }
+        }.execute();
+    }
+
+
+
 }

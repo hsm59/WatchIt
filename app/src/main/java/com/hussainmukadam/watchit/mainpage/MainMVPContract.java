@@ -32,6 +32,8 @@ public interface MainMVPContract {
 
         void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber);
 
+        void storeMovieData(boolean isWatchLater, Movie movie);
+
     }
 
 }

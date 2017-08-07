@@ -2,11 +2,13 @@ package com.hussainmukadam.watchit.mainpage.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+
 /**
  * Created by hussain on 7/23/17.
  */
 
-public class Movie {
+public class Movie extends RealmObject {
 
     @SerializedName("id")
     private int movieId;
@@ -24,6 +26,8 @@ public class Movie {
     private String releaseDate;
     @SerializedName("backdrop_path")
     private String backdropPath;
+
+    private boolean isWatchLater;
 
     public int getMovieId() {
         return movieId;
@@ -57,6 +61,14 @@ public class Movie {
         return backdropPath;
     }
 
+    public boolean isWatchLater() {
+        return isWatchLater;
+    }
+
+    public void setWatchLater(boolean watchLater) {
+        isWatchLater = watchLater;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -68,6 +80,7 @@ public class Movie {
                 ", posterPath='" + posterPath + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", backdropPath='" + backdropPath + '\'' +
+                ", isWatchLater=" + isWatchLater +
                 '}';
     }
 }
