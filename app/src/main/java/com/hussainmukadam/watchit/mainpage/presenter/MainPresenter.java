@@ -13,9 +13,12 @@ import com.hussainmukadam.watchit.mainpage.model.MovieResponse;
 import com.hussainmukadam.watchit.network.ApiClient;
 import com.hussainmukadam.watchit.network.ApiInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,8 +46,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     public void fetchFirstPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
 
-
-        Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds "+genreIdsByMovies);
+        Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdsByMovies);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -58,9 +60,21 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
                         int totalPages = response.body().getTotalPages();
-                        List<Movie> movieList = response.body().getMoviesList();
-                        mView.displayFirstPageMovies(movieList, totalPages);
-                        Log.d(TAG, "onResponse: Movies List " + movieList.size());
+
+                        realm = Realm.getDefaultInstance();
+                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+
+                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+                        List<Movie> newMovieList = response.body().getMoviesList();
+
+                        if(existingMovieList.size()!=0) {
+                            for (Movie e : existingMovieList) {
+                                newMovieList.remove(e);
+                            }
+                        }
+
+                        mView.displayFirstPageMovies(newMovieList, totalPages);
+                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
                         mView.hideProgress();
@@ -83,7 +97,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     @Override
     public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
-        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds "+genreIdsByMovies);
+        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -97,9 +111,21 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     if (response.body().getMoviesList().size() != 0) {
 
                         int totalPages = response.body().getTotalPages();
-                        List<Movie> movieList = response.body().getMoviesList();
-                        mView.displayFirstPageMovies(movieList, totalPages);
-                        Log.d(TAG, "onResponse: Movies List " + movieList.size());
+
+                        realm = Realm.getDefaultInstance();
+                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+
+                        List<Movie> newMovieList = response.body().getMoviesList();
+
+                        if (existingMovieList.size() != 0) {
+                            for (Movie e : existingMovieList) {
+                                newMovieList.remove(e);
+                            }
+                        }
+
+                        mView.displayFirstPageMovies(newMovieList, totalPages);
+                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
                     }
@@ -120,7 +146,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     public void storeMovieData(boolean isWatchLater, final Movie movie) {
 
         movie.setWatchLater(isWatchLater);
-        Log.d(TAG, "storeMovieData: Inside Store Movie Data "+isWatchLater);
+        Log.d(TAG, "storeMovieData: Inside Store Movie Data " + isWatchLater);
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
@@ -136,12 +162,12 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         }
                     });
 
-                    Movie movie = realm.where(Movie.class).findFirst();
-                    Log.d(TAG, "execute: First Movie Saved "+movie.getMovieId());
+                    RealmQuery<Movie> realmQuery = realm.where(Movie.class).findAll().where().equalTo("isWatchLater", true);
+                    Log.d(TAG, "execute: First Movie Saved " + realmQuery.count());
 
-                    status = "Movie stored "+movie.getMovieTitle();
+                    status = "Movie stored Count " + realmQuery.count();
                 } finally {
-                    if(realm != null) {
+                    if (realm != null) {
                         realm.close();
                     }
                 }
@@ -155,7 +181,6 @@ public class MainPresenter implements MainMVPContract.Presenter {
             }
         }.execute();
     }
-
 
 
 }
