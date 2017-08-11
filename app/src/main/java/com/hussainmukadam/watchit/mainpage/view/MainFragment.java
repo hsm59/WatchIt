@@ -188,24 +188,30 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
+                int i=0;
+                Log.d(TAG, "onAdapterAboutToEmpty: itemsInAdapter "+itemsInAdapter+" & currentPage "+currentPage+ " & total Pages "+ TOTAL_PAGES);
 
-                Log.d(TAG, "onAdapterAboutToEmpty: itemsInAdapter " + itemsInAdapter);
-
-                if (itemsInAdapter <= 3 && currentPage <= 5 && TOTAL_PAGES > 1) {
-
-                    Log.d(TAG, "onAdapterAboutToEmpty: currentPage " + currentPage + " totalPages " + TOTAL_PAGES);
-                    currentPage += 1;
-                    mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-
-                    if (nextPageArrayList.size() != 0) {
-                        movieList.addAll(nextPageArrayList);
-                        movieAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    movieAdapter.notifyDataSetChanged();
+                if(TOTAL_PAGES == 0){
                     currentPage = PAGE_START;
                     mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
                 }
+
+                if(itemsInAdapter==3 && currentPage <= 5 && TOTAL_PAGES > 1) {
+                    i++;
+
+                    if (i==1) {
+                        currentPage++;
+                        Log.d(TAG, "onAdapterAboutToEmpty: Current Page is " + currentPage);
+                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
+                    }
+                }
+
+                if(itemsInAdapter <= 1 && nextPageArrayList.size() != 0) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed");
+                    movieList.addAll(nextPageArrayList);
+                    movieAdapter.notifyDataSetChanged();
+                }
+
                 Log.d("LIST", "notified");
             }
 

@@ -3,13 +3,14 @@ package com.hussainmukadam.watchit.mainpage.model;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by hussain on 7/23/17.
  */
 
 public class Movie extends RealmObject {
-
+    @PrimaryKey
     @SerializedName("id")
     private int movieId;
     @SerializedName("vote_count")

@@ -55,25 +55,29 @@ public class MainPresenter implements MainMVPContract.Presenter {
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> newMovieList = new ArrayList<>();
+                int totalPages = 0;
+
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
-                        int totalPages = response.body().getTotalPages();
+                        totalPages = response.body().getTotalPages();
 
                         realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
 
                         List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
-                        List<Movie> newMovieList = response.body().getMoviesList();
+                        newMovieList = response.body().getMoviesList();
 
-                        if(existingMovieList.size()!=0) {
-                            for (Movie e : existingMovieList) {
+                        for (Movie e : existingMovieList) {
+                            if (newMovieList.contains(e)) {
                                 newMovieList.remove(e);
                             }
                         }
 
-                        mView.displayFirstPageMovies(newMovieList, totalPages);
+
+                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
@@ -83,6 +87,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     mView.showError("Some Error Occurred");
                     mView.hideProgress();
                 }
+
+                mView.displayFirstPageMovies(newMovieList, totalPages);
             }
 
             @Override
@@ -97,7 +103,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     @Override
     public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
-        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies);
+        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number "+pageNumber);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -110,21 +116,21 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 if (response.isSuccessful()) {
                     if (response.body().getMoviesList().size() != 0) {
 
-                        int totalPages = response.body().getTotalPages();
-
                         realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+                        Log.d(TAG, "onResponse: Realm Data Stored "+allMoviesResults.size());
                         List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
 
                         List<Movie> newMovieList = response.body().getMoviesList();
 
-                        if (existingMovieList.size() != 0) {
-                            for (Movie e : existingMovieList) {
+                        for (Movie e : existingMovieList) {
+                            if (newMovieList.contains(e)) {
                                 newMovieList.remove(e);
                             }
                         }
 
-                        mView.displayFirstPageMovies(newMovieList, totalPages);
+                        mView.displayNextPageMovies(newMovieList);
+                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
