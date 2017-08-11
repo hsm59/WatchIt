@@ -191,12 +191,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 int i=0;
                 Log.d(TAG, "onAdapterAboutToEmpty: itemsInAdapter "+itemsInAdapter+" & currentPage "+currentPage+ " & total Pages "+ TOTAL_PAGES);
 
-                if(TOTAL_PAGES == 0){
-                    currentPage = PAGE_START;
-                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-                }
-
-                if(itemsInAdapter==3 && currentPage <= 5 && TOTAL_PAGES > 1) {
+                if(itemsInAdapter==6 && currentPage <= 5 && TOTAL_PAGES > 1) {
                     i++;
 
                     if (i==1) {
@@ -206,7 +201,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                     }
                 }
 
-                if(itemsInAdapter <= 1 && nextPageArrayList.size() != 0) {
+
+                if(currentPage == 6 || TOTAL_PAGES <= 5 || itemsInAdapter == 0){
+                    Log.d(TAG, "onAdapterAboutToEmpty: Fetching First Page "+currentPage + " Total Pages "+TOTAL_PAGES+ " itemsInAdapter "+itemsInAdapter);
+                    currentPage = PAGE_START;
+                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                }
+
+                if(itemsInAdapter <= 3 && nextPageArrayList.size() != 0) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed");
                     movieList.addAll(nextPageArrayList);
                     movieAdapter.notifyDataSetChanged();
