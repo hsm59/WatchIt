@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,16 +29,20 @@ public class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mainToolbar);
+        mainToolbar.setTitle("");
 
-        if(getSupportActionBar()!=null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
-        mainToolbar.setNavigationIcon(R.drawable.nav_bar_icon);
+        setupDrawer();
 
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction()
                 .add(R.id.container, new MainFragment())
                 .commit();
+    }
+
+    private void setupDrawer(){
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mainToolbar)
+                .build();
     }
 }

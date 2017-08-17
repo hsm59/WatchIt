@@ -21,9 +21,19 @@ apply plugin: 'realm-android'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
+
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
+    }
+}
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.hussainmukadam.watchit"
         minSdkVersion 16
@@ -52,7 +62,7 @@ android {
 }
 
 ext{
-    supportLibVersion = "25.3.1"
+    supportLibVersion = "26.0.1"
     picassoLibVersion = "2.5.2"
     retrofitLibVersion = "2.3.0"
     loggingLibVersion = "3.6.0"
@@ -97,4 +107,8 @@ dependencies {
 
     //Lottie Animation Library
     compile 'com.airbnb.android:lottie:'+lottieVersion
+
+    compile('com.mikepenz:materialdrawer:5.9.5@aar') {
+        transitive = true
+    }
 }

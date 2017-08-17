@@ -174,7 +174,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 Movie movie = (Movie) dataObject;
                 mainPresenter.storeMovieData(false, movie);
-                makeToast(getContext(), "Left!");
             }
 
             @Override
@@ -182,7 +181,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 Movie movie = (Movie) dataObject;
                 mainPresenter.storeMovieData(true, movie);
-                makeToast(getContext(), "Right!");
             }
 
             @Override
@@ -199,10 +197,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                         Log.d(TAG, "onAdapterAboutToEmpty: Current Page is " + currentPage);
                         mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
                     }
-                }
-
-
-                if(currentPage == 6 || TOTAL_PAGES <= 5 || itemsInAdapter == 0){
+                } else if (currentPage == TOTAL_PAGES || currentPage > 5) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Fetching First Page "+currentPage + " Total Pages "+TOTAL_PAGES+ " itemsInAdapter "+itemsInAdapter);
                     currentPage = PAGE_START;
                     mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
