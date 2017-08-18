@@ -27,6 +27,8 @@ public class Movie extends RealmObject {
     private String releaseDate;
     @SerializedName("backdrop_path")
     private String backdropPath;
+    @SerializedName("popularity")
+    private float moviePopularity;
 
     private boolean isWatchLater;
 
@@ -70,6 +72,10 @@ public class Movie extends RealmObject {
         isWatchLater = watchLater;
     }
 
+    public float getMoviePopularity() {
+        return moviePopularity;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -81,6 +87,7 @@ public class Movie extends RealmObject {
                 ", posterPath='" + posterPath + '\'' +
                 ", releaseDate='" + releaseDate + '\'' +
                 ", backdropPath='" + backdropPath + '\'' +
+                ", moviePopularity=" + moviePopularity +
                 ", isWatchLater=" + isWatchLater +
                 '}';
     }
