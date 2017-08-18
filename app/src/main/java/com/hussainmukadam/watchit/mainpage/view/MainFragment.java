@@ -17,7 +17,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.model.Genre;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
-import com.hussainmukadam.watchit.mainpage.adapter.MovieAdapter;
+import com.hussainmukadam.watchit.mainpage.adapter.MainAdapter;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
@@ -46,7 +46,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     @BindView(R.id.ib_cancel)
     ImageButton imageButtonCancel;
 
-    private MovieAdapter movieAdapter;
+    private MainAdapter mainAdapter;
     private MainMVPContract.Presenter presenter;
     private MainPresenter mainPresenter;
     private CustomSharedPreference prefs;
@@ -167,12 +167,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ib_favorite:
-                if(!movieAdapter.isEmpty()) {
+                if(!mainAdapter.isEmpty()) {
                     swipeFlingAdapterView.getTopCardListener().selectRight();
                 }
                 break;
             case R.id.ib_cancel:
-                if(!movieAdapter.isEmpty()) {
+                if(!mainAdapter.isEmpty()) {
                     swipeFlingAdapterView.getTopCardListener().selectLeft();
                 }
                 break;
@@ -183,10 +183,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private void setupSwipeFlingAdapterView(final List<Movie> movieList) {
         Log.d(TAG, "displayMoviesCards: Movies List " + movieList.size());
 
-        movieAdapter = new MovieAdapter(getContext(), R.layout.movie_item, movieList);
+        mainAdapter = new MainAdapter(getContext(), R.layout.movie_item, movieList);
 
-        swipeFlingAdapterView.setAdapter(movieAdapter);
-        movieAdapter.notifyDataSetChanged();
+        swipeFlingAdapterView.setAdapter(mainAdapter);
+        mainAdapter.notifyDataSetChanged();
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -194,7 +194,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 Log.d("LIST", "removed object!");
                 if(movieList.size()!=0) {
                     movieList.remove(0);
-                    movieAdapter.notifyDataSetChanged();
+                    mainAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -243,7 +243,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 if(itemsInAdapter <= 3 && nextPageArrayList.size() != 0) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed");
                     movieList.addAll(nextPageArrayList);
-                    movieAdapter.notifyDataSetChanged();
+                    mainAdapter.notifyDataSetChanged();
                 }
 
                 Log.d("LIST", "notified");

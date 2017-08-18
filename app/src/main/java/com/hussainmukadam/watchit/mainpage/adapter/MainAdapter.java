@@ -23,11 +23,11 @@ import java.util.List;
  * Created by hussain on 7/23/17.
  */
 
-public class MovieAdapter extends ArrayAdapter<Movie>{
-    private static final String TAG = "MovieAdapter";
+public class MainAdapter extends ArrayAdapter<Movie>{
+    private static final String TAG = "MainAdapter";
     ViewHolder viewHolder;
 
-    public MovieAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Movie> objects) {
+    public MainAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Movie> objects) {
         super(context, resource, objects);
     }
 
