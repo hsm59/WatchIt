@@ -69,6 +69,7 @@ ext{
     butterknifeLibVer = "8.7.0"
     leakCanaryVersion = "1.5.1"
     lottieVersion = "2.1.0"
+    swipeCardsVersion = "1.0.9"
 }
 
 dependencies {
@@ -100,7 +101,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:'+butterknifeLibVer
 
     //Swappable CardViews
-    compile 'com.lorentzos.swipecards:library:1.0.9'
+    compile 'com.lorentzos.swipecards:library:'+swipeCardsVersion
 
     //Picasso Image Library
     compile 'com.squareup.picasso:picasso:'+picassoLibVersion
@@ -108,6 +109,7 @@ dependencies {
     //Lottie Animation Library
     compile 'com.airbnb.android:lottie:'+lottieVersion
 
+    //Material Drawer Library
     compile('com.mikepenz:materialdrawer:5.9.5@aar') {
         transitive = true
     }
