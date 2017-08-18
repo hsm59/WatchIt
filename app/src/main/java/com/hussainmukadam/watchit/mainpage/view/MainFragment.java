@@ -34,8 +34,8 @@ import butterknife.ButterKnife;
  * Created by hussain on 7/23/17.
  */
 
-public class MovieFragment extends Fragment implements MainMVPContract.View, View.OnClickListener {
-    private static final String TAG = "MovieFragment";
+public class MainFragment extends Fragment implements MainMVPContract.View, View.OnClickListener {
+    private static final String TAG = "MainFragment";
     private static final int PAGE_START = 1;
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
@@ -51,6 +51,7 @@ public class MovieFragment extends Fragment implements MainMVPContract.View, Vie
     private MainPresenter mainPresenter;
     private CustomSharedPreference prefs;
     private String genresList;
+    private Boolean isMovies;
     private List<Movie> nextPageArrayList = new ArrayList<>();
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
@@ -60,7 +61,10 @@ public class MovieFragment extends Fragment implements MainMVPContract.View, Vie
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
-        setHasOptionsMenu(true);
+
+        isMovies = getArguments().getBoolean("IS_MOVIES");
+        Log.d(TAG, "onCreateView: Boolean "+isMovies);
+
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
         imageButtonFavorite.setOnClickListener(this);
@@ -107,28 +111,55 @@ public class MovieFragment extends Fragment implements MainMVPContract.View, Vie
     }
 
     private String getGenres() {
-        List<Genre> tempList = prefs.getMoviesGenrePreference();
-        if (tempList.size() != 0) {
 
-            List<Genre> moviesList = new ArrayList<>();
-            Random r = new Random();
-            for (int i = 0; i < 3; i++) {
-                moviesList.add(tempList.get(r.nextInt(prefs.getMoviesGenrePreference().size())));
-            }
+        if(isMovies) {
+            List<Genre> tempList = prefs.getMoviesGenrePreference();
+            if (tempList.size() != 0) {
 
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < moviesList.size(); i++) {
-                builder.append(moviesList.get(i).getGenreId());
-
-                if (i < moviesList.size() - 1) {
-                    builder.append(",");
+                List<Genre> moviesList = new ArrayList<>();
+                Random r = new Random();
+                for (int i = 0; i < 3; i++) {
+                    moviesList.add(tempList.get(r.nextInt(prefs.getMoviesGenrePreference().size())));
                 }
 
-                Log.d(TAG, "onCreateView: String " + builder.toString());
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < moviesList.size(); i++) {
+                    builder.append(moviesList.get(i).getGenreId());
+
+                    if (i < moviesList.size() - 1) {
+                        builder.append(",");
+                    }
+
+                    Log.d(TAG, "onCreateView: Movie String " + builder.toString());
+                }
+                return builder.toString();
+            } else {
+                return null;
             }
-            return builder.toString();
         } else {
-            return null;
+            List<Genre> tempList = prefs.getTvGenrePreference();
+            if (tempList.size() != 0) {
+
+                List<Genre> tvList = new ArrayList<>();
+                Random r = new Random();
+                for (int i = 0; i < 3; i++) {
+                    tvList.add(tempList.get(r.nextInt(prefs.getTvGenrePreference().size())));
+                }
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < tvList.size(); i++) {
+                    builder.append(tvList.get(i).getGenreId());
+
+                    if (i < tvList.size() - 1) {
+                        builder.append(",");
+                    }
+
+                    Log.d(TAG, "onCreateView: TV String " + builder.toString());
+                }
+                return builder.toString();
+            } else {
+                return null;
+            }
         }
     }
 
