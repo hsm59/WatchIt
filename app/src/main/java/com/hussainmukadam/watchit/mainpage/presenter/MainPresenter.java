@@ -10,6 +10,8 @@ import com.hussainmukadam.watchit.intropage.model.GenreResponse;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.MovieResponse;
+import com.hussainmukadam.watchit.mainpage.model.TvResponse;
+import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.network.ApiClient;
 import com.hussainmukadam.watchit.network.ApiInterface;
 
@@ -186,6 +188,114 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 mView.showError(result);
             }
         }.execute();
+    }
+
+    @Override
+    public void fetchFirstPageTvSeriesByGenres(String genreIdByTv, int pageNumber) {
+        Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdByTv);
+        mView.showProgress();
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en-US", "popularity.desc");
+
+        call.enqueue(new Callback<TvResponse>() {
+            @Override
+            public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
+                List<TvSeries> newTvList = new ArrayList<>();
+                int totalPages = 0;
+
+                Log.d(TAG, "onResponse: Response Code " + response.code());
+                if (response.isSuccessful()) {
+                    if (response.body().getTvList().size() != 0) {
+                        mView.hideProgress();
+                        totalPages = response.body().getTotalPages();
+
+//                        realm = Realm.getDefaultInstance();
+//                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+
+//                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+                        newTvList = response.body().getTvList();
+
+//                        for (Movie e : existingMovieList) {
+//                            if (newMovieList.contains(e)) {
+//                                newMovieList.remove(e);
+//                            }
+//                        }
+
+
+//                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
+//                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
+                    } else {
+                        mView.showError("Couldn't find any movies");
+                        mView.hideProgress();
+                    }
+                } else {
+                    mView.showError("Some Error Occurred");
+                    mView.hideProgress();
+                }
+
+                mView.displayFirstPageTvSeries(newTvList, totalPages);
+            }
+
+            @Override
+            public void onFailure(Call<TvResponse> call, Throwable t) {
+                mView.hideProgress();
+                mView.showError(t.getMessage());
+                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void fetchNextPageTvSeriesByGenres(String genreIdByTv, int pageNumber) {
+        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdByTv + "Page Number "+pageNumber);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en-US", "popularity.desc");
+
+        call.enqueue(new Callback<TvResponse>() {
+            @Override
+            public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
+                Log.d(TAG, "onResponse: Response Code " + response.code());
+                if (response.isSuccessful()) {
+                    if (response.body().getTvList().size() != 0) {
+
+//                        realm = Realm.getDefaultInstance();
+//                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+//                        Log.d(TAG, "onResponse: Realm Data Stored "+allMoviesResults.size());
+//                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+
+                        List<TvSeries> newTvList = response.body().getTvList();
+
+//                        for (Movie e : existingMovieList) {
+//                            if (newMovieList.contains(e)) {
+//                                newMovieList.remove(e);
+//                            }
+//                        }
+
+                        mView.displayNextPageTvSeries(newTvList);
+//                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
+//                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
+                    } else {
+                        mView.showError("Couldn't find any movies");
+                    }
+                } else {
+                    mView.showError("Some Error Occurred");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TvResponse> call, Throwable t) {
+                mView.showError(t.getMessage());
+                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void storeTvData(boolean isWatchLater, TvSeries tvSeries) {
+
     }
 
 

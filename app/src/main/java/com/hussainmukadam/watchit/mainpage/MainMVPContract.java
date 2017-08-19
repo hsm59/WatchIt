@@ -3,6 +3,7 @@ package com.hussainmukadam.watchit.mainpage;
 import com.hussainmukadam.watchit.BasePresenter;
 import com.hussainmukadam.watchit.BaseView;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
+import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 
 import java.util.List;
 
@@ -22,8 +23,11 @@ public interface MainMVPContract {
 
         void displayNextPageMovies(List<Movie> movieList);
 
-        void showError(String errorMessage);
+        void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages);
 
+        void displayNextPageTvSeries(List<TvSeries> tvSeriesList);
+
+        void showError(String errorMessage);
     }
 
     interface Presenter extends BasePresenter{
@@ -33,6 +37,12 @@ public interface MainMVPContract {
         void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber);
 
         void storeMovieData(boolean isWatchLater, Movie movie);
+
+        void fetchFirstPageTvSeriesByGenres(String genreIdByTv, int pageNumber);
+
+        void fetchNextPageTvSeriesByGenres(String genreIdByTv, int pageNumber);
+
+        void storeTvData(boolean isWatchLater, TvSeries tvSeries);
 
     }
 

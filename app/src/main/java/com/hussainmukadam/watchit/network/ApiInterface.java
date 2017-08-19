@@ -2,6 +2,7 @@ package com.hussainmukadam.watchit.network;
 
 import com.hussainmukadam.watchit.intropage.model.GenreResponse;
 import com.hussainmukadam.watchit.mainpage.model.MovieResponse;
+import com.hussainmukadam.watchit.mainpage.model.TvResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -27,4 +28,7 @@ public interface ApiInterface {
                                          @Query("language") String language, @Query("sort_by") String sortBy);
 
     //Fetch TV Shows using /discover/tv - GET - Similar to above.
+    @GET("discover/tv")
+    Call<TvResponse> getTvSeriesByGenre(@Query("api_key") String apiKey, @Query("page") int pageNo, @Query("with_genres") String genres,
+                                      @Query("language") String language, @Query("sort_by") String sortBy);
 }

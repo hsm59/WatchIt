@@ -23,25 +23,28 @@ import java.util.List;
  * Created by hussain on 7/23/17.
  */
 
-public class MainAdapter extends ArrayAdapter<Movie>{
-    private static final String TAG = "MainAdapter";
+public class MovieAdapter extends ArrayAdapter<Movie> {
+    private static final String TAG = "MovieAdapter";
     ViewHolder viewHolder;
 
-    public MainAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Movie> objects) {
+    public MovieAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Movie> objects) {
         super(context, resource, objects);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.movie_item, parent, false);
+            convertView = inflater.inflate(R.layout.main_item, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_movie_title);
+
+
+            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_title);
             viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
-            viewHolder.tvMovieRelease = (TextView) convertView.findViewById(R.id.tv_movie_release);
+            viewHolder.tvMovieRelease = (TextView) convertView.findViewById(R.id.tv_release);
 
             convertView.setTag(viewHolder);
         } else {
@@ -49,13 +52,13 @@ public class MainAdapter extends ArrayAdapter<Movie>{
         }
 
         Movie item = getItem(position);
-        if (item!= null) {
+        if (item != null) {
             // My layout has only one TextView
             // do whatever you want with your string and long
-            Log.d(TAG, "getView: "+item.getBackdropPath());
+            Log.d(TAG, "getView: " + item.getBackdropPath());
             viewHolder.tvMovieTitle.setText(item.getMovieTitle());
             viewHolder.tvMovieRelease.setText(item.getReleaseDate());
-            Picasso.with(getContext()).load(BuildConfig.imageBaseUrl+item.getPosterPath())
+            Picasso.with(getContext()).load(BuildConfig.imageBaseUrl + item.getPosterPath())
                     .into(viewHolder.ivPosterImage);
 
         }

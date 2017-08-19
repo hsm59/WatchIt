@@ -37,7 +37,7 @@
 
             <TextView
                 android:layout_weight="0.3"
-                android:id="@+id/tv_movie_title"
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textColor="@color/colorWhite"
@@ -50,7 +50,7 @@
 
             <TextView
                 android:layout_weight="0.2"
-                android:id="@+id/tv_movie_release"
+                android:id="@+id/tv_release"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:textColor="@color/colorWhite"
