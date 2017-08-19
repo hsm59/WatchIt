@@ -210,21 +210,21 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
-//                        realm = Realm.getDefaultInstance();
-//                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+                        realm = Realm.getDefaultInstance();
+                        RealmResults<TvSeries> allTvResults = realm.where(TvSeries.class).findAll();
 
-//                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+                        List<TvSeries> existingTvList = new ArrayList<>(allTvResults);
                         newTvList = response.body().getTvList();
 
-//                        for (Movie e : existingMovieList) {
-//                            if (newMovieList.contains(e)) {
-//                                newMovieList.remove(e);
-//                            }
-//                        }
+                        for (TvSeries e : existingTvList) {
+                            if (newTvList.contains(e)) {
+                                newTvList.remove(e);
+                            }
+                        }
 
 
-//                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
-//                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
+                        Log.d(TAG, "onResponse: Existing Movies List " + existingTvList.size());
+                        Log.d(TAG, "onResponse: Movies List " + newTvList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
                         mView.hideProgress();
@@ -261,22 +261,22 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 if (response.isSuccessful()) {
                     if (response.body().getTvList().size() != 0) {
 
-//                        realm = Realm.getDefaultInstance();
-//                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
-//                        Log.d(TAG, "onResponse: Realm Data Stored "+allMoviesResults.size());
-//                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+                        realm = Realm.getDefaultInstance();
+                        RealmResults<TvSeries> allTvsResults = realm.where(TvSeries.class).findAll();
+                        Log.d(TAG, "onResponse: Realm Data Stored "+allTvsResults.size());
+                        List<TvSeries> existingTvList = new ArrayList<>(allTvsResults);
 
                         List<TvSeries> newTvList = response.body().getTvList();
 
-//                        for (Movie e : existingMovieList) {
-//                            if (newMovieList.contains(e)) {
-//                                newMovieList.remove(e);
-//                            }
-//                        }
+                        for (TvSeries e : existingTvList) {
+                            if (newTvList.contains(e)) {
+                                newTvList.remove(e);
+                            }
+                        }
 
                         mView.displayNextPageTvSeries(newTvList);
-//                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
-//                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
+                        Log.d(TAG, "onResponse: Existing Tv List " + existingTvList.size());
+                        Log.d(TAG, "onResponse: Tv List " + newTvList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
                     }
@@ -294,8 +294,43 @@ public class MainPresenter implements MainMVPContract.Presenter {
     }
 
     @Override
-    public void storeTvData(boolean isWatchLater, TvSeries tvSeries) {
+    public void storeTvData(boolean isWatchLater, final TvSeries tvSeries) {
 
+        tvSeries.setWatchLater(isWatchLater);
+        Log.d(TAG, "storeTvData: Inside Store TvSeries Data " + isWatchLater);
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                Realm realm = null;
+                String status;
+
+                try { // I could use try-with-resources here
+                    realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.insertOrUpdate(tvSeries);
+                        }
+                    });
+
+                    RealmQuery<TvSeries> realmQuery = realm.where(TvSeries.class).findAll().where().equalTo("isWatchLater", true);
+                    Log.d(TAG, "execute: First TV Saved " + realmQuery.count());
+
+                    status = "TV stored Count " + realmQuery.count();
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                }
+                return status;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                mView.showError(result);
+            }
+        }.execute();
     }
 
 

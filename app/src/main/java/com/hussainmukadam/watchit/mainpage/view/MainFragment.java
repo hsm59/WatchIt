@@ -325,14 +325,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 //If you want to use it just cast it (String) dataObject
                 Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 TvSeries tvSeries = (TvSeries) dataObject;
-//                mainPresenter.storeMovieData(false, movie);
+                mainPresenter.storeTvData(false, tvSeries);
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
                 Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 TvSeries tvSeries = (TvSeries) dataObject;
-//                mainPresenter.storeMovieData(true, movie);
+                mainPresenter.storeTvData(true, tvSeries);
             }
 
             @Override
