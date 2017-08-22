@@ -13,9 +13,6 @@ import io.realm.Realm;
  */
 
 public class WatchItApplication extends Application {
-
-
-
     @Override
     public void onCreate() {
         super.onCreate();

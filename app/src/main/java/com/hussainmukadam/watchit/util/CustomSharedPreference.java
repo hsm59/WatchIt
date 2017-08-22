@@ -10,10 +10,8 @@ import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.intropage.model.Genre;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 /**
  * Created by hussain on 7/21/17.

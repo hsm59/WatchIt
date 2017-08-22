@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.hussainmukadam.watchit">
 
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".WatchItApplication"
@@ -16,19 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:node="replace">
-        <activity android:name=".intropage.view.IntroActivity" android:noHistory="true">
+        <activity
+            android:name=".intropage.view.IntroActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".mainpage.BaseActivity" />
 
-        <activity android:name=".mainpage.BaseActivity"/>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value= ""
-            />
+            android:value="" />
     </application>
 
 </manifest>

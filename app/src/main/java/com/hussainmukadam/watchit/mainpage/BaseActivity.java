@@ -1,5 +1,6 @@
 package com.hussainmukadam.watchit.mainpage;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -82,13 +83,15 @@ public class BaseActivity extends AppCompatActivity {
                                 switchFragment(new MainFragment(), bundleTv);
                                 break;
                             case 3:
-                                //Watch Later Fragment
+                                //TODO: Watch Later Fragment
                                 break;
                             case 5:
-                                //Settings Fragment
+                                //TODO: Settings Activity
+//                                Intent intent = new Intent(BaseActivity.this, SettingsActivity.class);
+//                                startActivity(intent);
                                 break;
                             case 6:
-                                //Open Source Acknowledgement Fragment
+                                //TODO: Open Source Acknowledgement Fragment
                                 break;
                         }
                         return false;

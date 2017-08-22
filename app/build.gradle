@@ -41,6 +41,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         debug {
@@ -61,7 +62,7 @@ android {
     }
 }
 
-ext{
+ext {
     supportLibVersion = "26.0.1"
     picassoLibVersion = "2.5.2"
     retrofitLibVersion = "2.3.0"
@@ -77,37 +78,36 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:'+supportLibVersion
-    compile 'com.android.support:recyclerview-v7:'+supportLibVersion
-    compile 'com.android.support:cardview-v7:'+supportLibVersion
+    compile 'com.android.support:appcompat-v7:' + supportLibVersion
+    compile 'com.android.support:recyclerview-v7:' + supportLibVersion
+    compile 'com.android.support:cardview-v7:' + supportLibVersion
+    compile 'com.google.android:flexbox:0.3.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
 
     //Crashlytics
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 
-    compile 'com.google.android:flexbox:0.3.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-
     //Retrofit and OkHttp for Networking
-    compile 'com.squareup.retrofit2:retrofit:'+retrofitLibVersion
-    compile 'com.squareup.retrofit2:converter-gson:'+retrofitLibVersion
+    compile 'com.squareup.retrofit2:retrofit:' + retrofitLibVersion
+    compile 'com.squareup.retrofit2:converter-gson:' + retrofitLibVersion
     //Logging Network Calls
-    compile 'com.squareup.okhttp3:logging-interceptor:'+loggingLibVersion
+    compile 'com.squareup.okhttp3:logging-interceptor:' + loggingLibVersion
 
     //Binding Views
-    compile 'com.jakewharton:butterknife:'+butterknifeLibVer
-    annotationProcessor 'com.jakewharton:butterknife-compiler:'+butterknifeLibVer
+    compile 'com.jakewharton:butterknife:' + butterknifeLibVer
+    annotationProcessor 'com.jakewharton:butterknife-compiler:' + butterknifeLibVer
 
     //Swappable CardViews
-    compile 'com.lorentzos.swipecards:library:'+swipeCardsVersion
+    compile 'com.lorentzos.swipecards:library:' + swipeCardsVersion
 
     //Picasso Image Library
-    compile 'com.squareup.picasso:picasso:'+picassoLibVersion
+    compile 'com.squareup.picasso:picasso:' + picassoLibVersion
 
     //Lottie Animation Library
-    compile 'com.airbnb.android:lottie:'+lottieVersion
+    compile 'com.airbnb.android:lottie:' + lottieVersion
 
     //Material Drawer Library
     compile('com.mikepenz:materialdrawer:5.9.5@aar') {
@@ -115,7 +115,6 @@ dependencies {
     }
 
     //Material Icon Library
-    compile "com.mikepenz:iconics-core:2.9.1@aar"
+    compile 'com.mikepenz:iconics-core:2.9.1@aar'
     compile 'com.mikepenz:material-design-iconic-typeface:2.2.0.3@aar'
-
 }

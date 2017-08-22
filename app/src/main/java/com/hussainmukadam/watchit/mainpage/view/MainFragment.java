@@ -73,6 +73,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         mainPresenter = new MainPresenter(this);
         imageButtonFavorite.setOnClickListener(this);
         imageButtonCancel.setOnClickListener(this);
+
+        imageButtonFavorite.setEnabled(false);
+        imageButtonCancel.setEnabled(false);
+
         genresList = getGenres();
 
         if (isMovies) {
@@ -217,8 +221,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
         movieAdapter = new MovieAdapter(getContext(), R.layout.main_item, movieList);
 
+        imageButtonCancel.setEnabled(true);
+        imageButtonFavorite.setEnabled(true);
+
         swipeFlingAdapterView.setAdapter(movieAdapter);
         movieAdapter.notifyDataSetChanged();
+
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -305,8 +313,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
         tvSeriesAdapter = new TvSeriesAdapter(getContext(), R.layout.main_item, tvSeriesList);
 
+        imageButtonCancel.setEnabled(true);
+        imageButtonFavorite.setEnabled(true);
+
         swipeFlingAdapterView.setAdapter(tvSeriesAdapter);
         tvSeriesAdapter.notifyDataSetChanged();
+
         swipeFlingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
