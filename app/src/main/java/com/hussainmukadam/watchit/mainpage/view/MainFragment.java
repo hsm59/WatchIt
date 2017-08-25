@@ -55,6 +55,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private CustomSharedPreference prefs;
     private String genresList;
     private Boolean isMovies;
+    private int countAdapterCall = 0;
     private List<Movie> nextPageArrayList = new ArrayList<>();
     private List<TvSeries> nextPageTvArrayList = new ArrayList<>();
     private int TOTAL_PAGES;
@@ -116,6 +117,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     @Override
     public void displayNextPageMovies(List<Movie> movieList) {
         this.nextPageArrayList = movieList;
+        Log.d(TAG, "displayNextPageMovies: Next Page ArrayList Size " + nextPageArrayList.size());
     }
 
     @Override
@@ -202,7 +204,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 }
                 break;
             case R.id.ib_cancel:
-                if(isMovies) {
+                if (isMovies) {
                     if (!movieAdapter.isEmpty()) {
                         swipeFlingAdapterView.getTopCardListener().selectLeft();
                     }
@@ -258,33 +260,27 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                int i = 0;
-                Log.d(TAG, "onAdapterAboutToEmpty: itemsInAdapter " + itemsInAdapter + " & currentPage " + currentPage + " & total Pages " + TOTAL_PAGES);
 
-                if (itemsInAdapter == 0 && currentPage == 1 && TOTAL_PAGES == 0) {
-                    Toast.makeText(getContext(), "Refreshing..", Toast.LENGTH_SHORT).show();
-                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-                } else {
-                    if (itemsInAdapter == 6 && currentPage <= 5 && TOTAL_PAGES > 1) {
-                        i++;
+                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter);
 
-                        if (i == 1) {
-                            currentPage++;
-                            Log.d(TAG, "onAdapterAboutToEmpty: Current Page is " + currentPage);
-                            mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-                        }
-                    } else if (currentPage == TOTAL_PAGES || currentPage > 5) {
-                        Log.d(TAG, "onAdapterAboutToEmpty: Fetching First Page " + currentPage + " Total Pages " + TOTAL_PAGES + " itemsInAdapter " + itemsInAdapter);
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                if (itemsInAdapter == 6 && nextPageArrayList.size() == 0 && currentPage <= TOTAL_PAGES) {
+                    countAdapterCall++;
+                    Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " nextPageArrayList " + nextPageArrayList.size() + " currentPage " + currentPage);
+
+                    if (countAdapterCall == 1) {
+                        currentPage++;
+
+                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
                     }
+                } else if (itemsInAdapter == 0 || TOTAL_PAGES == 0) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Items in Adapter 0, Refreshing content");
+                    currentPage = PAGE_START;
+                    mainPresenter.fetchNextPageMoviesByGenres(getGenres(), currentPage);
+
+                    updateListAndClear(itemsInAdapter, movieList, null);
                 }
 
-                if (itemsInAdapter <= 3 && nextPageArrayList.size() != 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed");
-                    movieList.addAll(nextPageArrayList);
-                    movieAdapter.notifyDataSetChanged();
-                }
+                updateListAndClear(itemsInAdapter, movieList, null);
 
                 Log.d("LIST", "notified");
             }
@@ -350,33 +346,27 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                int i = 0;
-                Log.d(TAG, "onAdapterAboutToEmpty: itemsInAdapter " + itemsInAdapter + " & currentPage " + currentPage + " & total Pages " + TOTAL_PAGES);
+                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter);
 
-                if (itemsInAdapter == 0 && currentPage == 1 && TOTAL_PAGES == 0) {
-                    Toast.makeText(getContext(), "Refreshing..", Toast.LENGTH_SHORT).show();
-                    mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
-                } else {
-                    if (itemsInAdapter == 6 && currentPage <= 5 && TOTAL_PAGES > 1) {
-                        i++;
+                if (itemsInAdapter == 6 && nextPageArrayList.size() == 0 && currentPage <= TOTAL_PAGES) {
+                    countAdapterCall++;
+                    Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " nextPageTvArrayList " + nextPageArrayList.size() + " currentPage " + currentPage);
 
-                        if (i == 1) {
-                            currentPage++;
-                            Log.d(TAG, "onAdapterAboutToEmpty: Current Page is " + currentPage);
-                            mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
-                        }
-                    } else if (currentPage == TOTAL_PAGES || currentPage > 5) {
-                        Log.d(TAG, "onAdapterAboutToEmpty: Fetching First Page " + currentPage + " Total Pages " + TOTAL_PAGES + " itemsInAdapter " + itemsInAdapter);
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+                    if (countAdapterCall == 1) {
+                        currentPage++;
+
+                        mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
                     }
+                } else if (itemsInAdapter == 0 || TOTAL_PAGES == 0) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Items in Adapter 0, Refreshing content");
+                    currentPage = PAGE_START;
+                    mainPresenter.fetchNextPageTvSeriesByGenres(getGenres(), currentPage);
+
+                    updateListAndClear(itemsInAdapter, null, tvSeriesList);
                 }
 
-                if (itemsInAdapter <= 3 && nextPageTvArrayList.size() != 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed");
-                    tvSeriesList.addAll(nextPageTvArrayList);
-                    tvSeriesAdapter.notifyDataSetChanged();
-                }
+                updateListAndClear(itemsInAdapter, null, tvSeriesList);
+
 
                 Log.d("LIST", "notified");
             }
@@ -403,5 +393,28 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void updateListAndClear(int items, List<Movie> movieList, List<TvSeries> tvSeriesList) {
+
+        if (isMovies) {
+            if (nextPageArrayList.size() != 0 && items == 1 || items == 0) {
+                Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed " + items + "nextPageArrayList " + nextPageArrayList.size());
+                movieList.addAll(nextPageArrayList);
+                movieAdapter.notifyDataSetChanged();
+
+                nextPageArrayList.clear();
+                countAdapterCall = 0;
+            }
+        } else {
+            if (nextPageTvArrayList.size() != 0 && items == 1 || items == 0) {
+                Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed " + items + "nextPageTvArrayList " + nextPageTvArrayList.size());
+                tvSeriesList.addAll(nextPageTvArrayList);
+                tvSeriesAdapter.notifyDataSetChanged();
+
+                nextPageTvArrayList.clear();
+                countAdapterCall = 0;
+            }
+        }
     }
 }

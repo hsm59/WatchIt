@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
+import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 import com.mikepenz.materialdrawer.Drawer;
@@ -87,8 +88,7 @@ public class BaseActivity extends AppCompatActivity {
                                 break;
                             case 5:
                                 //TODO: Settings Activity
-//                                Intent intent = new Intent(BaseActivity.this, SettingsActivity.class);
-//                                startActivity(intent);
+                                switchFragment(new SettingsFragment(), null);
                                 break;
                             case 6:
                                 //TODO: Open Source Acknowledgement Fragment
@@ -101,10 +101,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void switchFragment(Fragment mFragment, Bundle bundle){
-        mFragment.setArguments(bundle);
+        if(bundle!=null) {
+            mFragment.setArguments(bundle);
+        }
+
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction()
-                .add(R.id.container, mFragment)
+                .replace(R.id.container, mFragment)
                 .commit();
     }
 }
