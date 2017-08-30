@@ -6,6 +6,8 @@
             android:key="suggestions"
             android:title="Suggestion Notifications"
             android:summary="Get Notifications to watch Movies on Weekends"
+            android:switchTextOff="false"
+            android:switchTextOn="true"
             android:defaultValue="true"/>
 
     </android.support.v7.preference.PreferenceCategory>

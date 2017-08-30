@@ -31,8 +31,8 @@ import retrofit2.Response;
 
 public class MainPresenter implements MainMVPContract.Presenter {
     private static final String TAG = "MainPresenter";
-    MainMVPContract.View mView;
-    Realm realm = null;
+    private MainMVPContract.View mView;
+    private Realm realm = null;
 
     public MainPresenter(MainMVPContract.View mView) {
         this.mView = mView;
@@ -106,7 +106,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
         Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number "+pageNumber);
-
+        mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
@@ -117,6 +117,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     if (response.body().getMoviesList().size() != 0) {
+                        mView.hideProgress();
 
                         realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
@@ -136,14 +137,17 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
                         mView.showError("Couldn't find any movies");
+                        mView.hideProgress();
                     }
                 } else {
                     mView.showError("Some Error Occurred");
+                    mView.hideProgress();
                 }
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
+                mView.hideProgress();
                 mView.showError(t.getMessage());
                 Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
@@ -185,7 +189,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                mView.showError(result);
+                Log.d(TAG, "onPostExecute: Stored Movie Data "+result);
             }
         }.execute();
     }
@@ -328,7 +332,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                mView.showError(result);
+                Log.d(TAG, "onPostExecute: Stored TV Data "+result);
             }
         }.execute();
     }

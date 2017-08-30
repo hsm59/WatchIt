@@ -55,9 +55,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private CustomSharedPreference prefs;
     private String genresList;
     private Boolean isMovies;
-    private int countAdapterCall = 0;
-    private List<Movie> nextPageArrayList = new ArrayList<>();
-    private List<TvSeries> nextPageTvArrayList = new ArrayList<>();
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
 
@@ -72,6 +69,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
+
         imageButtonFavorite.setOnClickListener(this);
         imageButtonCancel.setOnClickListener(this);
 
@@ -87,10 +85,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         }
 
         return view;
-    }
-
-    static void makeToast(Context ctx, String s) {
-        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -116,8 +110,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
     @Override
     public void displayNextPageMovies(List<Movie> movieList) {
-        this.nextPageArrayList = movieList;
-        Log.d(TAG, "displayNextPageMovies: Next Page ArrayList Size " + nextPageArrayList.size());
+        setupSwipeFlingAdapterViewForMovies(movieList);
     }
 
     @Override
@@ -128,7 +121,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
     @Override
     public void displayNextPageTvSeries(List<TvSeries> tvSeriesList) {
-        this.nextPageTvArrayList = tvSeriesList;
+        setupSwipeFlingAdapterViewForTv(tvSeriesList);
     }
 
     @Override
@@ -260,29 +253,19 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
+                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter);
+                if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                if (itemsInAdapter == 6 && nextPageArrayList.size() == 0 && currentPage <= TOTAL_PAGES) {
-                    countAdapterCall++;
-                    Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " nextPageArrayList " + nextPageArrayList.size() + " currentPage " + currentPage);
+                    currentPage++;
+                    mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
+                } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
 
-                    if (countAdapterCall == 1) {
-                        currentPage++;
-
-                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-                    }
-                } else if (itemsInAdapter == 0 || TOTAL_PAGES == 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Items in Adapter 0, Refreshing content");
                     currentPage = PAGE_START;
-                    mainPresenter.fetchNextPageMoviesByGenres(getGenres(), currentPage);
-
-                    updateListAndClear(itemsInAdapter, movieList, null);
+                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
                 }
-
-                updateListAndClear(itemsInAdapter, movieList, null);
-
-                Log.d("LIST", "notified");
             }
 
 
@@ -299,7 +282,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                makeToast(getContext(), "Clicked!");
+                Log.d(TAG, "onItemClicked: Item clicked");
             }
         });
     }
@@ -346,29 +329,19 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter);
+                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                if (itemsInAdapter == 6 && nextPageArrayList.size() == 0 && currentPage <= TOTAL_PAGES) {
-                    countAdapterCall++;
-                    Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " nextPageTvArrayList " + nextPageArrayList.size() + " currentPage " + currentPage);
+                if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                    if (countAdapterCall == 1) {
-                        currentPage++;
+                    currentPage++;
+                    mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
+                } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
+                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
 
-                        mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
-                    }
-                } else if (itemsInAdapter == 0 || TOTAL_PAGES == 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Items in Adapter 0, Refreshing content");
                     currentPage = PAGE_START;
-                    mainPresenter.fetchNextPageTvSeriesByGenres(getGenres(), currentPage);
-
-                    updateListAndClear(itemsInAdapter, null, tvSeriesList);
+                    mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
                 }
-
-                updateListAndClear(itemsInAdapter, null, tvSeriesList);
-
-
-                Log.d("LIST", "notified");
             }
 
 
@@ -385,7 +358,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                makeToast(getContext(), "Clicked!");
+                Log.d(TAG, "onItemClicked: Item clicked");
             }
         });
     }
@@ -393,28 +366,5 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void updateListAndClear(int items, List<Movie> movieList, List<TvSeries> tvSeriesList) {
-
-        if (isMovies) {
-            if (nextPageArrayList.size() != 0 && items == 1 || items == 0) {
-                Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed " + items + "nextPageArrayList " + nextPageArrayList.size());
-                movieList.addAll(nextPageArrayList);
-                movieAdapter.notifyDataSetChanged();
-
-                nextPageArrayList.clear();
-                countAdapterCall = 0;
-            }
-        } else {
-            if (nextPageTvArrayList.size() != 0 && items == 1 || items == 0) {
-                Log.d(TAG, "onAdapterAboutToEmpty: Adapter Changed " + items + "nextPageTvArrayList " + nextPageTvArrayList.size());
-                tvSeriesList.addAll(nextPageTvArrayList);
-                tvSeriesAdapter.notifyDataSetChanged();
-
-                nextPageTvArrayList.clear();
-                countAdapterCall = 0;
-            }
-        }
     }
 }
