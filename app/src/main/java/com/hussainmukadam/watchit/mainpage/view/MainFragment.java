@@ -220,26 +220,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 // Ask for more data here
                 Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                /*if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage++;
-                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
-
                 if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
