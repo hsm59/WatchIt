@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by hussain on 7/21/17.
  */
 
-public class IntroActivity extends AppCompatActivity implements IntroMVPContract.View, MoviesGenreAdapter.MoviesListItemClickListener, TvGenreAdapter.TvListItemClickListener{
+public class IntroActivity extends AppCompatActivity implements IntroMVPContract.View, MoviesGenreAdapter.MoviesListItemClickListener, TvGenreAdapter.TvListItemClickListener {
     private static final String TAG = "IntroActivity";
     IntroMVPContract.Presenter presenter;
     IntroPresenter introPresenter;
@@ -43,10 +43,14 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
     List<Genre> selectedMoviesGenres = new ArrayList<>();
     CustomSharedPreference customSharedPreference;
 
-    @BindView(R.id.rv_genre_movies) RecyclerView rvGenreMovies;
-    @BindView(R.id.rv_genre_tv) RecyclerView rvGenreTVShows;
-    @BindView(R.id.btn_get_started) Button btnGetStarted;
-    @BindView(R.id.intro_progress_bar) ProgressBar progressBar;
+    @BindView(R.id.rv_genre_movies)
+    RecyclerView rvGenreMovies;
+    @BindView(R.id.rv_genre_tv)
+    RecyclerView rvGenreTVShows;
+    @BindView(R.id.btn_get_started)
+    Button btnGetStarted;
+    @BindView(R.id.intro_progress_bar)
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +60,7 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
 
         customSharedPreference = new CustomSharedPreference(this);
 
-        if(customSharedPreference.isIntroDisplayed()){
+        if (customSharedPreference.isIntroDisplayed()) {
             Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
             startActivity(startMainActivity);
             finish();
@@ -70,22 +74,15 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
         btnGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedTvGenres.size()!=0 || selectedMoviesGenres.size()!=0){
-                    if(selectedTvGenres.size()>0 && selectedMoviesGenres.size()>0){
-                        customSharedPreference.setTvGenrePreference(selectedTvGenres);
-                        customSharedPreference.setMoviesGenrePreference(selectedMoviesGenres);
-                    } else if(selectedTvGenres.size()>0){
-                        customSharedPreference.setTvGenrePreference(selectedTvGenres);
-                    } else{
-                        customSharedPreference.setMoviesGenrePreference(selectedMoviesGenres);
-                    }
+                if (selectedTvGenres.size() >= 3 && selectedMoviesGenres.size() >= 3) {
+                    customSharedPreference.setTvGenrePreference(selectedTvGenres);
+                    customSharedPreference.setMoviesGenrePreference(selectedMoviesGenres);
 
                     customSharedPreference.setIntroDisplayed(true);
                     Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
                     startActivity(startMainActivity);
-
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please select at least one genre to move forward", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(IntroActivity.this, "Select at least 3 Genres from each", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -127,12 +124,12 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
-    private void setupRecyclerView(){
+    private void setupRecyclerView() {
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
         rvGenreMovies.setLayoutManager(layoutManager);
 
-        FlexboxLayoutManager tvLayoutManager= new FlexboxLayoutManager(this);
+        FlexboxLayoutManager tvLayoutManager = new FlexboxLayoutManager(this);
         tvLayoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
         rvGenreTVShows.setLayoutManager(tvLayoutManager);
     }
@@ -141,24 +138,24 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
     @Override
     public void onTvListItemSelected(Genre genre) {
         selectedTvGenres.add(genre);
-        Log.d(TAG, "onTvListItemSelected: Selected Genre Size "+selectedTvGenres.size());
+        Log.d(TAG, "onTvListItemSelected: Selected Genre Size " + selectedTvGenres.size());
     }
 
     @Override
     public void onTvListItemUnSelected(Genre genre) {
         selectedTvGenres.remove(genre);
-        Log.d(TAG, "onTvListItemUnSelected: Selected Genre Size "+selectedTvGenres.size());
+        Log.d(TAG, "onTvListItemUnSelected: Selected Genre Size " + selectedTvGenres.size());
     }
 
     @Override
     public void onMovieListItemSelect(Genre genre) {
         selectedMoviesGenres.add(genre);
-        Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size "+selectedMoviesGenres.size());
+        Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size " + selectedMoviesGenres.size());
     }
 
     @Override
     public void onMovieListItemUnselect(Genre genre) {
         selectedMoviesGenres.remove(genre);
-        Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size "+selectedMoviesGenres.size());
+        Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size " + selectedMoviesGenres.size());
     }
 }
