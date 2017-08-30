@@ -23,6 +23,7 @@ import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
+import com.hussainmukadam.watchit.util.Util;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -78,55 +79,18 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
         genresList = getGenres();
 
-        if (isMovies) {
-            mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
+        if (Util.isConnected(getContext())) {
+            if (isMovies) {
+                mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
+            } else {
+                mainPresenter.fetchFirstPageTvSeriesByGenres(genresList, currentPage);
+            }
         } else {
-            mainPresenter.fetchFirstPageTvSeriesByGenres(genresList, currentPage);
+            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
 
+
         return view;
-    }
-
-    @Override
-    public void setPresenter(MainMVPContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
-        setupSwipeFlingAdapterViewForMovies(movieList);
-        this.TOTAL_PAGES = totalPages;
-    }
-
-    @Override
-    public void displayNextPageMovies(List<Movie> movieList) {
-        setupSwipeFlingAdapterViewForMovies(movieList);
-    }
-
-    @Override
-    public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        setupSwipeFlingAdapterViewForTv(tvSeriesList);
-        this.TOTAL_PAGES = totalPages;
-    }
-
-    @Override
-    public void displayNextPageTvSeries(List<TvSeries> tvSeriesList) {
-        setupSwipeFlingAdapterViewForTv(tvSeriesList);
-    }
-
-    @Override
-    public void showError(String errorMessage) {
-        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     private String getGenres() {
@@ -258,13 +222,21 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                    currentPage++;
-                    mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
+                    if(Util.isConnected(getContext())) {
+                        currentPage++;
+                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
+                    } else {
+                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
 
-                    currentPage = PAGE_START;
-                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                    if(Util.isConnected(getContext())) {
+                        currentPage = PAGE_START;
+                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                    } else {
+                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -334,13 +306,21 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                    currentPage++;
-                    mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
+                    if (Util.isConnected(getContext())) {
+                        currentPage++;
+                        mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
+                    } else {
+                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
 
-                    currentPage = PAGE_START;
-                    mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+                    if (Util.isConnected(getContext())) {
+                        currentPage = PAGE_START;
+                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+                    } else {
+                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -366,5 +346,47 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void setPresenter(MainMVPContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
+        setupSwipeFlingAdapterViewForMovies(movieList);
+        this.TOTAL_PAGES = totalPages;
+    }
+
+    @Override
+    public void displayNextPageMovies(List<Movie> movieList) {
+        setupSwipeFlingAdapterViewForMovies(movieList);
+    }
+
+    @Override
+    public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
+        setupSwipeFlingAdapterViewForTv(tvSeriesList);
+        this.TOTAL_PAGES = totalPages;
+    }
+
+    @Override
+    public void displayNextPageTvSeries(List<TvSeries> tvSeriesList) {
+        setupSwipeFlingAdapterViewForTv(tvSeriesList);
+    }
+
+    @Override
+    public void showError(String errorMessage) {
+        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 }

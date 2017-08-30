@@ -22,6 +22,7 @@ import com.hussainmukadam.watchit.intropage.model.Genre;
 import com.hussainmukadam.watchit.intropage.presenter.IntroPresenter;
 import com.hussainmukadam.watchit.mainpage.BaseActivity;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
+import com.hussainmukadam.watchit.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +68,13 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
         } else {
             setupRecyclerView();
             introPresenter = new IntroPresenter(this);
-            introPresenter.fetchGenresByMovies();
-            introPresenter.fetchGenresByTV();
+
+            if(Util.isConnected(this)) {
+                introPresenter.fetchGenresByMovies();
+                introPresenter.fetchGenresByTV();
+            } else {
+                Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
         }
 
         btnGetStarted.setOnClickListener(new View.OnClickListener() {
