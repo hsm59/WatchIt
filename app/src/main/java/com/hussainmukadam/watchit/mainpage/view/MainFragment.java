@@ -58,6 +58,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private Boolean isMovies;
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
+    private Boolean isFirstFetch;
 
     @Nullable
     @Override
@@ -94,7 +95,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     }
 
     private String getGenres() {
-
+        isFirstFetch = true;
         if (isMovies) {
             List<Genre> tempList = prefs.getMoviesGenrePreference();
             if (tempList.size() != 0) {
@@ -202,7 +203,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                // Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 Movie movie = (Movie) dataObject;
                 mainPresenter.storeMovieData(false, movie);
             }
@@ -219,19 +220,20 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 // Ask for more data here
                 Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
+                if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                    if(Util.isConnected(getContext())) {
-                        currentPage++;
+                    if (Util.isConnected(getContext())) {
+                        currentPage = getPage(TOTAL_PAGES);
+                        isFirstFetch = false;
                         mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
                     } else {
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
-                } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
+                } else if (itemsInAdapter == 0) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
 
-                    if(Util.isConnected(getContext())) {
+                    if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
                         mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
                     } else {
@@ -303,16 +305,17 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 // Ask for more data here
                 Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES) {
+                if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
                     if (Util.isConnected(getContext())) {
-                        currentPage++;
+                        currentPage = getPage(TOTAL_PAGES);
+                        isFirstFetch = false;
                         mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
                     } else {
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
-                } else if (itemsInAdapter == 0 && currentPage == TOTAL_PAGES) {
+                } else if (itemsInAdapter == 0 ) {
                     Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
 
                     if (Util.isConnected(getContext())) {
@@ -341,6 +344,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 Log.d(TAG, "onItemClicked: Item clicked");
             }
         });
+    }
+
+    private int getPage(int totalPage) {
+        Random random = new Random();
+        int n = random.nextInt(totalPage) + 1;
+        Log.d(TAG, " NextPageNo: " + n);
+        return n;
     }
 
     @Override
