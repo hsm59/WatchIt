@@ -82,11 +82,11 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
-                        mView.showError("Couldn't find any movies");
+                        mView.showMovieResponseError("Couldn't find any movies");
                         mView.hideProgress();
                     }
                 } else {
-                    mView.showError("Some Error Occurred");
+                    mView.showMovieResponseError("Some Error Occurred");
                     mView.hideProgress();
                 }
 
@@ -96,7 +96,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mView.hideProgress();
-                mView.showError(t.getMessage());
+                mView.showMovieResponseError(t.getMessage());
                 Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
@@ -136,11 +136,11 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
-                        mView.showError("Couldn't find any movies");
+                        mView.showMovieResponseError("Couldn't find any movies");
                         mView.hideProgress();
                     }
                 } else {
-                    mView.showError("Some Error Occurred");
+                    mView.showMovieResponseError("Some Error Occurred");
                     mView.hideProgress();
                 }
             }
@@ -148,7 +148,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mView.hideProgress();
-                mView.showError(t.getMessage());
+                mView.showMovieResponseError(t.getMessage());
                 Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
@@ -230,11 +230,11 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         Log.d(TAG, "onResponse: Existing Movies List " + existingTvList.size());
                         Log.d(TAG, "onResponse: Movies List " + newTvList.size());
                     } else {
-                        mView.showError("Couldn't find any movies");
+                        mView.showTvSeriesResponseError("Couldn't find any tv series");
                         mView.hideProgress();
                     }
                 } else {
-                    mView.showError("Some Error Occurred");
+                    mView.showTvSeriesResponseError("Some Error Occurred");
                     mView.hideProgress();
                 }
 
@@ -244,7 +244,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onFailure(Call<TvResponse> call, Throwable t) {
                 mView.hideProgress();
-                mView.showError(t.getMessage());
+                mView.showTvSeriesResponseError(t.getMessage());
                 Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
@@ -282,16 +282,16 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         Log.d(TAG, "onResponse: Existing Tv List " + existingTvList.size());
                         Log.d(TAG, "onResponse: Tv List " + newTvList.size());
                     } else {
-                        mView.showError("Couldn't find any movies");
+                        mView.showTvSeriesResponseError("Couldn't find any tv series");
                     }
                 } else {
-                    mView.showError("Some Error Occurred");
+                    mView.showTvSeriesResponseError("Some Error Occurred");
                 }
             }
 
             @Override
             public void onFailure(Call<TvResponse> call, Throwable t) {
-                mView.showError(t.getMessage());
+                mView.showTvSeriesResponseError(t.getMessage());
                 Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
