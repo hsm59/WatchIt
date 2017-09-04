@@ -60,7 +60,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             viewHolder.tvMovieRelease.setText(item.getReleaseDate());
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + item.getPosterPath())
-                    .placeholder(R.drawable.ic_image_black_24dp)
                     .error(R.drawable.ic_broken_image_black_24dp)
                     .into(viewHolder.ivPosterImage);
 

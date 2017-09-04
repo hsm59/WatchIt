@@ -27,7 +27,9 @@ public interface MainMVPContract {
 
         void displayNextPageTvSeries(List<TvSeries> tvSeriesList);
 
-        void showError(String errorMessage);
+        void showMovieResponseError(String errorMessage);
+
+        void showTvSeriesResponseError(String errorMessage);
     }
 
     interface Presenter extends BasePresenter{

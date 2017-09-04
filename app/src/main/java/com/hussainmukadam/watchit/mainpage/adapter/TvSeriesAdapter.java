@@ -60,7 +60,6 @@ public class TvSeriesAdapter extends ArrayAdapter<TvSeries> {
             viewHolder.tvTvSeriesRelease.setText(item.getTvReleaseDate());
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + item.getTvPosterPath())
-                    .placeholder(R.drawable.ic_image_black_24dp)
                     .error(R.drawable.ic_broken_image_black_24dp)
                     .into(viewHolder.ivPosterImage);
 
