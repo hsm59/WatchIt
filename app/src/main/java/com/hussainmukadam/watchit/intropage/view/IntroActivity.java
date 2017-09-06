@@ -21,6 +21,7 @@ import com.hussainmukadam.watchit.intropage.adapter.TvGenreAdapter;
 import com.hussainmukadam.watchit.intropage.model.Genre;
 import com.hussainmukadam.watchit.intropage.presenter.IntroPresenter;
 import com.hussainmukadam.watchit.mainpage.BaseActivity;
+import com.hussainmukadam.watchit.notification.NotificationHelper;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.hussainmukadam.watchit.util.Util;
 
@@ -92,6 +93,8 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
                 }
             }
         });
+
+        enableSuggestionNotifications();
     }
 
     @Override
@@ -163,5 +166,10 @@ public class IntroActivity extends AppCompatActivity implements IntroMVPContract
     public void onMovieListItemUnselect(Genre genre) {
         selectedMoviesGenres.remove(genre);
         Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size " + selectedMoviesGenres.size());
+    }
+
+    private void enableSuggestionNotifications(){
+        NotificationHelper.scheduleRepeatingRTCNotification(this);
+        NotificationHelper.enableBootReceiver(this);
     }
 }

@@ -7,22 +7,22 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.os.SystemClock;
-import android.support.v4.app.AlarmManagerCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.util.Log;
 
 import com.hussainmukadam.watchit.R;
-
+import com.hussainmukadam.watchit.notification.NotificationHelper;
+import com.hussainmukadam.watchit.notification.NotificationPublisher;
 
 
 /**
  * Created by hussain on 8/24/17.
  */
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends PreferenceFragmentCompat implements OnPreferenceChangeListener{
     private static final String TAG = "SettingsFragment";
     SwitchPreferenceCompat suggestions;
 
@@ -32,21 +32,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         suggestions = (SwitchPreferenceCompat) findPreference("suggestions");
 
-        if(suggestions.isChecked()){
+        suggestions.setOnPreferenceChangeListener(this);
+    }
 
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        Boolean isSuggestion = (Boolean) newValue;
+        Log.d(TAG, "onCreatePreferences: Suggestions are "+isSuggestion);
+        if(isSuggestion){
+            suggestions.setChecked(true);
+            Log.d(TAG, "onCreatePreferences: Is Checked "+isSuggestion);
+            NotificationHelper.scheduleRepeatingRTCNotification(getContext());
+            NotificationHelper.enableBootReceiver(getContext());
+            return true;
+        } else {
+            suggestions.setChecked(false);
+            Log.d(TAG, "onCreatePreferences: Is Checked "+isSuggestion);
+            NotificationHelper.cancelAlarmRTC();
+            NotificationHelper.disableBootReceiver(getContext());
+            return false;
         }
     }
-
-    private void scheduleNotification(Notification notification, int delay) {
-
-        Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME, futureInMillis, pendingIntent);
-    }
-
 }
