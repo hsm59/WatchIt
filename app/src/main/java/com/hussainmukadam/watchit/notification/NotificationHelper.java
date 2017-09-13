@@ -23,7 +23,7 @@ import static android.content.Context.ALARM_SERVICE;
 public class NotificationHelper {
     private static final String TAG = "NotificationHelper";
     public static int ALARM_TYPE_RTC = 100;
-    public static String NOTIFICATION_ID = "1";
+    public static int NOTIFICATION_ID = 1;
     private static AlarmManager alarmManagerRTC;
     private static PendingIntent alarmIntentRTC;
 
@@ -37,8 +37,8 @@ public class NotificationHelper {
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
         //TODO: Set it to only go off on Saturday nights
-        calendar.set(Calendar.HOUR_OF_DAY, 21);
-        calendar.set(Calendar.MINUTE, 17);
+        calendar.set(Calendar.HOUR_OF_DAY, 2);
+        calendar.set(Calendar.MINUTE, 43);
 
         //Setting intent to class where Alarm broadcast message will be handled
         Intent intent = new Intent(context, NotificationPublisher.class);
