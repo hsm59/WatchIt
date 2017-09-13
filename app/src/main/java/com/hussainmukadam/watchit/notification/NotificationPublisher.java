@@ -10,6 +10,13 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.hussainmukadam.watchit.mainpage.BaseActivity;
+import com.hussainmukadam.watchit.mainpage.model.Movie;
+
+import java.util.Random;
+
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * Created by hussain on 8/28/17.
@@ -50,12 +57,33 @@ public class NotificationPublisher extends BroadcastReceiver {
             notificationBuilder = new NotificationCompat.Builder(context);
         }
 
-        notificationBuilder
-        .setContentIntent(pendingIntent)
-        .setSmallIcon(android.R.drawable.arrow_up_float)
-        .setContentTitle("Test Notification")
-        .setAutoCancel(true);
+        Movie randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
+
+        if(randomMovieOrTvSeries!=null) {
+            notificationBuilder
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(android.R.drawable.arrow_up_float)
+                    .setContentTitle(randomMovieOrTvSeries.getMovieTitle())
+                    .setAutoCancel(true);
+        }
 
         return notificationBuilder;
+    }
+
+    private Movie fetchRandomMovieOrTvSeries(){
+        Realm realm = Realm.getDefaultInstance();
+
+        RealmResults<Movie> movieRealmResults = realm.where(Movie.class).equalTo("isNotified", false).findAll();
+        Log.d(TAG, "fetchRandomMovieOrTvSeries: Size of movies with isNotified false "+movieRealmResults.size());
+
+        if(movieRealmResults.size()!=0) {
+
+            Random r = new Random();
+            int randomNumber = r.nextInt(movieRealmResults.size());
+
+            return movieRealmResults.get(randomNumber);
+        } else {
+            return null;
+        }
     }
 }

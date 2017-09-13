@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import com.hussainmukadam.watchit.notification.NotificationPublisher;
 
@@ -20,6 +21,7 @@ import static android.content.Context.ALARM_SERVICE;
  */
 
 public class NotificationHelper {
+    private static final String TAG = "NotificationHelper";
     public static int ALARM_TYPE_RTC = 100;
     public static String NOTIFICATION_ID = "1";
     private static AlarmManager alarmManagerRTC;
@@ -34,7 +36,9 @@ public class NotificationHelper {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
-        calendar.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, Calendar.HOUR_OF_DAY, 45, 00);
+        //TODO: Set it to only go off on Saturday nights
+        calendar.set(Calendar.HOUR_OF_DAY, 21);
+        calendar.set(Calendar.MINUTE, 17);
 
         //Setting intent to class where Alarm broadcast message will be handled
         Intent intent = new Intent(context, NotificationPublisher.class);
@@ -53,6 +57,7 @@ public class NotificationHelper {
     }
 
     private static void setSingleExactAlarm(long time, PendingIntent pIntent) {
+        Log.d(TAG, "setSingleExactAlarm: Alarm time "+time);
         if (android.os.Build.VERSION.SDK_INT >= 19) {
             alarmManagerRTC.setExact(AlarmManager.RTC_WAKEUP, time, pIntent);
         } else {

@@ -158,6 +158,14 @@ public class MainPresenter implements MainMVPContract.Presenter {
     public void storeMovieData(boolean isWatchLater, final Movie movie) {
 
         movie.setWatchLater(isWatchLater);
+
+        if(isWatchLater) {
+            Log.d(TAG, "storeMovieData: Movie has to be Notified "+isWatchLater);
+            movie.setNotified(false);
+        } else {
+            movie.setNotified(true);
+        }
+
         Log.d(TAG, "storeMovieData: Inside Store Movie Data " + isWatchLater);
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -301,6 +309,13 @@ public class MainPresenter implements MainMVPContract.Presenter {
     public void storeTvData(boolean isWatchLater, final TvSeries tvSeries) {
 
         tvSeries.setWatchLater(isWatchLater);
+
+        if(isWatchLater) {
+            tvSeries.setNotified(false);
+        } else {
+            tvSeries.setNotified(true);
+        }
+
         Log.d(TAG, "storeTvData: Inside Store TvSeries Data " + isWatchLater);
         new AsyncTask<Void, Void, String>() {
             @Override
