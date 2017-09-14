@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -20,7 +19,6 @@ import com.squareup.picasso.Picasso;
 import java.util.Random;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
@@ -56,6 +54,7 @@ public class NotificationPublisher extends BroadcastReceiver {
     private Notification buildNotification(Context context, PendingIntent pendingIntent) {
         Notification repeatedNotification;
         RemoteViews contentView = null;
+        RemoteViews expandedView = null;
 
         NotificationCompat.Builder notificationBuilder;
 
@@ -69,23 +68,32 @@ public class NotificationPublisher extends BroadcastReceiver {
         Movie randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
 
         if(randomMovieOrTvSeries!=null) {
-            contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+            Log.d(TAG, "buildNotification: RandomMovieorTVSeries is not null");
+            contentView = new RemoteViews(context.getPackageName(), R.layout.notification_normal_layout);
+            expandedView = new RemoteViews(context.getPackageName(), R.layout.notification_expanded_layout);
 
             contentView.setTextViewText(R.id.title, randomMovieOrTvSeries.getMovieTitle());
-            contentView.setTextViewText(R.id.text, randomMovieOrTvSeries.getMovieOverview());
+
+
+
+            notificationBuilder
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(android.R.drawable.arrow_up_float)
+                    .setCustomContentView(contentView)
+                    .setCustomBigContentView(expandedView)
+                    .setAutoCancel(true);
         }
 
-        notificationBuilder
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(android.R.drawable.arrow_up_float)
-                .setContent(contentView)
-                .setAutoCancel(true);
 
         repeatedNotification = notificationBuilder.build();
 
         if(contentView!=null) {
+            Log.d(TAG, "buildNotification: Content View is not null");
             Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
                     .into(contentView, R.id.image, NotificationHelper.NOTIFICATION_ID, repeatedNotification);
+
+            Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
+                    .into(expandedView, R.id.iv_notification, NotificationHelper.NOTIFICATION_ID, repeatedNotification);
         }
 
         return repeatedNotification;
@@ -95,6 +103,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         Realm realm = Realm.getDefaultInstance();
 
         RealmResults<Movie> movieRealmResults = realm.where(Movie.class).equalTo("isNotified", false).findAll();
+
         Log.d(TAG, "fetchRandomMovieOrTvSeries: Size of movies with isNotified false " + movieRealmResults.size());
 
         if (movieRealmResults.size() != 0) {
@@ -102,7 +111,15 @@ public class NotificationPublisher extends BroadcastReceiver {
             Random r = new Random();
             int randomNumber = r.nextInt(movieRealmResults.size());
 
-            return movieRealmResults.get(randomNumber);
+            //TODO: Update the RealmObject to isNotified = true
+            Movie movie = movieRealmResults.get(randomNumber);
+
+            realm.beginTransaction();
+            movieRealmResults.get(randomNumber).setNotified(true);
+            realm.commitTransaction();
+
+
+            return movie;
         } else {
             return null;
         }
