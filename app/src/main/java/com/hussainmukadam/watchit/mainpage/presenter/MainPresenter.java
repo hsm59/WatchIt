@@ -17,6 +17,7 @@ import com.hussainmukadam.watchit.network.ApiInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -45,7 +46,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     }
 
     @Override
-    public void fetchFirstPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
+    public void fetchFirstPageMoviesByGenres(final String genreIdsByMovies, int pageNumber) {
 
 
         Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdsByMovies);
@@ -59,6 +60,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 List<Movie> newMovieList = new ArrayList<>();
                 int totalPages = 0;
+                int nextPg = 0;
 
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
@@ -66,7 +68,13 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
-                        realm = Realm.getDefaultInstance();
+                        //MANOJ'S CHANGES
+                        Random random = new Random();
+                        nextPg = random.nextInt(totalPages) + 1;
+                        Log.d(TAG, " NextPageNo: " + nextPg);
+                        //END
+
+                       /* realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
 
                         List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
@@ -80,7 +88,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
 
                         Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
-                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
+                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());*/
                     } else {
                         mView.showMovieResponseError("Couldn't find any movies");
                         mView.hideProgress();
@@ -90,7 +98,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     mView.hideProgress();
                 }
 
-                mView.displayFirstPageMovies(newMovieList, totalPages);
+                // mView.displayFirstPageMovies(newMovieList, totalPages);
+                fetchNextPageMoviesByGenres(genreIdsByMovies, nextPg);
             }
 
             @Override
@@ -105,7 +114,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     @Override
     public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
 
-        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number "+pageNumber);
+        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number " + pageNumber);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -115,13 +124,17 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 Log.d(TAG, "onResponse: Response Code " + response.code());
+                int totalPages = 0;
+
                 if (response.isSuccessful()) {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
+                        totalPages = response.body().getTotalPages();
+
 
                         realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
-                        Log.d(TAG, "onResponse: Realm Data Stored "+allMoviesResults.size());
+                        Log.d(TAG, "onResponse: Realm Data Stored " + allMoviesResults.size());
                         List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
 
                         List<Movie> newMovieList = response.body().getMoviesList();
@@ -132,7 +145,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             }
                         }
 
-                        mView.displayNextPageMovies(newMovieList);
+                        mView.displayNextPageMovies(newMovieList, totalPages );
                         Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
@@ -189,13 +202,13 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                Log.d(TAG, "onPostExecute: Stored Movie Data "+result);
+                Log.d(TAG, "onPostExecute: Stored Movie Data " + result);
             }
         }.execute();
     }
 
     @Override
-    public void fetchFirstPageTvSeriesByGenres(String genreIdByTv, int pageNumber) {
+    public void fetchFirstPageTvSeriesByGenres(final String genreIdByTv, int pageNumber) {
         Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdByTv);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -206,7 +219,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
                 List<TvSeries> newTvList = new ArrayList<>();
-                int totalPages = 0;
+                int totalPages, nextPg=0;
 
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
@@ -214,6 +227,10 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
+                        Random random = new Random();
+                        nextPg = random.nextInt(totalPages) + 1;
+
+                    /*
                         realm = Realm.getDefaultInstance();
                         RealmResults<TvSeries> allTvResults = realm.where(TvSeries.class).findAll();
 
@@ -229,6 +246,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
                         Log.d(TAG, "onResponse: Existing Movies List " + existingTvList.size());
                         Log.d(TAG, "onResponse: Movies List " + newTvList.size());
+                    */
                     } else {
                         mView.showTvSeriesResponseError("Couldn't find any tv series");
                         mView.hideProgress();
@@ -238,7 +256,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     mView.hideProgress();
                 }
 
-                mView.displayFirstPageTvSeries(newTvList, totalPages);
+                //mView.displayFirstPageTvSeries(newTvList, totalPages);
+                fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
             }
 
             @Override
@@ -252,7 +271,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
     @Override
     public void fetchNextPageTvSeriesByGenres(String genreIdByTv, int pageNumber) {
-        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdByTv + "Page Number "+pageNumber);
+        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdByTv + "Page Number " + pageNumber);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -264,10 +283,11 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     if (response.body().getTvList().size() != 0) {
+                        int totalPages = response.body().getTotalPages();
 
                         realm = Realm.getDefaultInstance();
                         RealmResults<TvSeries> allTvsResults = realm.where(TvSeries.class).findAll();
-                        Log.d(TAG, "onResponse: Realm Data Stored "+allTvsResults.size());
+                        Log.d(TAG, "onResponse: Realm Data Stored " + allTvsResults.size());
                         List<TvSeries> existingTvList = new ArrayList<>(allTvsResults);
 
                         List<TvSeries> newTvList = response.body().getTvList();
@@ -278,7 +298,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             }
                         }
 
-                        mView.displayNextPageTvSeries(newTvList);
+                        mView.displayNextPageTvSeries(newTvList, totalPages);
                         Log.d(TAG, "onResponse: Existing Tv List " + existingTvList.size());
                         Log.d(TAG, "onResponse: Tv List " + newTvList.size());
                     } else {
@@ -332,7 +352,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                Log.d(TAG, "onPostExecute: Stored TV Data "+result);
+                Log.d(TAG, "onPostExecute: Stored TV Data " + result);
             }
         }.execute();
     }

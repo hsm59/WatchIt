@@ -21,11 +21,11 @@ public interface MainMVPContract {
 
         void displayFirstPageMovies(List<Movie> movieList, int totalPages);
 
-        void displayNextPageMovies(List<Movie> movieList);
+        void displayNextPageMovies(List<Movie> movieList, int totalPages);
 
         void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages);
 
-        void displayNextPageTvSeries(List<TvSeries> tvSeriesList);
+        void displayNextPageTvSeries(List<TvSeries> tvSeriesList, int totalPages);
 
         void showMovieResponseError(String errorMessage);
 
