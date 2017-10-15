@@ -28,8 +28,9 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
+
             android:value="" />
-        <receiver android:name=".notification.NotificationPublisher" />
+        <receiver android:name=".preferencepage.NotificationPublisher" />
     </application>
 
 </manifest>
