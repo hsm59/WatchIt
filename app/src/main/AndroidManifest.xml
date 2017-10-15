@@ -28,7 +28,8 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="cad2e1b22dcd58a17cd2c8ee4f2d7dcc10f48a85" />
+
+            android:value="" />
         <receiver android:name=".preferencepage.NotificationPublisher" />
     </application>
 

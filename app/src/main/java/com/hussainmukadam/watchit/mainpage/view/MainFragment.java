@@ -431,12 +431,22 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
+
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+//        if(Util.isConnected(getContext())) {
+//            currentPage = PAGE_START;
+//            mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+//        } else {
+//            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override
     public void showTvSeriesResponseError(String errorMessage) {
         Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
         if (Util.isConnected(getContext())) {
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        if(Util.isConnected(getContext())) {
             currentPage = PAGE_START;
             mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
         } else {

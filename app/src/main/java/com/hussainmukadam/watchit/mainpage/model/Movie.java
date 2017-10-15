@@ -31,6 +31,15 @@ public class Movie extends RealmObject {
     private float moviePopularity;
 
     private boolean isWatchLater;
+    private boolean isNotified;
+
+    public boolean isNotified() {
+        return isNotified;
+    }
+
+    public void setNotified(boolean notified) {
+        isNotified = notified;
+    }
 
     public int getMovieId() {
         return movieId;
@@ -89,6 +98,7 @@ public class Movie extends RealmObject {
                 ", backdropPath='" + backdropPath + '\'' +
                 ", moviePopularity=" + moviePopularity +
                 ", isWatchLater=" + isWatchLater +
+                ", isNotified=" + isNotified +
                 '}';
     }
 }

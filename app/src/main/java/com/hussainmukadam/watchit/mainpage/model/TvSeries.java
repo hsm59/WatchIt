@@ -31,6 +31,15 @@ public class TvSeries extends RealmObject {
     @SerializedName("backdrop_path")
     private String tvBackdropPath;
     private boolean isWatchLater;
+    private boolean isNotified;
+
+    public boolean isNotified() {
+        return isNotified;
+    }
+
+    public void setNotified(boolean notified) {
+        isNotified = notified;
+    }
 
     public void setWatchLater(boolean watchLater) {
         isWatchLater = watchLater;
@@ -89,6 +98,7 @@ public class TvSeries extends RealmObject {
                 ", tvPopularity=" + tvPopularity +
                 ", tvBackdropPath='" + tvBackdropPath + '\'' +
                 ", isWatchLater=" + isWatchLater +
+                ", isNotified=" + isNotified +
                 '}';
     }
 }
