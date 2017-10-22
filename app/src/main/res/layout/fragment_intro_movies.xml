@@ -15,7 +15,7 @@
         android:textColor="@android:color/white"
         android:layout_gravity="top|start"
         android:layout_margin="32dp"
-        android:textSize="32sp"/>
+        android:textSize="70sp"/>
 
 
         <ProgressBar

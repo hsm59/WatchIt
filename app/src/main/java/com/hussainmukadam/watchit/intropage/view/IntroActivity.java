@@ -143,6 +143,8 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
                 Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
                 startActivity(startMainActivity);
                 finish();
+            } else {
+                Toast.makeText(this, "Please select 3 genres in each category, for better suggestions!", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, "Please select 3 genres in each category, for better suggestions!", Toast.LENGTH_SHORT).show();
