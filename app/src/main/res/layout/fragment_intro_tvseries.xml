@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/intro_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/intro_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/title"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:layout_gravity="top|start"
+            android:layout_margin="32dp"
+            android:textSize="32sp"/>
+
+        <ProgressBar
+            android:id="@+id/intro_tv_progress_bar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_genre_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/intro_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="and lastly, do the same for TV Series!"
+            android:textStyle="italic"
+            android:gravity="center|top"
+            android:textColor="@android:color/white"
+            android:layout_margin="32dp"
+            android:textSize="16sp"/>
+
+</LinearLayout>
