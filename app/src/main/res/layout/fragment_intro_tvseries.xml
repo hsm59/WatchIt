@@ -17,7 +17,7 @@
             android:textColor="@android:color/white"
             android:layout_gravity="top|start"
             android:layout_margin="32dp"
-            android:textSize="70sp"/>
+            android:textSize="40sp"/>
 
         <ProgressBar
             android:id="@+id/intro_tv_progress_bar"
