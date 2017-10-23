@@ -1,9 +1,13 @@
 package com.hussainmukadam.watchit.mainpage.view;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.transition.Fade;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,10 +15,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
+import com.hussainmukadam.watchit.detailpage.view.DetailsTransition;
 import com.hussainmukadam.watchit.intropage.model.Genre;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
 import com.hussainmukadam.watchit.mainpage.adapter.MovieAdapter;
@@ -270,7 +277,29 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Log.d(TAG, "onItemClicked: Item clicked");
+                View view = swipeFlingAdapterView.getSelectedView();
+                ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
+
+                ViewCompat.setTransitionName(ivPoster, "moviePoster");
+
+                Log.d(TAG, "onItemClicked: Item clicked "+ivPoster);
+                if(dataObject instanceof Movie){
+                    DetailsFragment detailsFragment = new DetailsFragment();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        detailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+                        detailsFragment.setEnterTransition(new android.transition.Fade());
+                        setExitTransition(new android.transition.Fade());
+                        detailsFragment.setSharedElementReturnTransition(new DetailsTransition());
+                    }
+
+                    Log.d(TAG, "onItemClicked: The dataObject is Movie "+((Movie) dataObject).getBackdropPath());
+                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.addSharedElement(ivPoster, "moviePoster");
+                    ft.replace(R.id.container, detailsFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
             }
         });
     }
@@ -367,6 +396,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Log.d(TAG, "onItemClicked: Item clicked");
+
+
             }
         });
     }

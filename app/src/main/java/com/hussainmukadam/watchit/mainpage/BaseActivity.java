@@ -87,7 +87,6 @@ public class BaseActivity extends AppCompatActivity {
                                 //TODO: Watch Later Fragment
                                 break;
                             case 5:
-                                //TODO: Settings Activity
                                 switchFragment(new SettingsFragment(), null);
                                 break;
                             case 6:
