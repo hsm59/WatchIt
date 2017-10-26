@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
+import com.hussainmukadam.watchit.mainpage.model.Movie;
+import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
 import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -33,6 +36,8 @@ public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     @BindView(R.id.main_toolbar)
     Toolbar mainToolbar;
+    Bundle savedData = new Bundle();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +54,7 @@ public class BaseActivity extends AppCompatActivity {
         switchFragment(new MainFragment(), bundle);
     }
 
-    private void setupDrawer(){
+    private void setupDrawer() {
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(mainToolbar)
@@ -69,8 +74,8 @@ public class BaseActivity extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        Log.d(TAG, "onItemClick: Position "+position);
-                        switch(position) {
+                        Log.d(TAG, "onItemClick: Position " + position);
+                        switch (position) {
                             case 1:
                                 //Movies Fragment
                                 Bundle bundleMovies = new Bundle();
@@ -99,8 +104,8 @@ public class BaseActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void switchFragment(Fragment mFragment, Bundle bundle){
-        if(bundle!=null) {
+    private void switchFragment(Fragment mFragment, Bundle bundle) {
+        if (bundle != null) {
             mFragment.setArguments(bundle);
         }
 
@@ -109,4 +114,13 @@ public class BaseActivity extends AppCompatActivity {
                 .replace(R.id.container, mFragment)
                 .commit();
     }
+
+    public void saveData(Bundle bundle) {
+        savedData = bundle;
+    }
+
+    public Bundle getData() {
+        return savedData;
+    }
+
 }

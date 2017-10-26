@@ -1,5 +1,8 @@
 package com.hussainmukadam.watchit.mainpage.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -9,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by hussain on 8/19/17.
  */
 
-public class TvSeries extends RealmObject {
+public class TvSeries extends RealmObject implements Parcelable{
 
     @PrimaryKey
     @SerializedName("id")
@@ -32,6 +35,13 @@ public class TvSeries extends RealmObject {
     private String tvBackdropPath;
     private boolean isWatchLater;
     private boolean isNotified;
+
+    public TvSeries(){}
+
+    public TvSeries(Parcel parcel) {
+        super();
+        readFromParcel(parcel);
+    }
 
     public boolean isNotified() {
         return isNotified;
@@ -101,4 +111,50 @@ public class TvSeries extends RealmObject {
                 ", isNotified=" + isNotified +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(tvId);
+        dest.writeString(tvTitle);
+        dest.writeString(tvPosterPath);
+        dest.writeString(tvReleaseDate);
+        dest.writeString(tvOverview);
+        dest.writeFloat(tvVoteAverage);
+        dest.writeFloat(tvPopularity);
+        dest.writeInt(tvVoteCount);
+        dest.writeString(tvBackdropPath);
+        dest.writeByte((byte) (isWatchLater? 0: 1));
+        dest.writeByte((byte)(isNotified? 0: 1));
+    }
+
+    private void readFromParcel(Parcel parcel) {
+        tvId = parcel.readInt();
+        tvTitle = parcel.readString();
+        tvPosterPath = parcel.readString();
+        tvReleaseDate = parcel.readString();
+        tvOverview = parcel.readString();
+        tvVoteAverage = parcel.readFloat();
+        tvVoteCount = parcel.readInt();
+        tvPopularity = parcel.readFloat();
+        tvBackdropPath = parcel.readString();
+        isWatchLater = parcel.readByte()!=0;
+        isNotified = parcel.readByte()!=0;
+    }
+
+    public static final Parcelable.Creator<TvSeries> CREATOR = new Creator<TvSeries>() {
+        @Override
+        public TvSeries createFromParcel(Parcel source) {
+            return new TvSeries(source);
+        }
+
+        @Override
+        public TvSeries[] newArray(int size) {
+            return new TvSeries[0];
+        }
+    };
 }
