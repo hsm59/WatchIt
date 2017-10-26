@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
@@ -32,20 +33,15 @@ import butterknife.ButterKnife;
  * Created by hussain on 7/21/17.
  */
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements MainFragment.OnMenuBarClicked{
     private static final String TAG = "BaseActivity";
-    @BindView(R.id.main_toolbar)
-    Toolbar mainToolbar;
     Bundle savedData = new Bundle();
-
+    Drawer drawer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-        setSupportActionBar(mainToolbar);
         setupDrawer();
 
         Bundle bundle = new Bundle();
@@ -55,9 +51,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void setupDrawer() {
-        Drawer result = new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
-                .withToolbar(mainToolbar)
+                .withTranslucentStatusBar(true)
                 .addDrawerItems(
                         new SectionDrawerItem().withName("Explore").withDivider(false),
                         new PrimaryDrawerItem().withName("Movies")
@@ -105,14 +101,22 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void switchFragment(Fragment mFragment, Bundle bundle) {
+        FragmentManager manager = getSupportFragmentManager();
+
         if (bundle != null) {
             mFragment.setArguments(bundle);
+            manager.beginTransaction()
+                    .replace(R.id.container, mFragment)
+                    .commit();
+        } else {
+            manager.beginTransaction()
+                    .replace(R.id.container, mFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
 
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.container, mFragment)
-                .commit();
+
+
     }
 
     public void saveData(Bundle bundle) {
@@ -123,4 +127,8 @@ public class BaseActivity extends AppCompatActivity {
         return savedData;
     }
 
+    @Override
+    public void menuBarClicked() {
+        drawer.openDrawer();
+    }
 }

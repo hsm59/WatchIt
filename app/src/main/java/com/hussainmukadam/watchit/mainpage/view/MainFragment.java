@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.transition.Fade;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -41,26 +42,30 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by hussain on 7/23/17.
  */
 
-public class MainFragment extends Fragment implements MainMVPContract.View, View.OnClickListener {
+public class MainFragment extends Fragment implements MainMVPContract.View {
     private static final String TAG = "MainFragment";
     private static final int PAGE_START = 1;
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
     @BindView(R.id.animated_progress_bar)
     LottieAnimationView progressBar;
-    @BindView(R.id.ib_favorite)
-    ImageButton imageButtonFavorite;
-    @BindView(R.id.ib_cancel)
-    ImageButton imageButtonCancel;
+    @BindView(R.id.fab_favorite)
+    FloatingActionButton imageButtonFavorite;
+    @BindView(R.id.fab_cancel)
+    FloatingActionButton imageButtonCancel;
+    @BindView(R.id.menu_bar)
+    ImageView ivMenuBar;
 
     private MovieAdapter movieAdapter;
     private TvSeriesAdapter tvSeriesAdapter;
     private MainMVPContract.Presenter presenter;
+    private OnMenuBarClicked onMenuBarClicked;
     private MainPresenter mainPresenter;
     private CustomSharedPreference prefs;
     private String genresList;
@@ -68,6 +73,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private int TOTAL_PAGES;
     private int currentPage = PAGE_START;
     //private Boolean isFirstFetch;
+
+    public interface OnMenuBarClicked{
+        void menuBarClicked();
+    }
 
 
     @Nullable
@@ -81,9 +90,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
-
-        imageButtonFavorite.setOnClickListener(this);
-        imageButtonCancel.setOnClickListener(this);
 
         imageButtonFavorite.setEnabled(false);
         imageButtonCancel.setEnabled(false);
@@ -102,6 +108,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
 
         return view;
+    }
+
+    @OnClick(R.id.menu_bar)
+    public void menuBarClicked(){
+        onMenuBarClicked = (OnMenuBarClicked) getContext();
+        onMenuBarClicked.menuBarClicked();
     }
 
 
@@ -158,31 +170,29 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ib_favorite:
-                if (isMovies) {
-                    if (!movieAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectRight();
-                    }
-                } else {
-                    if (!tvSeriesAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectRight();
-                    }
-                }
-                break;
-            case R.id.ib_cancel:
-                if (isMovies) {
-                    if (!movieAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectLeft();
-                    }
-                } else {
-                    if (!tvSeriesAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectLeft();
-                    }
-                }
-                break;
+    @OnClick(R.id.fab_favorite)
+    public void itemFavorited(){
+        if (isMovies) {
+            if (!movieAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectRight();
+            }
+        } else {
+            if (!tvSeriesAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectRight();
+            }
+        }
+    }
+
+    @OnClick(R.id.fab_cancel)
+    public void itemCancelled(){
+        if (isMovies) {
+            if (!movieAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+            }
+        } else {
+            if (!tvSeriesAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+            }
         }
     }
 
