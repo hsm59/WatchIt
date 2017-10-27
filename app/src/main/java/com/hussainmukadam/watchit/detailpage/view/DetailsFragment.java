@@ -2,6 +2,7 @@ package com.hussainmukadam.watchit.detailpage.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,8 @@ public class DetailsFragment extends Fragment {
 
     @BindView(R.id.iv_poster)
     ImageView ivDetailsPoster;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Nullable
     @Override
@@ -52,6 +55,7 @@ public class DetailsFragment extends Fragment {
         if(dataObject instanceof  Movie) {
             Movie movie = (Movie) dataObject;
 
+            collapsingToolbarLayout.setTitle(movie.getMovieTitle());
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + movie.getPosterPath())
                     .error(R.drawable.ic_broken_image_black_24dp)
@@ -59,6 +63,7 @@ public class DetailsFragment extends Fragment {
         } else {
             TvSeries tvSeries = (TvSeries) dataObject;
 
+            collapsingToolbarLayout.setTitle(tvSeries.getTvTitle());
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + tvSeries.getTvPosterPath())
                     .error(R.drawable.ic_broken_image_black_24dp)

@@ -14,10 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -61,6 +64,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     FloatingActionButton imageButtonCancel;
     @BindView(R.id.menu_bar)
     ImageView ivMenuBar;
+    @BindView(R.id.three_dots)
+    ImageView ivMenuPopup;
 
     private MovieAdapter movieAdapter;
     private TvSeriesAdapter tvSeriesAdapter;
@@ -74,7 +79,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     private int currentPage = PAGE_START;
     //private Boolean isFirstFetch;
 
-    public interface OnMenuBarClicked{
+    public interface OnMenuBarClicked {
         void menuBarClicked();
     }
 
@@ -111,7 +116,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     }
 
     @OnClick(R.id.menu_bar)
-    public void menuBarClicked(){
+    public void menuBarClicked() {
         onMenuBarClicked = (OnMenuBarClicked) getContext();
         onMenuBarClicked.menuBarClicked();
     }
@@ -171,7 +176,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     }
 
     @OnClick(R.id.fab_favorite)
-    public void itemFavorited(){
+    public void itemFavorited() {
         if (isMovies) {
             if (!movieAdapter.isEmpty()) {
                 swipeFlingAdapterView.getTopCardListener().selectRight();
@@ -184,7 +189,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     }
 
     @OnClick(R.id.fab_cancel)
-    public void itemCancelled(){
+    public void itemCancelled() {
         if (isMovies) {
             if (!movieAdapter.isEmpty()) {
                 swipeFlingAdapterView.getTopCardListener().selectLeft();
@@ -194,6 +199,33 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 swipeFlingAdapterView.getTopCardListener().selectLeft();
             }
         }
+    }
+
+    @OnClick(R.id.three_dots)
+    public void popupMenu() {
+        PopupMenu popupMenu = new PopupMenu(getContext(), ivMenuPopup);
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                //TODO: fix this!
+                if (Util.isConnected(getContext())) {
+                    if (isMovies) {
+                        currentPage = PAGE_START;
+                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                    } else {
+                        currentPage = PAGE_START;
+                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
+        popupMenu.show();
     }
 
 
@@ -294,8 +326,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
                 View view = swipeFlingAdapterView.getSelectedView();
                 ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
+                TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
 
                 ViewCompat.setTransitionName(ivPoster, "posterImage");
+                ViewCompat.setTransitionName(tvTitle, "titleName");
 
                 Log.d(TAG, "onItemClicked: Item clicked " + ivPoster);
                 if (dataObject instanceof Movie) {
@@ -317,8 +351,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     baseActivity.saveData(bundle);
 
                     final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    //TODO: Change the moviePoster name to a more generic term
                     ft.addSharedElement(ivPoster, "posterImage");
+                    ft.addSharedElement(tvTitle, "titleName");
                     ft.replace(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();

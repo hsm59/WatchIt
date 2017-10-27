@@ -47,7 +47,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
         Bundle bundle = new Bundle();
         bundle.putBoolean("IS_MOVIES", true);
 
-        switchFragment(new MainFragment(), bundle);
+        switchFragment(new MainFragment(), bundle, "MOVIES_FRAG");
     }
 
     private void setupDrawer() {
@@ -76,19 +76,19 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                                 //Movies Fragment
                                 Bundle bundleMovies = new Bundle();
                                 bundleMovies.putBoolean("IS_MOVIES", true);
-                                switchFragment(new MainFragment(), bundleMovies);
+                                switchFragment(new MainFragment(), bundleMovies, "MOVIES_FRAG");
                                 break;
                             case 2:
                                 //TV Fragment
                                 Bundle bundleTv = new Bundle();
                                 bundleTv.putBoolean("IS_MOVIES", false);
-                                switchFragment(new MainFragment(), bundleTv);
+                                switchFragment(new MainFragment(), bundleTv, "TV_FRAG");
                                 break;
                             case 3:
                                 //TODO: Watch Later Fragment
                                 break;
                             case 5:
-                                switchFragment(new SettingsFragment(), null);
+                                switchFragment(new SettingsFragment(), null, "SETTINGS_FRAG");
                                 break;
                             case 6:
                                 //TODO: Open Source Acknowledgement Fragment
@@ -100,17 +100,17 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                 .build();
     }
 
-    private void switchFragment(Fragment mFragment, Bundle bundle) {
+    private void switchFragment(Fragment mFragment, Bundle bundle, String tag) {
         FragmentManager manager = getSupportFragmentManager();
 
         if (bundle != null) {
             mFragment.setArguments(bundle);
             manager.beginTransaction()
-                    .replace(R.id.container, mFragment)
+                    .replace(R.id.container, mFragment, tag)
                     .commit();
         } else {
             manager.beginTransaction()
-                    .replace(R.id.container, mFragment)
+                    .replace(R.id.container, mFragment, tag)
                     .addToBackStack(null)
                     .commit();
         }
