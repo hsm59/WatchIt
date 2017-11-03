@@ -35,6 +35,7 @@ import com.hussainmukadam.watchit.mainpage.adapter.TvSeriesAdapter;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
+import com.hussainmukadam.watchit.pages.DetailDevFragment;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.hussainmukadam.watchit.util.Util;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -209,18 +210,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                //TODO: fix this!
-                if (Util.isConnected(getContext())) {
-                    if (isMovies) {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-                    } else {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
-                    }
-                } else {
-                    Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                }
+                mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), PAGE_START);
                 return true;
             }
         });
@@ -324,7 +314,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
 
-                View view = swipeFlingAdapterView.getSelectedView();
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, new DetailDevFragment());
+                ft.addToBackStack(null);
+                ft.commit();
+
+                //TODO: Until completed the detail page
+/*                View view = swipeFlingAdapterView.getSelectedView();
                 ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
                 TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
 
@@ -356,7 +352,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     ft.replace(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();
-                }
+                }*/
             }
         });
     }
@@ -454,7 +450,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Log.d(TAG, "onItemClicked: Item clicked");
 
-                View view = swipeFlingAdapterView.getSelectedView();
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.container, new DetailDevFragment());
+                ft.addToBackStack(null);
+                ft.commit();
+
+                //TODO: Until detail fragment is completed
+/*                View view = swipeFlingAdapterView.getSelectedView();
                 ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
 
                 ViewCompat.setTransitionName(ivPoster, "posterImage");
@@ -484,21 +486,9 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     ft.replace(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();
-                }
+                }*/
             }
         });
-    }
-
-    /*private int getPage(int totalPage) {
-        Random random = new Random();
-        int n = random.nextInt(totalPage) + 1;
-        Log.d(TAG, " NextPageNo: " + n);
-        return n;
-    }
-*/
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

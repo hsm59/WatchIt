@@ -80,4 +80,5 @@
     <string name="title">Title</string>
     <string name="intro_button">Button</string>
     <string name="intro_done">DONE</string>
+    <string name="page_under_development">Page Under Development..</string>
 </resources>

@@ -39,21 +39,22 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         debug {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', 'apiKey', '""'
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w342/"'
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
             buildConfigField 'String', 'apiKey', '""'

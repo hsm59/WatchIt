@@ -37,6 +37,7 @@ public class NotificationHelper {
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
         //TODO: Set it to only go off on Saturday nights
+        calendar.set(Calendar.DAY_OF_WEEK, 5);
         calendar.set(Calendar.HOUR_OF_DAY, 19);
         calendar.set(Calendar.MINUTE, 51);
 

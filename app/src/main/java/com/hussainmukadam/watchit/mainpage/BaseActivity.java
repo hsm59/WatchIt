@@ -16,6 +16,8 @@ import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
+import com.hussainmukadam.watchit.pages.OpenSourceFragment;
+import com.hussainmukadam.watchit.pages.WatchLaterFragment;
 import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -73,25 +75,23 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                         Log.d(TAG, "onItemClick: Position " + position);
                         switch (position) {
                             case 1:
-                                //Movies Fragment
                                 Bundle bundleMovies = new Bundle();
                                 bundleMovies.putBoolean("IS_MOVIES", true);
                                 switchFragment(new MainFragment(), bundleMovies, "MOVIES_FRAG");
                                 break;
                             case 2:
-                                //TV Fragment
                                 Bundle bundleTv = new Bundle();
                                 bundleTv.putBoolean("IS_MOVIES", false);
                                 switchFragment(new MainFragment(), bundleTv, "TV_FRAG");
                                 break;
                             case 3:
-                                //TODO: Watch Later Fragment
+                                switchFragment(new WatchLaterFragment(), null, "WATCH_LATER_FRAG");
                                 break;
                             case 5:
                                 switchFragment(new SettingsFragment(), null, "SETTINGS_FRAG");
                                 break;
                             case 6:
-                                //TODO: Open Source Acknowledgement Fragment
+                                switchFragment(new OpenSourceFragment(), null, "OPEN_SOURCE_FRAG");
                                 break;
                         }
                         return false;
