@@ -481,7 +481,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     baseActivity.saveData(bundle);
 
                     final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    //TODO: Change the moviePoster name to a more generic term
                     ft.addSharedElement(ivPoster, "posterImage");
                     ft.replace(R.id.container, detailsFragment);
                     ft.addToBackStack(null);

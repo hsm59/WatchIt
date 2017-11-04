@@ -29,6 +29,7 @@ public class NotificationHelper {
 
     /**
      * This is the real time /wall clock time
+     *
      * @param context
      */
     public static void scheduleRepeatingRTCNotification(Context context) {
@@ -37,9 +38,9 @@ public class NotificationHelper {
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
         //TODO: Set it to only go off on Saturday nights
-        calendar.set(Calendar.DAY_OF_WEEK, 5);
-        calendar.set(Calendar.HOUR_OF_DAY, 19);
-        calendar.set(Calendar.MINUTE, 51);
+        calendar.set(Calendar.DAY_OF_WEEK, 6);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 30);
 
         //Setting intent to class where Alarm broadcast message will be handled
         Intent intent = new Intent(context, NotificationPublisher.class);
@@ -47,7 +48,7 @@ public class NotificationHelper {
         alarmIntentRTC = PendingIntent.getBroadcast(context, ALARM_TYPE_RTC, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //getting instance of AlarmManager service
-        alarmManagerRTC = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        alarmManagerRTC = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
         //Setting alarm to wake up device every day for clock time.
         //AlarmManager.RTC_WAKEUP is responsible to wake up device for sure, which may not be good practice all the time.
@@ -58,7 +59,7 @@ public class NotificationHelper {
     }
 
     private static void setSingleExactAlarm(long time, PendingIntent pIntent) {
-        Log.d(TAG, "setSingleExactAlarm: Alarm time "+time);
+        Log.d(TAG, "setSingleExactAlarm: Alarm time " + time);
         if (android.os.Build.VERSION.SDK_INT >= 19) {
             alarmManagerRTC.setExact(AlarmManager.RTC_WAKEUP, time, pIntent);
         } else {
@@ -71,7 +72,7 @@ public class NotificationHelper {
     }
 
     public static void cancelAlarmRTC() {
-        if (alarmManagerRTC!= null) {
+        if (alarmManagerRTC != null) {
             alarmManagerRTC.cancel(alarmIntentRTC);
         }
     }
