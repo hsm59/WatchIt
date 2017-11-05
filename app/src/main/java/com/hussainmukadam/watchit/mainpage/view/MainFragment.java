@@ -210,7 +210,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), PAGE_START);
+                if (isMovies) {
+                    movieAdapter.clear();
+                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), PAGE_START);
+                } else {
+                    tvSeriesAdapter.clear();
+                    mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), PAGE_START);
+                }
                 return true;
             }
         });
@@ -507,26 +513,34 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
-        setupSwipeFlingAdapterViewForMovies(movieList);
-        this.TOTAL_PAGES = totalPages;
+        if(getContext()!=null) {
+            setupSwipeFlingAdapterViewForMovies(movieList);
+            this.TOTAL_PAGES = totalPages;
+        }
     }
 
     @Override
     public void displayNextPageMovies(List<Movie> movieList, int totalPages) {
-        setupSwipeFlingAdapterViewForMovies(movieList);
-        this.TOTAL_PAGES = totalPages;
+        if(getContext()!=null) {
+            setupSwipeFlingAdapterViewForMovies(movieList);
+            this.TOTAL_PAGES = totalPages;
+        }
     }
 
     @Override
     public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        setupSwipeFlingAdapterViewForTv(tvSeriesList);
-        this.TOTAL_PAGES = totalPages;
+        if(getContext()!=null) {
+            setupSwipeFlingAdapterViewForTv(tvSeriesList);
+            this.TOTAL_PAGES = totalPages;
+        }
     }
 
     @Override
     public void displayNextPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        setupSwipeFlingAdapterViewForTv(tvSeriesList);
-        this.TOTAL_PAGES = totalPages;
+        if(getContext()!=null) {
+            setupSwipeFlingAdapterViewForTv(tvSeriesList);
+            this.TOTAL_PAGES = totalPages;
+        }
     }
 
     @Override
