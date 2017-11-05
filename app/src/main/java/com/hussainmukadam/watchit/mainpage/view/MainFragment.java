@@ -269,8 +269,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 // Ask for more data here
                 Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-
-                //MANOJ'S CHANGES
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
@@ -279,38 +277,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
                 }
-                //END
-
-
-
-                /*if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = getPage(TOTAL_PAGES);
-                        isFirstFetch = false;
-                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (itemsInAdapter == 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
             }
 
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-//                View view = swipeFlingAdapterView.getSelectedView();
-//                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                View view = swipeFlingAdapterView.getSelectedView();
+                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
 
@@ -407,7 +381,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 // Ask for more data here
                 Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                //MANOJ'S CHANGES
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
@@ -416,36 +389,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
                 }
-                //END
-
-                /*if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = getPage(TOTAL_PAGES);
-                        isFirstFetch = false;
-                        mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (itemsInAdapter == 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
             }
 
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-//                View view = swipeFlingAdapterView.getSelectedView();
-//                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                View view = swipeFlingAdapterView.getSelectedView();
+                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
 
@@ -513,7 +464,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
-        if(getContext()!=null) {
+        if (getContext() != null) {
             setupSwipeFlingAdapterViewForMovies(movieList);
             this.TOTAL_PAGES = totalPages;
         }
@@ -521,7 +472,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void displayNextPageMovies(List<Movie> movieList, int totalPages) {
-        if(getContext()!=null) {
+        if (getContext() != null) {
             setupSwipeFlingAdapterViewForMovies(movieList);
             this.TOTAL_PAGES = totalPages;
         }
@@ -529,7 +480,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        if(getContext()!=null) {
+        if (getContext() != null) {
             setupSwipeFlingAdapterViewForTv(tvSeriesList);
             this.TOTAL_PAGES = totalPages;
         }
@@ -537,7 +488,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void displayNextPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        if(getContext()!=null) {
+        if (getContext() != null) {
             setupSwipeFlingAdapterViewForTv(tvSeriesList);
             this.TOTAL_PAGES = totalPages;
         }
@@ -545,7 +496,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void showMovieResponseError(String errorMessage) {
-        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
         if (Util.isConnected(getContext())) {
             currentPage = PAGE_START;
             mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
@@ -554,25 +504,17 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         }
 
         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-//        if(Util.isConnected(getContext())) {
-//            currentPage = PAGE_START;
-//            mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-//        } else {
-//            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     @Override
     public void showTvSeriesResponseError(String errorMessage) {
-        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
         if (Util.isConnected(getContext())) {
-            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-            if (Util.isConnected(getContext())) {
-                currentPage = PAGE_START;
-                mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
-            } else {
-                Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-            }
+            currentPage = PAGE_START;
+            mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+        } else {
+            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
+
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 }
