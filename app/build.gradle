@@ -38,8 +38,8 @@ android {
         applicationId "com.hussainmukadam.watchit"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 3
-        versionName "0.0.1.2"
+        versionCode 4
+        versionName "0.0.1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
