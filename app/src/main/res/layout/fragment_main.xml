@@ -44,7 +44,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginBottom="22dp"
-        android:background="@drawable/ic_menu_black_24dp"/>
+        app:srcCompat="@drawable/ic_menu_black_24dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_cancel"
@@ -79,7 +79,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="22dp"
-        android:background="@drawable/ic_more_vert_black_24dp"/>
+        app:srcCompat="@drawable/ic_more_vert_black_24dp"/>
 
 
 </android.support.constraint.ConstraintLayout>

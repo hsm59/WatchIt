@@ -56,6 +56,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
         drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(true)
+                .withStickyFooter(R.layout.nav_footer)
                 .addDrawerItems(
                         new SectionDrawerItem().withName("Explore").withDivider(false),
                         new PrimaryDrawerItem().withName("Movies")
@@ -67,7 +68,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                         new SectionDrawerItem().withName("About"),
                         new SecondaryDrawerItem().withName("Settings")
                                 .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_settings).sizeDp(24).colorRes(R.color.colorLightGray)),
-                        new SecondaryDrawerItem().withName("Open Source Acknowledgement")
+                        new SecondaryDrawerItem().withName("Open Source Acknowledgements")
                                 .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_github_alt).sizeDp(24).colorRes(R.color.colorLightGray)))
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
