@@ -81,4 +81,18 @@
     <string name="intro_button">Button</string>
     <string name="intro_done">DONE</string>
     <string name="page_under_development">Page Under Development..</string>
+    <string name="app_includes_libraries">This app includes the following open source libraries.</string>
+    <string name="retrofit">Retrofit</string>
+    <string name="os_picasso">Picasso</string>
+    <string name="os_okhttp">OkHttp</string>
+    <string name="license_apache_2_0">License: Apache 2.0</string>
+    <string name="os_materialdrawer">MaterialDrawer</string>
+    <string name="copyright_2016_mike_penz">Copyright 2016 Mike Penz</string>
+    <string name="copyright_2016_airbnb_inc">Copyright 2016 Airbnb, Inc</string>
+    <string name="os_lottie">Lottie</string>
+    <string name="copyright_2014_dionysis_lorentzos">Copyright 2014 Dionysis Lorentzos</string>
+    <string name="os_swipecards">Swipecards</string>
+    <string name="copyright_2013_jake_wharton">Copyright 2013 Jake Wharton</string>
+    <string name="os_butterknife">Butterknife</string>
+    <string name="copyright_2013_square_inc">Copyright 2013 Square, Inc</string>
 </resources>

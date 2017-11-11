@@ -18,13 +18,13 @@ import butterknife.ButterKnife;
  */
 
 public class DetailDevFragment extends Fragment {
-    @BindView(R.id.building_animation_open_source)
+    @BindView(R.id.building_animation_watch_later)
     LottieAnimationView buildingAnimation;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_open_source_ack, container, false);
+        View view = inflater.inflate(R.layout.fragment_watch_later, container, false);
         ButterKnife.bind(this, view);
 
         return view;
