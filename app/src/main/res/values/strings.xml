@@ -95,4 +95,6 @@
     <string name="copyright_2013_jake_wharton">Copyright 2013 Jake Wharton</string>
     <string name="os_butterknife">Butterknife</string>
     <string name="copyright_2013_square_inc">Copyright 2013 Square, Inc</string>
+    <string name="backdrop">Backdrop</string>
+    <string name="poster_image">Poster</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.Fade;
 import android.support.v4.app.Fragment;
@@ -90,6 +91,9 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
         isMovies = getArguments().getBoolean("IS_MOVIES");
         Log.d(TAG, "onCreateView: Boolean " + isMovies);
@@ -294,18 +298,20 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
 
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.container, new DetailDevFragment());
-                ft.addToBackStack(null);
-                ft.commit();
+//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                ft.replace(R.id.container, new DetailDevFragment());
+//                ft.addToBackStack(null);
+//                ft.commit();
 
                 //TODO: Until completed the detail page
-/*                View view = swipeFlingAdapterView.getSelectedView();
+                View view = swipeFlingAdapterView.getSelectedView();
                 ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
                 TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
+                TextView tvReleaseDate = (TextView) view.findViewById(R.id.tv_release);
 
                 ViewCompat.setTransitionName(ivPoster, "posterImage");
                 ViewCompat.setTransitionName(tvTitle, "titleName");
+                ViewCompat.setTransitionName(tvReleaseDate, "releaseDate");
 
                 Log.d(TAG, "onItemClicked: Item clicked " + ivPoster);
                 if (dataObject instanceof Movie) {
@@ -329,10 +335,11 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     final FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.addSharedElement(ivPoster, "posterImage");
                     ft.addSharedElement(tvTitle, "titleName");
+                    ft.addSharedElement(tvReleaseDate, "releaseDate");
                     ft.replace(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();
-                }*/
+                }
             }
         });
     }
@@ -407,13 +414,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Log.d(TAG, "onItemClicked: Item clicked");
 
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.container, new DetailDevFragment());
-                ft.addToBackStack(null);
-                ft.commit();
+//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                ft.replace(R.id.container, new DetailDevFragment());
+//                ft.addToBackStack(null);
+//                ft.commit();
 
                 //TODO: Until detail fragment is completed
-/*                View view = swipeFlingAdapterView.getSelectedView();
+                View view = swipeFlingAdapterView.getSelectedView();
                 ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
 
                 ViewCompat.setTransitionName(ivPoster, "posterImage");
@@ -442,7 +449,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     ft.replace(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();
-                }*/
+                }
             }
         });
     }

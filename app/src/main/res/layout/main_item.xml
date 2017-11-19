@@ -42,6 +42,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
+                android:ellipsize="end"
+                android:maxLines="1"
                 card_view:layout_constraintTop_toBottomOf="@+id/iv_poster"
                 card_view:layout_constraintLeft_toLeftOf="parent"
                 card_view:layout_constraintRight_toRightOf="parent"

@@ -1,37 +1,75 @@
 package com.hussainmukadam.watchit.detailpage.view;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.detailpage.DetailsMVPContract;
+import com.hussainmukadam.watchit.detailpage.adapter.GenreAdapter;
+import com.hussainmukadam.watchit.detailpage.model.MovieDetails;
+import com.hussainmukadam.watchit.detailpage.model.TvSeriesDetails;
+import com.hussainmukadam.watchit.detailpage.presenter.DetailsPresenter;
 import com.hussainmukadam.watchit.mainpage.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
+import com.hussainmukadam.watchit.util.Util;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.util.List;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 /**
  * Created by hussain on 23/10/17.
  */
 
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment implements DetailsMVPContract.DetailsView {
     private static final String TAG = "DetailsFragment";
-    private Object dataObject;
 
     @BindView(R.id.iv_poster)
     ImageView ivDetailsPoster;
+    @BindView(R.id.iv_backdrop)
+    ImageView ivBackdropPoster;
+    @BindView(R.id.tv_release_date)
+    TextView tvReleaseDate;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindViews({R.id.tv_vote_average_details, R.id.tv_overview_details, R.id.tv_tagline, R.id.tv_runtime})
+    List<TextView> textViewsList;
+    @BindView(R.id.rv_genre)
+    RecyclerView rvGenreList;
+
+    private DetailsMVPContract.DetailsBasePresenter detailsBasePresenter;
+    DetailsPresenter detailsPresenter;
+    Movie movie;
+    TvSeries tvSeries;
+    Target backdropTarget;
+    GenreAdapter genreAdapter;
+    boolean isMovie = false;
 
     @Nullable
     @Override
@@ -41,33 +79,171 @@ public class DetailsFragment extends Fragment {
 
         BaseActivity baseActivity = (BaseActivity) getActivity();
         Bundle data = baseActivity.getData();
+        detailsPresenter = new DetailsPresenter(this);
+        setupRecyclerView();
 
+        Object dataObject = data.getParcelable("ITEM");
+        if (dataObject instanceof Movie) {
+            isMovie = true;
+            this.movie = (Movie) dataObject;
+        } else {
+            this.tvSeries = (TvSeries) dataObject;
+        }
 
+        backdropTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Log.d(TAG, "onBitmapLoaded: ");
+                ivBackdropPoster.setImageBitmap(bitmap);
+                createPaletteAsync(bitmap);
+            }
 
-        dataObject = data.getParcelable("ITEM");
-        initViews();
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+                Log.d(TAG, "onBitmapFailed: ");
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                Log.d(TAG, "onPrepareLoad: ");
+            }
+        };
+
+        initTransitionViews();
+
+        if (Util.isConnected(getContext())) {
+            if (isMovie) {
+                detailsPresenter.fetchMovieDetails(movie.getMovieId());
+            } else {
+                detailsPresenter.fetchTvSeriesDetails(tvSeries.getTvId());
+            }
+        } else {
+            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
 
-    private void initViews() {
+    private void initTransitionViews() {
 
-        if(dataObject instanceof  Movie) {
-            Movie movie = (Movie) dataObject;
-
+        if (isMovie) {
             collapsingToolbarLayout.setTitle(movie.getMovieTitle());
+
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + movie.getPosterPath())
                     .error(R.drawable.ic_broken_image_black_24dp)
                     .into(ivDetailsPoster);
-        } else {
-            TvSeries tvSeries = (TvSeries) dataObject;
 
+            Picasso.with(getContext())
+                    .load(BuildConfig.imageBaseUrl + movie.getBackdropPath())
+                    .error(R.drawable.ic_broken_image_black_24dp)
+                    .into(backdropTarget);
+
+            tvReleaseDate.setText(movie.getReleaseDate());
+            textViewsList.get(0).setText(String.valueOf(movie.getMovieVoteAverage()));
+            textViewsList.get(1).setText(movie.getMovieOverview());
+
+        } else {
             collapsingToolbarLayout.setTitle(tvSeries.getTvTitle());
+
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + tvSeries.getTvPosterPath())
                     .error(R.drawable.ic_broken_image_black_24dp)
                     .into(ivDetailsPoster);
+
+            Picasso.with(getContext())
+                    .load(BuildConfig.imageBaseUrl + tvSeries.getTvBackdropPath())
+                    .error(R.drawable.ic_broken_image_black_24dp)
+                    .into(backdropTarget);
+
+            tvReleaseDate.setText(tvSeries.getTvReleaseDate());
+            textViewsList.get(0).setText(String.valueOf(tvSeries.getTvVoteAverage()));
+            textViewsList.get(1).setText(tvSeries.getTvOverview());
         }
+    }
+
+    @Override
+    public void setPresenter(DetailsMVPContract.DetailsBasePresenter presenter) {
+        this.detailsBasePresenter = presenter;
+    }
+
+    @Override
+    public void showProgress(boolean isLoading) {
+        if (isLoading) {
+            Log.d(TAG, "showProgress: Loading Started");
+        } else {
+            Log.d(TAG, "showProgress: Loading Stopped");
+        }
+    }
+
+    @Override
+    public void showError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void displayMovieDetails(MovieDetails movieDetails) {
+        loadFetchedViews(movieDetails, null);
+    }
+
+    @Override
+    public void displayTvDetails(TvSeriesDetails tvSeriesDetails) {
+        loadFetchedViews(null, tvSeriesDetails);
+    }
+
+
+    private void loadFetchedViews(MovieDetails movieDetails, TvSeriesDetails tvSeriesDetails) {
+        if (isMovie) {
+
+            if(!TextUtils.isEmpty(movieDetails.getTagline())) {
+                textViewsList.get(2).setText(movieDetails.getTagline());
+            } else {
+                textViewsList.get(2).setText("No Tagline");
+            }
+            textViewsList.get(3).setText(String.valueOf(movieDetails.getRuntime() + " mins"));
+
+            genreAdapter = new GenreAdapter(movieDetails.getGenres());
+            rvGenreList.setAdapter(genreAdapter);
+            genreAdapter.notifyDataSetChanged();
+        } else {
+
+            if(tvSeriesDetails.getEpisodeRunTime().size()!=0) {
+                textViewsList.get(3).setText(String.valueOf(Double.valueOf((Double) tvSeriesDetails.getEpisodeRunTime().get(0))) + " mins");
+            } else {
+                textViewsList.get(3).setText("-");
+            }
+
+            textViewsList.get(2).setText(tvSeriesDetails.getStatus());
+            genreAdapter = new GenreAdapter(tvSeriesDetails.getGenres());
+            rvGenreList.setAdapter(genreAdapter);
+            genreAdapter.notifyDataSetChanged();
+        }
+    }
+
+    // Generate palette asynchronously and use it on a different
+    // thread using onGenerated()
+    public void createPaletteAsync(Bitmap bitmap) {
+        Log.d(TAG, "createPaletteAsync: ");
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            public void onGenerated(Palette p) {
+                // Use generated instance
+                Palette.Swatch darkVibrantSwatch = p.getDarkVibrantSwatch();
+                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
+
+                if (darkVibrantSwatch != null && vibrantSwatch!=null) {
+                    Window window = getActivity().getWindow();
+
+                    window.setStatusBarColor(darkVibrantSwatch.getRgb());
+                    collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
+                }
+            }
+        });
+    }
+
+    private void setupRecyclerView(){
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
+        layoutManager.setJustifyContent(JustifyContent.FLEX_START);
+        rvGenreList.setLayoutManager(layoutManager);
     }
 }
