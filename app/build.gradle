@@ -64,11 +64,11 @@ android {
 }
 
 ext {
-    supportLibVersion = "26.0.1"
+    supportLibVersion = "26.1.0"
     picassoLibVersion = "2.5.2"
     retrofitLibVersion = "2.3.0"
     loggingLibVersion = "3.6.0"
-    butterknifeLibVer = "8.7.0"
+    butterknifeLibVer = "8.8.1"
     leakCanaryVersion = "1.5.1"
     lottieVersion = "2.1.0"
     swipeCardsVersion = "1.0.9@aar"
@@ -79,12 +79,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:' + supportLibVersion
-    compile 'com.android.support:recyclerview-v7:' + supportLibVersion
-    compile 'com.android.support:cardview-v7:' + supportLibVersion
-    compile 'com.android.support:support-vector-drawable:'+supportLibVersion
-    compile 'com.android.support:preference-v7:' + supportLibVersion
-    compile 'com.android.support:preference-v14:' + supportLibVersion
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:cardview-v7:${supportLibVersion}"
+    compile "com.android.support:support-vector-drawable:${supportLibVersion}"
+    compile "com.android.support:preference-v7:${supportLibVersion}"
+    compile "com.android.support:preference-v14:${supportLibVersion}"
 
     compile 'com.google.android:flexbox:0.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -96,23 +96,23 @@ dependencies {
     }
 
     //Retrofit and OkHttp for Networking
-    compile 'com.squareup.retrofit2:retrofit:' + retrofitLibVersion
-    compile 'com.squareup.retrofit2:converter-gson:' + retrofitLibVersion
+    compile "com.squareup.retrofit2:retrofit:${retrofitLibVersion}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofitLibVersion}"
     //Logging Network Calls
-    compile 'com.squareup.okhttp3:logging-interceptor:' + loggingLibVersion
+    compile "com.squareup.okhttp3:logging-interceptor:${loggingLibVersion}"
 
     //Binding Views
-    compile 'com.jakewharton:butterknife:' + butterknifeLibVer
-    annotationProcessor 'com.jakewharton:butterknife-compiler:' + butterknifeLibVer
+    compile "com.jakewharton:butterknife:${butterknifeLibVer}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterknifeLibVer}"
 
     //Swappable CardViews
-    compile 'com.lorentzos.swipecards:library:' + swipeCardsVersion
+    compile "com.lorentzos.swipecards:library:${swipeCardsVersion}"
 
     //Picasso Image Library
-    compile 'com.squareup.picasso:picasso:' + picassoLibVersion
+    compile "com.squareup.picasso:picasso:${picassoLibVersion}"
 
     //Lottie Animation Library
-    compile 'com.airbnb.android:lottie:' + lottieVersion
+    compile "com.airbnb.android:lottie:${lottieVersion}"
 
     //Material Drawer Library
     compile('com.mikepenz:materialdrawer:5.9.5@aar') {
@@ -124,5 +124,5 @@ dependencies {
     compile 'com.mikepenz:material-design-iconic-typeface:2.2.0.3@aar'
 
     //Palette API
-    compile 'com.android.support:palette-v7:'+ supportLibVersion
+    compile "com.android.support:palette-v7:${supportLibVersion}"
 }
