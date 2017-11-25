@@ -68,11 +68,13 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
-                        //MANOJ'S CHANGES
-                        Random random = new Random();
-                        nextPg = random.nextInt(totalPages) + 1;
-                        Log.d(TAG, " NextPageNo: " + nextPg);
-                        //END
+                        if(totalPages>1) {
+                            Random random = new Random();
+                            nextPg = random.nextInt(totalPages) + 1;
+                            Log.d(TAG, " NextPageNo: " + nextPg);
+                        } else {
+                            mView.showMovieResponseError("Not enough Pages");
+                        }
 
                        /* realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
@@ -145,7 +147,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             }
                         }
 
-                        mView.displayNextPageMovies(newMovieList, totalPages );
+                        mView.displayNextPageMovies(newMovieList, totalPages);
                         Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
@@ -172,8 +174,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
         movie.setWatchLater(isWatchLater);
 
-        if(isWatchLater) {
-            Log.d(TAG, "storeMovieData: Movie has to be Notified "+isWatchLater);
+        if (isWatchLater) {
+            Log.d(TAG, "storeMovieData: Movie has to be Notified " + isWatchLater);
             movie.setNotified(false);
         } else {
             movie.setNotified(true);
@@ -227,7 +229,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
                 List<TvSeries> newTvList = new ArrayList<>();
-                int totalPages, nextPg=0;
+                int totalPages, nextPg = 0;
 
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
@@ -235,8 +237,12 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
-                        Random random = new Random();
-                        nextPg = random.nextInt(totalPages) + 1;
+                        if(totalPages>1) {
+                            Random random = new Random();
+                            nextPg = random.nextInt(totalPages) + 1;
+                        } else {
+                            mView.showTvSeriesResponseError("Not enough Pages");
+                        }
 
                     /*
                         realm = Realm.getDefaultInstance();
@@ -306,7 +312,12 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             }
                         }
 
-                        mView.displayNextPageTvSeries(newTvList, totalPages);
+                        if (newTvList.size() > 1) {
+                            mView.displayNextPageTvSeries(newTvList, totalPages);
+                        } else {
+                            mView.showTvSeriesResponseError("Try Refreshing again");
+                        }
+
                         Log.d(TAG, "onResponse: Existing Tv List " + existingTvList.size());
                         Log.d(TAG, "onResponse: Tv List " + newTvList.size());
                     } else {
@@ -330,7 +341,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
         tvSeries.setWatchLater(isWatchLater);
 
-        if(isWatchLater) {
+        if (isWatchLater) {
             tvSeries.setNotified(false);
         } else {
             tvSeries.setNotified(true);

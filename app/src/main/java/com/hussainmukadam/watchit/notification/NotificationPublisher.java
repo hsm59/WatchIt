@@ -13,10 +13,15 @@ import android.widget.Toast;
 
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.util.WatchItConstants;
 import com.hussainmukadam.watchit.mainpage.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import io.realm.Realm;
@@ -34,28 +39,33 @@ public class NotificationPublisher extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         //Get notification manager to manage/send notifications
 
-        Log.d(TAG, "onReceive: Inside Notification Receiver");
-        //Intent to invoke app when click on notification.
-        //In this sample, we want to start/launch this sample app when user clicks on notification
-        //TODO: Send the user to the detailFragment of the movie shown in the Notification
-        Intent intentToRepeat = new Intent(context, BaseActivity.class);
-        //set flag to restart/relaunch the app
-        intentToRepeat.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if(intent.getAction()!=null) {
+            if (intent.getAction().equals(WatchItConstants.NOTIFICATION_MESSAGE)) {
 
-        //Pending intent to handle launch of Activity in intent above
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(context, NotificationHelper.ALARM_TYPE_RTC, intentToRepeat, PendingIntent.FLAG_UPDATE_CURRENT);
+                Log.d(TAG, "onReceive: Inside Notification Receiver");
+                //Intent to invoke app when click on notification.
+                //In this sample, we want to start/launch this sample app when user clicks on notification
+                //TODO: Send the user to the detailFragment of the movie shown in the Notification
+                Intent intentToRepeat = new Intent(context, BaseActivity.class);
+                //set flag to restart/relaunch the app
+                intentToRepeat.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        //Build notification
+                //Pending intent to handle launch of Activity in intent above
+                PendingIntent pendingIntent =
+                        PendingIntent.getActivity(context, WatchItConstants.ALARM_TYPE_RTC, intentToRepeat, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                //Build notification
 //        Notification repeatedNotification = buildNotification(context, pendingIntent).build();
 
-        Movie randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
+                Movie randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
 
-        //Send local notification
-        if (randomMovieOrTvSeries != null) {
-            NotificationHelper.getNotificationManager(context).notify(NotificationHelper.NOTIFICATION_ID, buildNotification(context, pendingIntent, randomMovieOrTvSeries));
-        } else {
-            Toast.makeText(context, "Suggestions notifications enabled", Toast.LENGTH_SHORT).show();
+                //Send local notification
+                if (randomMovieOrTvSeries != null) {
+                    NotificationHelper.getNotificationManager(context).notify(WatchItConstants.NOTIFICATION_ID, buildNotification(context, pendingIntent, randomMovieOrTvSeries));
+                } else {
+                    Toast.makeText(context, "Suggestions notifications enabled", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -63,6 +73,10 @@ public class NotificationPublisher extends BroadcastReceiver {
         Notification repeatedNotification;
         RemoteViews contentView = null;
         RemoteViews expandedView = null;
+
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS", Locale.US);
+        String dateFormatted = dateFormat.format(date);
 
         NotificationCompat.Builder notificationBuilder;
 
@@ -85,6 +99,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(contentView)
                 .setCustomBigContentView(expandedView)
+                .setTicker(dateFormatted)
                 .setAutoCancel(true);
 
 
@@ -92,10 +107,10 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         Log.d(TAG, "buildNotification: Content View is not null");
         Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
-                .into(contentView, R.id.image, NotificationHelper.NOTIFICATION_ID, repeatedNotification);
+                .into(contentView, R.id.image, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
 
         Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
-                .into(expandedView, R.id.iv_notification, NotificationHelper.NOTIFICATION_ID, repeatedNotification);
+                .into(expandedView, R.id.iv_notification, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
 
         return repeatedNotification;
     }

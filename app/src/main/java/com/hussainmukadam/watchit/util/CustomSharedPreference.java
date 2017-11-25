@@ -113,6 +113,4 @@ public class CustomSharedPreference {
             Log.d(TAG, "setLogin: " + introDisplayed);
         }
     }
-
-
 }

@@ -1,6 +1,5 @@
 package com.hussainmukadam.watchit.notification;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,7 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.hussainmukadam.watchit.notification.NotificationPublisher;
+import com.hussainmukadam.watchit.util.WatchItConstants;
 
 import java.util.Calendar;
 
@@ -22,8 +21,7 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class NotificationHelper {
     private static final String TAG = "NotificationHelper";
-    public static int ALARM_TYPE_RTC = 100;
-    public static int NOTIFICATION_ID = 1;
+
     private static AlarmManager alarmManagerRTC;
     private static PendingIntent alarmIntentRTC;
 
@@ -38,14 +36,16 @@ public class NotificationHelper {
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
         //TODO: Set it to only go off on Saturday nights
-        calendar.set(Calendar.DAY_OF_WEEK, 6);
+        calendar.set(Calendar.DAY_OF_WEEK, 7);
         calendar.set(Calendar.HOUR_OF_DAY, 20);
         calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         //Setting intent to class where Alarm broadcast message will be handled
         Intent intent = new Intent(context, NotificationPublisher.class);
+        intent.setAction(WatchItConstants.NOTIFICATION_MESSAGE);
         //Setting alarm pending intent
-        alarmIntentRTC = PendingIntent.getBroadcast(context, ALARM_TYPE_RTC, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmIntentRTC = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //getting instance of AlarmManager service
         alarmManagerRTC = (AlarmManager) context.getSystemService(ALARM_SERVICE);
@@ -55,16 +55,13 @@ public class NotificationHelper {
         // Use this when you know what you're doing.
         //Use RTC when you don't need to wake up device, but want to deliver the notification whenever device is woke-up
         //We'll be using RTC.WAKEUP for demo purpose only
-        setSingleExactAlarm(calendar.getTimeInMillis(), alarmIntentRTC);
+        long interval = 7 * AlarmManager.INTERVAL_DAY;
+        setRepeatingExactAlarm(calendar.getTimeInMillis(), interval, alarmIntentRTC);
     }
 
-    private static void setSingleExactAlarm(long time, PendingIntent pIntent) {
+    private static void setRepeatingExactAlarm(long time, long interval, PendingIntent pIntent) {
         Log.d(TAG, "setSingleExactAlarm: Alarm time " + time);
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManagerRTC.setExact(AlarmManager.RTC_WAKEUP, time, pIntent);
-        } else {
-            alarmManagerRTC.set(AlarmManager.RTC_WAKEUP, time, pIntent);
-        }
+        alarmManagerRTC.setRepeating(AlarmManager.RTC, time, interval, pIntent);
     }
 
     public static NotificationManager getNotificationManager(Context context) {
@@ -73,6 +70,7 @@ public class NotificationHelper {
 
     public static void cancelAlarmRTC() {
         if (alarmManagerRTC != null) {
+            Log.d(TAG, "cancelAlarmRTC: Alarm Manager Cancelled");
             alarmManagerRTC.cancel(alarmIntentRTC);
         }
     }

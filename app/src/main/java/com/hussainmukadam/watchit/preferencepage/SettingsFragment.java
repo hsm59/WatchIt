@@ -41,7 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
         Log.d(TAG, "onCreatePreferences: Suggestions are "+isSuggestion);
         if(isSuggestion){
             suggestions.setChecked(true);
-            Log.d(TAG, "onCreatePreferences: Is Checked "+isSuggestion);
+            Log.d(TAG, "onCreatePreferences: Is Checked true");
             NotificationHelper.scheduleRepeatingRTCNotification(getContext());
             NotificationHelper.enableBootReceiver(getContext());
             return true;

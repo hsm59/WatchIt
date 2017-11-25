@@ -159,7 +159,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
                 List<Genre> tvList = new ArrayList<>();
                 Random r = new Random();
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 2; i++) {
                     tvList.add(tempList.get(r.nextInt(prefs.getTvGenrePreference().size())));
                 }
 
@@ -509,8 +509,6 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
-
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -521,7 +519,5 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
-
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 }

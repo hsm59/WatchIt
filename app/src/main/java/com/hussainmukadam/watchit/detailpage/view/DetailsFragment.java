@@ -56,6 +56,8 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     ImageView ivBackdropPoster;
     @BindView(R.id.tv_release_date)
     TextView tvReleaseDate;
+    @BindView(R.id.tv_overview_placeholder)
+    TextView tvOverviewPlaceholder;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
     @BindViews({R.id.tv_vote_average_details, R.id.tv_overview_details, R.id.tv_tagline, R.id.tv_runtime})
@@ -141,7 +143,12 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
             tvReleaseDate.setText(movie.getReleaseDate());
             textViewsList.get(0).setText(String.valueOf(movie.getMovieVoteAverage()));
-            textViewsList.get(1).setText(movie.getMovieOverview());
+            if(!TextUtils.isEmpty(movie.getMovieOverview())) {
+                textViewsList.get(1).setText(movie.getMovieOverview());
+            } else {
+                tvOverviewPlaceholder.setVisibility(View.GONE);
+                textViewsList.get(1).setText("No Overview");
+            }
 
         } else {
             collapsingToolbarLayout.setTitle(tvSeries.getTvTitle());
@@ -200,7 +207,12 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
             } else {
                 textViewsList.get(2).setText("No Tagline");
             }
-            textViewsList.get(3).setText(String.valueOf(movieDetails.getRuntime() + " mins"));
+
+            if(!TextUtils.isEmpty(String.valueOf(movieDetails.getRuntime()))) {
+                textViewsList.get(3).setText(String.valueOf(movieDetails.getRuntime() + " mins"));
+            } else {
+                textViewsList.get(3).setText("-");
+            }
 
             genreAdapter = new GenreAdapter(movieDetails.getGenres());
             rvGenreList.setAdapter(genreAdapter);
