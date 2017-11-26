@@ -32,8 +32,8 @@ import butterknife.ButterKnife;
  * Created by hussain on 18/10/17.
  */
 
-public class FragmentIntroMovies extends Fragment implements IntroMVPContract.IntroMoviesView, MoviesGenreAdapter.MoviesListItemClickListener {
-    private static final String TAG = "FragmentIntroMovies";
+public class IntroMoviesFragment extends Fragment implements IntroMVPContract.IntroMoviesView, MoviesGenreAdapter.MoviesListItemClickListener {
+    private static final String TAG = "IntroMoviesFragment";
     private String title;
     private int page;
     private IntroMoviePresenter presenter;
@@ -49,13 +49,13 @@ public class FragmentIntroMovies extends Fragment implements IntroMVPContract.In
     @BindView(R.id.rv_genre_movies)
     RecyclerView rvGenreMovies;
 
-    public static FragmentIntroMovies newInstance(String title, int page){
-        FragmentIntroMovies fragmentIntroMovies = new FragmentIntroMovies();
+    public static IntroMoviesFragment newInstance(String title, int page){
+        IntroMoviesFragment introMoviesFragment = new IntroMoviesFragment();
         Bundle args = new Bundle();
         args.putString("TITLE", title);
         args.putInt("PAGE", page);
-        fragmentIntroMovies.setArguments(args);
-        return fragmentIntroMovies;
+        introMoviesFragment.setArguments(args);
+        return introMoviesFragment;
     }
 
     @Override

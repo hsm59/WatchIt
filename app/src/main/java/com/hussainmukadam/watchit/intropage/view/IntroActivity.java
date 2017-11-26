@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.model.Genre;
-import com.hussainmukadam.watchit.mainpage.BaseActivity;
+import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.notification.NotificationHelper;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
 
@@ -111,9 +111,9 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                    return FragmentIntroMovies.newInstance("MOVIES", 0);
+                    return IntroMoviesFragment.newInstance("MOVIES", 0);
                 case 1:
-                    return FragmentIntroTvSeries.newInstance("TV SERIES", 1);
+                    return IntroTvSeriesFragment.newInstance("TV SERIES", 1);
                 default:
                     return null;
             }

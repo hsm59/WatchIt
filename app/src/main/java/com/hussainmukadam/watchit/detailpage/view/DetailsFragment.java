@@ -19,7 +19,6 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
@@ -30,7 +29,7 @@ import com.hussainmukadam.watchit.detailpage.adapter.GenreAdapter;
 import com.hussainmukadam.watchit.detailpage.model.MovieDetails;
 import com.hussainmukadam.watchit.detailpage.model.TvSeriesDetails;
 import com.hussainmukadam.watchit.detailpage.presenter.DetailsPresenter;
-import com.hussainmukadam.watchit.mainpage.BaseActivity;
+import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.util.Util;
@@ -71,6 +70,7 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     TvSeries tvSeries;
     Target backdropTarget;
     GenreAdapter genreAdapter;
+    BaseActivity baseActivity;
     boolean isMovie = false;
 
     @Nullable
@@ -79,7 +79,7 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
 
-        BaseActivity baseActivity = (BaseActivity) getActivity();
+        baseActivity = (BaseActivity) getActivity();
         Bundle data = baseActivity.getData();
         detailsPresenter = new DetailsPresenter(this);
         setupRecyclerView();
@@ -133,17 +133,17 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + movie.getPosterPath())
-                    .error(R.drawable.ic_broken_image_black_24dp)
+                    .error(baseActivity.getResources().getDrawable(R.drawable.ic_broken_image_black_24dp))
                     .into(ivDetailsPoster);
 
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + movie.getBackdropPath())
-                    .error(R.drawable.ic_broken_image_black_24dp)
+                    .error(baseActivity.getResources().getDrawable(R.drawable.ic_broken_image_black_24dp))
                     .into(backdropTarget);
 
             tvReleaseDate.setText(movie.getReleaseDate());
             textViewsList.get(0).setText(String.valueOf(movie.getMovieVoteAverage()));
-            if(!TextUtils.isEmpty(movie.getMovieOverview())) {
+            if (!TextUtils.isEmpty(movie.getMovieOverview())) {
                 textViewsList.get(1).setText(movie.getMovieOverview());
             } else {
                 tvOverviewPlaceholder.setVisibility(View.GONE);
@@ -155,12 +155,12 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + tvSeries.getTvPosterPath())
-                    .error(R.drawable.ic_broken_image_black_24dp)
+                    .error(baseActivity.getResources().getDrawable(R.drawable.ic_broken_image_black_24dp))
                     .into(ivDetailsPoster);
 
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + tvSeries.getTvBackdropPath())
-                    .error(R.drawable.ic_broken_image_black_24dp)
+                    .error(baseActivity.getResources().getDrawable(R.drawable.ic_broken_image_black_24dp))
                     .into(backdropTarget);
 
             tvReleaseDate.setText(tvSeries.getTvReleaseDate());
@@ -200,15 +200,15 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
 
     private void loadFetchedViews(MovieDetails movieDetails, TvSeriesDetails tvSeriesDetails) {
-        if (isMovie) {
+        if (isMovie && movieDetails != null) {
 
-            if(!TextUtils.isEmpty(movieDetails.getTagline())) {
+            if (!TextUtils.isEmpty(movieDetails.getTagline())) {
                 textViewsList.get(2).setText(movieDetails.getTagline());
             } else {
                 textViewsList.get(2).setText("No Tagline");
             }
 
-            if(!TextUtils.isEmpty(String.valueOf(movieDetails.getRuntime()))) {
+            if (!TextUtils.isEmpty(String.valueOf(movieDetails.getRuntime()))) {
                 textViewsList.get(3).setText(String.valueOf(movieDetails.getRuntime() + " mins"));
             } else {
                 textViewsList.get(3).setText("-");
@@ -217,9 +217,9 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
             genreAdapter = new GenreAdapter(movieDetails.getGenres());
             rvGenreList.setAdapter(genreAdapter);
             genreAdapter.notifyDataSetChanged();
-        } else {
+        } else if (tvSeriesDetails != null) {
 
-            if(tvSeriesDetails.getEpisodeRunTime().size()!=0) {
+            if (tvSeriesDetails.getEpisodeRunTime().size() != 0) {
                 textViewsList.get(3).setText(String.valueOf(Double.valueOf((Double) tvSeriesDetails.getEpisodeRunTime().get(0))) + " mins");
             } else {
                 textViewsList.get(3).setText("-");
@@ -243,17 +243,19 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
                 Palette.Swatch darkVibrantSwatch = p.getDarkVibrantSwatch();
                 Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
 
-                if (darkVibrantSwatch != null && vibrantSwatch!=null) {
-                    Window window = getActivity().getWindow();
+                if (darkVibrantSwatch != null && vibrantSwatch != null) {
+                    Window window = baseActivity.getWindow();
 
-                    window.setStatusBarColor(darkVibrantSwatch.getRgb());
-                    collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        window.setStatusBarColor(darkVibrantSwatch.getRgb());
+                        collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
+                    }
                 }
             }
         });
     }
 
-    private void setupRecyclerView(){
+    private void setupRecyclerView() {
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
         layoutManager.setJustifyContent(JustifyContent.FLEX_START);
         rvGenreList.setLayoutManager(layoutManager);

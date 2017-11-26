@@ -1,4 +1,4 @@
-package com.hussainmukadam.watchit.pages;
+package com.hussainmukadam.watchit.opensourcepage;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.hussainmukadam.watchit.R;
 
 import butterknife.BindView;

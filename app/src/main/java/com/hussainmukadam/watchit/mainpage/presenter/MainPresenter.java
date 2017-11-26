@@ -48,7 +48,6 @@ public class MainPresenter implements MainMVPContract.Presenter {
     @Override
     public void fetchFirstPageMoviesByGenres(final String genreIdsByMovies, int pageNumber) {
 
-
         Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdsByMovies);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -68,7 +67,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
-                        if(totalPages>1) {
+                        if (totalPages > 1) {
                             Random random = new Random();
                             nextPg = random.nextInt(totalPages) + 1;
                             Log.d(TAG, " NextPageNo: " + nextPg);
@@ -115,7 +114,6 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
     @Override
     public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
-
         Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number " + pageNumber);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -182,39 +180,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         }
 
         Log.d(TAG, "storeMovieData: Inside Store Movie Data " + isWatchLater);
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                Realm realm = null;
-                String status;
-
-                try { // I could use try-with-resources here
-                    realm = Realm.getDefaultInstance();
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            realm.insertOrUpdate(movie);
-                        }
-                    });
-
-                    RealmQuery<Movie> realmQuery = realm.where(Movie.class).findAll().where().equalTo("isWatchLater", true);
-                    Log.d(TAG, "execute: First Movie Saved " + realmQuery.count());
-
-                    status = "Movie stored Count " + realmQuery.count();
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
-                }
-                return status;
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-                Log.d(TAG, "onPostExecute: Stored Movie Data " + result);
-            }
-        }.execute();
+        new RealmStoreTask(null, movie, true).execute();
     }
 
     @Override
@@ -228,39 +194,23 @@ public class MainPresenter implements MainMVPContract.Presenter {
         call.enqueue(new Callback<TvResponse>() {
             @Override
             public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
-                List<TvSeries> newTvList = new ArrayList<>();
                 int totalPages, nextPg = 0;
 
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     if (response.body().getTvList().size() != 0) {
-                        mView.hideProgress();
+                        //mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
-                        if(totalPages>1) {
+                        if (totalPages > 0) {
+                            Log.d(TAG, "onResponse: Total Page Nubmers " + totalPages);
                             Random random = new Random();
                             nextPg = random.nextInt(totalPages) + 1;
+                            Log.d(TAG, "onResponse: Next Page " + nextPg);
                         } else {
+                            Log.d(TAG, "onResponse: Total Page is not more than 0");
                             mView.showTvSeriesResponseError("Not enough Pages");
                         }
-
-                    /*
-                        realm = Realm.getDefaultInstance();
-                        RealmResults<TvSeries> allTvResults = realm.where(TvSeries.class).findAll();
-
-                        List<TvSeries> existingTvList = new ArrayList<>(allTvResults);
-                        newTvList = response.body().getTvList();
-
-                        for (TvSeries e : existingTvList) {
-                            if (newTvList.contains(e)) {
-                                newTvList.remove(e);
-                            }
-                        }
-
-
-                        Log.d(TAG, "onResponse: Existing Movies List " + existingTvList.size());
-                        Log.d(TAG, "onResponse: Movies List " + newTvList.size());
-                    */
                     } else {
                         mView.showTvSeriesResponseError("Couldn't find any tv series");
                         mView.hideProgress();
@@ -270,8 +220,11 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     mView.hideProgress();
                 }
 
-                //mView.displayFirstPageTvSeries(newTvList, totalPages);
-                fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
+                if (nextPg != 0) {
+                    fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
+                } else {
+                    Log.d(TAG, "onResponse: The random page number is " + nextPg);
+                }
             }
 
             @Override
@@ -296,6 +249,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
                 Log.d(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
+                    mView.hideProgress();
                     if (response.body().getTvList().size() != 0) {
                         int totalPages = response.body().getTotalPages();
 
@@ -313,18 +267,24 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         }
 
                         if (newTvList.size() > 1) {
+                            Log.d(TAG, "onResponse: When the New TV List size is more than 1");
                             mView.displayNextPageTvSeries(newTvList, totalPages);
                         } else {
+                            Log.d(TAG, "onResponse: When the new TV List size is not more than 1");
                             mView.showTvSeriesResponseError("Try Refreshing again");
                         }
 
                         Log.d(TAG, "onResponse: Existing Tv List " + existingTvList.size());
                         Log.d(TAG, "onResponse: Tv List " + newTvList.size());
                     } else {
+                        Log.d(TAG, "onResponse: When TV List Size is equal to 0");
                         mView.showTvSeriesResponseError("Couldn't find any tv series");
+                        mView.hideProgress();
                     }
                 } else {
+                    Log.d(TAG, "onResponse: When TV List Response is not successful");
                     mView.showTvSeriesResponseError("Some Error Occurred");
+                    mView.hideProgress();
                 }
             }
 
@@ -348,14 +308,42 @@ public class MainPresenter implements MainMVPContract.Presenter {
         }
 
         Log.d(TAG, "storeTvData: Inside Store TvSeries Data " + isWatchLater);
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... params) {
-                Realm realm = null;
-                String status;
+        new RealmStoreTask(tvSeries, null, false).execute();
+    }
 
-                try { // I could use try-with-resources here
-                    realm = Realm.getDefaultInstance();
+    static class RealmStoreTask extends AsyncTask<Void, Void, String> {
+        TvSeries tvSeries;
+        Movie movie;
+        boolean isMovie;
+
+
+        private RealmStoreTask(TvSeries tvSeries, Movie movie, boolean isMovie) {
+            this.tvSeries = tvSeries;
+            this.movie = movie;
+            this.isMovie = isMovie;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            Realm realm = null;
+            String status;
+
+            try { // I could use try-with-resources here
+                realm = Realm.getDefaultInstance();
+
+                if (isMovie) {
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.insertOrUpdate(movie);
+                        }
+                    });
+
+                    RealmQuery<Movie> realmQuery = realm.where(Movie.class).findAll().where().equalTo("isWatchLater", true);
+                    Log.d(TAG, "execute: First Movie Saved " + realmQuery.count());
+
+                    status = "Movie stored Count " + realmQuery.count();
+                } else {
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -367,21 +355,20 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     Log.d(TAG, "execute: First TV Saved " + realmQuery.count());
 
                     status = "TV stored Count " + realmQuery.count();
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
                 }
-                return status;
-            }
 
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-                Log.d(TAG, "onPostExecute: Stored TV Data " + result);
+            } finally {
+                if (realm != null) {
+                    realm.close();
+                }
             }
-        }.execute();
+            return status;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d(TAG, "onPostExecute: Stored TV Data " + s);
+        }
     }
-
-
 }

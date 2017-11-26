@@ -1,24 +1,17 @@
 package com.hussainmukadam.watchit.mainpage.view;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.transition.Fade;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -29,14 +22,13 @@ import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
 import com.hussainmukadam.watchit.detailpage.view.DetailsTransition;
 import com.hussainmukadam.watchit.intropage.model.Genre;
-import com.hussainmukadam.watchit.mainpage.BaseActivity;
+import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
 import com.hussainmukadam.watchit.mainpage.adapter.MovieAdapter;
 import com.hussainmukadam.watchit.mainpage.adapter.TvSeriesAdapter;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.mainpage.presenter.MainPresenter;
-import com.hussainmukadam.watchit.pages.DetailDevFragment;
 import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.hussainmukadam.watchit.util.Util;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -216,10 +208,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             public boolean onMenuItemClick(MenuItem item) {
                 if (isMovies) {
                     movieAdapter.clear();
-                    mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), PAGE_START);
                 } else {
                     tvSeriesAdapter.clear();
-                    mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), PAGE_START);
                 }
                 return true;
             }

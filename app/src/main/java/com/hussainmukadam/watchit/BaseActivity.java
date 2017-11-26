@@ -1,23 +1,18 @@
-package com.hussainmukadam.watchit.mainpage;
+package com.hussainmukadam.watchit;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.hussainmukadam.watchit.R;
-import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
-import com.hussainmukadam.watchit.mainpage.model.Movie;
-import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
-import com.hussainmukadam.watchit.pages.OpenSourceFragment;
-import com.hussainmukadam.watchit.pages.WatchLaterFragment;
+import com.hussainmukadam.watchit.opensourcepage.OpenSourceFragment;
+import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterFragment;
 import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -27,9 +22,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by hussain on 7/21/17.
@@ -44,6 +36,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setupDrawer();
 
         Bundle bundle = new Bundle();

@@ -33,8 +33,8 @@ import butterknife.ButterKnife;
  * Created by hussain on 18/10/17.
  */
 
-public class FragmentIntroTvSeries extends Fragment implements IntroMVPContract.IntroTvView, TvListItemClickListener{
-    private static final String TAG = "FragmentIntroTvSeries";
+public class IntroTvSeriesFragment extends Fragment implements IntroMVPContract.IntroTvView, TvListItemClickListener{
+    private static final String TAG = "IntroTvSeriesFragment";
     private String title;
     private int page;
     private IntroMVPContract.IntroTvPresenter introTvPresenter;
@@ -51,13 +51,13 @@ public class FragmentIntroTvSeries extends Fragment implements IntroMVPContract.
     RecyclerView rvGenreTv;
 
 
-    public static FragmentIntroTvSeries newInstance(String title, int page){
-        FragmentIntroTvSeries fragmentIntroTvSeries = new FragmentIntroTvSeries();
+    public static IntroTvSeriesFragment newInstance(String title, int page){
+        IntroTvSeriesFragment introTvSeriesFragment = new IntroTvSeriesFragment();
         Bundle args = new Bundle();
         args.putString("TITLE", title);
         args.putInt("PAGE", page);
-        fragmentIntroTvSeries.setArguments(args);
-        return fragmentIntroTvSeries;
+        introTvSeriesFragment.setArguments(args);
+        return introTvSeriesFragment;
     }
 
     @Override

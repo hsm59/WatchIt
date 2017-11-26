@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.util.WatchItConstants;
-import com.hussainmukadam.watchit.mainpage.BaseActivity;
+import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.squareup.picasso.Picasso;
 
