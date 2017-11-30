@@ -18,15 +18,18 @@
         tools:node="replace">
         <activity
             android:name=".intropage.view.IntroActivity"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BaseActivity" />
-
+        <activity android:name=".BaseActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".watchlaterpage.view.WatchLaterActivity"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="" />

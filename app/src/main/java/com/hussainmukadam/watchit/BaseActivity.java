@@ -1,5 +1,7 @@
 package com.hussainmukadam.watchit;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
 import com.hussainmukadam.watchit.opensourcepage.OpenSourceFragment;
-import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterFragment;
+import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterActivity;
 import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -79,7 +82,8 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                                 switchFragment(new MainFragment(), bundleTv, "TV_FRAG");
                                 break;
                             case 3:
-                                switchFragment(new WatchLaterFragment(), null, "WATCH_LATER_FRAG");
+                                Intent watchLaterIntent = new Intent(BaseActivity.this, WatchLaterActivity.class);
+                                startActivity(watchLaterIntent);
                                 break;
                             case 5:
                                 switchFragment(new SettingsFragment(), null, "SETTINGS_FRAG");
@@ -124,5 +128,13 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
     @Override
     public void menuBarClicked() {
         drawer.openDrawer();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 }

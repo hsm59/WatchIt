@@ -288,31 +288,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
 
-//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                ft.replace(R.id.container, new DetailDevFragment());
-//                ft.addToBackStack(null);
-//                ft.commit();
-
-                //TODO: Until completed the detail page
-                View view = swipeFlingAdapterView.getSelectedView();
-                ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
-                TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
-                TextView tvReleaseDate = (TextView) view.findViewById(R.id.tv_release);
-
-                ViewCompat.setTransitionName(ivPoster, "posterImage");
-                ViewCompat.setTransitionName(tvTitle, "titleName");
-                ViewCompat.setTransitionName(tvReleaseDate, "releaseDate");
-
-                Log.d(TAG, "onItemClicked: Item clicked " + ivPoster);
                 if (dataObject instanceof Movie) {
                     DetailsFragment detailsFragment = new DetailsFragment();
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        detailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-                        detailsFragment.setEnterTransition(new android.transition.Fade());
-                        setExitTransition(new android.transition.Fade());
-                        detailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-                    }
 
                     Log.d(TAG, "onItemClicked: The dataObject is Movie " + ((Movie) dataObject).getBackdropPath());
                     Movie movie = (Movie) dataObject;
@@ -323,10 +300,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     baseActivity.saveData(bundle);
 
                     final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.addSharedElement(ivPoster, "posterImage");
-                    ft.addSharedElement(tvTitle, "titleName");
-                    ft.addSharedElement(tvReleaseDate, "releaseDate");
-                    ft.replace(R.id.container, detailsFragment);
+                    ft.hide(MainFragment.this);
+                    ft.add(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();
                 }
@@ -404,27 +379,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             public void onItemClicked(int itemPosition, Object dataObject) {
                 Log.d(TAG, "onItemClicked: Item clicked");
 
-//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                ft.replace(R.id.container, new DetailDevFragment());
-//                ft.addToBackStack(null);
-//                ft.commit();
-
-                //TODO: Until detail fragment is completed
-                View view = swipeFlingAdapterView.getSelectedView();
-                ImageView ivPoster = (ImageView) view.findViewById(R.id.iv_poster);
-
-                ViewCompat.setTransitionName(ivPoster, "posterImage");
-
-                Log.d(TAG, "onItemClicked: Item clicked " + ivPoster);
                 if (dataObject instanceof TvSeries) {
                     DetailsFragment detailsFragment = new DetailsFragment();
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        detailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-                        detailsFragment.setEnterTransition(new android.transition.Fade());
-                        setExitTransition(new android.transition.Fade());
-                        detailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-                    }
 
                     Log.d(TAG, "onItemClicked: The dataObject is Movie " + ((TvSeries) dataObject).getTvPosterPath());
                     TvSeries tvSeries = (TvSeries) dataObject;
@@ -435,8 +391,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                     baseActivity.saveData(bundle);
 
                     final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.addSharedElement(ivPoster, "posterImage");
-                    ft.replace(R.id.container, detailsFragment);
+                    ft.hide(MainFragment.this);
+                    ft.add(R.id.container, detailsFragment);
                     ft.addToBackStack(null);
                     ft.commit();
                 }

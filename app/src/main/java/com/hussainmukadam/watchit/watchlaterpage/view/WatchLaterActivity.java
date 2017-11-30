@@ -1,16 +1,15 @@
 package com.hussainmukadam.watchit.watchlaterpage.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.FrameLayout;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.hussainmukadam.watchit.R;
 
 import butterknife.BindView;
@@ -20,22 +19,26 @@ import butterknife.ButterKnife;
  * Created by hussain on 27/10/17.
  */
 
-public class WatchLaterFragment extends Fragment {
+public class WatchLaterActivity extends AppCompatActivity {
     @BindView(R.id.watchlater_viewpager)
     ViewPager watchLaterViewPager;
 
-    @Nullable
+    Bundle savedData = new Bundle();
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_watch_later, container, false);
-        ButterKnife.bind(this, view);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_watch_later);
+        ButterKnife.bind(this);
 
-        watchLaterViewPager.setAdapter(new WatchLaterAdapter(getChildFragmentManager()));
+        watchLaterViewPager.setAdapter(new WatchLaterAdapter(getSupportFragmentManager()));
 
-        return view;
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
-    static class WatchLaterAdapter extends FragmentPagerAdapter {
+    public static class WatchLaterAdapter extends FragmentPagerAdapter {
 
         public WatchLaterAdapter(FragmentManager fm) {
             super(fm);
@@ -60,7 +63,7 @@ public class WatchLaterFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch(position){
+            switch (position) {
                 case 0:
                     return "MOVIES";
                 case 1:
@@ -68,6 +71,22 @@ public class WatchLaterFragment extends Fragment {
                 default:
                     return null;
             }
+        }
+    }
+
+    public void saveData(Bundle bundle) {
+        savedData = bundle;
+    }
+
+    public Bundle getData() {
+        return savedData;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
     }
 }

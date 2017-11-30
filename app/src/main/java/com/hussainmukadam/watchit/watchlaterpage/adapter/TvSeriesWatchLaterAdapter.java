@@ -24,9 +24,15 @@ import io.realm.RealmRecyclerViewAdapter;
  */
 
 public class TvSeriesWatchLaterAdapter extends RealmRecyclerViewAdapter<TvSeries, TvSeriesWatchLaterAdapter.TvSeriesWatchLaterViewHolder> {
+    private OnClickTvSeriesItemListener onClickTvSeriesItemListener;
 
-    public TvSeriesWatchLaterAdapter(@Nullable OrderedRealmCollection<TvSeries> data, boolean autoUpdate) {
+    public interface OnClickTvSeriesItemListener{
+        void itemOnClick(TvSeries tvSeries);
+    }
+
+    public TvSeriesWatchLaterAdapter(@Nullable OrderedRealmCollection<TvSeries> data, boolean autoUpdate, OnClickTvSeriesItemListener onClickTvSeriesItemListener) {
         super(data, autoUpdate);
+        this.onClickTvSeriesItemListener = onClickTvSeriesItemListener;
     }
 
     @Override
@@ -36,7 +42,7 @@ public class TvSeriesWatchLaterAdapter extends RealmRecyclerViewAdapter<TvSeries
 
     @Override
     public void onBindViewHolder(TvSeriesWatchLaterViewHolder holder, int position) {
-        TvSeries tvSeries = getItem(position);
+        final TvSeries tvSeries = getItem(position);
 
         Picasso.with(holder.ivWatchLaterPoster.getContext())
                 .load(BuildConfig.imageBaseUrl + tvSeries.getTvPosterPath())
@@ -45,6 +51,13 @@ public class TvSeriesWatchLaterAdapter extends RealmRecyclerViewAdapter<TvSeries
 
         holder.tvWatchLaterTitle.setText(tvSeries.getTvTitle());
         holder.tvWatchLaterRelease.setText(tvSeries.getTvReleaseDate());
+
+        holder.ivWatchLaterPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickTvSeriesItemListener.itemOnClick(tvSeries);
+            }
+        });
     }
 
     public static class TvSeriesWatchLaterViewHolder extends RecyclerView.ViewHolder{

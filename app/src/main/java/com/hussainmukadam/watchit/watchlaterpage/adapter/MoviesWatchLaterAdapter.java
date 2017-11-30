@@ -23,9 +23,15 @@ import io.realm.RealmRecyclerViewAdapter;
  */
 
 public class MoviesWatchLaterAdapter extends RealmRecyclerViewAdapter<Movie, MoviesWatchLaterAdapter.MoviesWatchLaterViewHolder> {
+    private OnClickMovieItemListener onClickMovieItemListener;
 
-    public MoviesWatchLaterAdapter(@Nullable OrderedRealmCollection<Movie> data, boolean autoUpdate) {
+    public interface OnClickMovieItemListener{
+        void itemOnClick(Movie movie);
+    }
+
+    public MoviesWatchLaterAdapter(@Nullable OrderedRealmCollection<Movie> data, boolean autoUpdate, OnClickMovieItemListener onClickItemListener) {
         super(data, autoUpdate);
+        this.onClickMovieItemListener = onClickItemListener;
     }
 
     @Override
@@ -34,8 +40,8 @@ public class MoviesWatchLaterAdapter extends RealmRecyclerViewAdapter<Movie, Mov
     }
 
     @Override
-    public void onBindViewHolder(MoviesWatchLaterViewHolder holder, int position) {
-        Movie movie = getItem(position);
+    public void onBindViewHolder(final MoviesWatchLaterViewHolder holder, int position) {
+        final Movie movie = getItem(position);
 
         Picasso.with(holder.ivWatchLaterPoster.getContext())
                 .load(BuildConfig.imageBaseUrl + movie.getPosterPath())
@@ -44,6 +50,13 @@ public class MoviesWatchLaterAdapter extends RealmRecyclerViewAdapter<Movie, Mov
 
         holder.tvWatchLaterTitle.setText(movie.getMovieTitle());
         holder.tvWatchLaterRelease.setText(movie.getReleaseDate());
+
+        holder.ivWatchLaterPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMovieItemListener.itemOnClick(movie);
+            }
+        });
     }
 
     public static class MoviesWatchLaterViewHolder extends RecyclerView.ViewHolder{
