@@ -52,6 +52,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
         drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withTranslucentStatusBar(true)
+                .withFooterDivider(false)
                 .withStickyFooter(R.layout.nav_footer)
                 .addDrawerItems(
                         new SectionDrawerItem().withName("Explore").withDivider(false),

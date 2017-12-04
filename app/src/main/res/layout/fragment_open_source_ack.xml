@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar_layout" />
@@ -246,6 +247,15 @@
                 android:layout_marginStart="16dp"
                 android:autoLink="web"
                 android:text="Website: github.com/mikepenz/MaterialDrawer" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:text="This product uses the TMDb API but is not endorsed or certified by TMDb."
+                android:textStyle="bold" />
 
         </LinearLayout>
 

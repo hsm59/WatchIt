@@ -207,9 +207,11 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (isMovies) {
-                    movieAdapter.clear();
+                    if(movieAdapter!=null)
+                        movieAdapter.clear();
                 } else {
-                    tvSeriesAdapter.clear();
+                    if(tvSeriesAdapter!=null)
+                        tvSeriesAdapter.clear();
                 }
                 return true;
             }
