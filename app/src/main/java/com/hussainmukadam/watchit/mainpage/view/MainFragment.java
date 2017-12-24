@@ -207,10 +207,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (isMovies) {
-                    if(movieAdapter!=null)
+                    if (movieAdapter != null)
                         movieAdapter.clear();
                 } else {
-                    if(tvSeriesAdapter!=null)
+                    if (tvSeriesAdapter != null)
                         tvSeriesAdapter.clear();
                 }
                 return true;
@@ -279,8 +279,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onScroll(float scrollProgressPercent) {
                 View view = swipeFlingAdapterView.getSelectedView();
-                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                if (view != null) {
+                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
             }
         });
 
@@ -369,8 +371,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onScroll(float scrollProgressPercent) {
                 View view = swipeFlingAdapterView.getSelectedView();
-                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                if (view != null) {
+                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
             }
         });
 
@@ -417,13 +421,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         progressBar.setVisibility(View.GONE);
     }
 
-    @Override
-    public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
-        if (getContext() != null) {
-            setupSwipeFlingAdapterViewForMovies(movieList);
-            this.TOTAL_PAGES = totalPages;
-        }
-    }
+//    @Override
+//    public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
+//        if (getContext() != null) {
+//            setupSwipeFlingAdapterViewForMovies(movieList);
+//            this.TOTAL_PAGES = totalPages;
+//        }
+//    }
 
     @Override
     public void displayNextPageMovies(List<Movie> movieList, int totalPages) {
@@ -433,13 +437,13 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         }
     }
 
-    @Override
-    public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        if (getContext() != null) {
-            setupSwipeFlingAdapterViewForTv(tvSeriesList);
-            this.TOTAL_PAGES = totalPages;
-        }
-    }
+//    @Override
+//    public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
+//        if (getContext() != null) {
+//            setupSwipeFlingAdapterViewForTv(tvSeriesList);
+//            this.TOTAL_PAGES = totalPages;
+//        }
+//    }
 
     @Override
     public void displayNextPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {

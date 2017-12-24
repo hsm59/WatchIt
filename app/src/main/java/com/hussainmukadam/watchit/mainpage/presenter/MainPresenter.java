@@ -220,11 +220,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     mView.hideProgress();
                 }
 
-                if (nextPg != 0) {
-                    fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
-                } else {
-                    Log.d(TAG, "onResponse: The random page number is " + nextPg);
-                }
+
+                fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
             }
 
             @Override

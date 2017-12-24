@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,85 +9,90 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardview"
         android:layout_width="0dp"
-        android:layout_height="420dp"
+        android:layout_height="0dp"
+        android:layout_margin="24dp"
+        card_view:cardBackgroundColor="@color/colorDarkGray"
+        card_view:cardCornerRadius="8dp"
+        card_view:cardElevation="4dp"
+        card_view:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true"
         card_view:layout_constraintBottom_toBottomOf="parent"
-        card_view:layout_constraintTop_toTopOf="parent"
         card_view:layout_constraintLeft_toLeftOf="parent"
         card_view:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="24dp"
-        card_view:cardUseCompatPadding="true"
-        card_view:cardPreventCornerOverlap="true"
-        card_view:cardElevation="4dp"
-        card_view:cardBackgroundColor="@color/colorDarkGray"
-        card_view:cardCornerRadius="8dp">
+        card_view:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
 
             <ImageView
                 android:id="@+id/iv_poster"
-                android:layout_width="0dp"
-                android:layout_height="340dp"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintBottom_toTopOf="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.85"
+                android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_image_black_24dp"
-                android:scaleType="fitXY" />
+                card_view:layout_constraintBottom_toTopOf="@+id/tv_title"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.1"
                 android:ellipsize="end"
+                android:maxEms="18"
                 android:maxLines="1"
-                card_view:layout_constraintTop_toBottomOf="@+id/iv_poster"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintBottom_toTopOf="@+id/tv_release"
-                android:paddingTop="8dp"
                 android:paddingLeft="8dp"
                 android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:textColor="@color/colorWhite"
                 android:textSize="16sp"
-                android:maxEms="18"
                 android:textStyle="bold"
+                card_view:layout_constraintBottom_toTopOf="@+id/tv_release"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/iv_poster"
                 tools:text="Movie Name" />
 
             <TextView
                 android:id="@+id/tv_release"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorWhite"
-                card_view:layout_constraintTop_toBottomOf="@+id/tv_title"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintLeft_toLeftOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.05"
                 android:paddingBottom="4dp"
                 android:paddingLeft="8dp"
                 android:paddingStart="8dp"
+                android:textColor="@color/colorWhite"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent"
+                card_view:layout_constraintTop_toBottomOf="@+id/tv_title"
                 tools:text="Movie Details" />
+        </LinearLayout>
 
-        </android.support.constraint.ConstraintLayout>
 
         <View
             android:id="@+id/item_swipe_right_indicator"
-            android:alpha="0"
             android:layout_width="220dp"
             android:layout_height="80dp"
-            android:layout_margin="10dp"
             android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:alpha="0"
             android:background="@drawable/ic_white_dislike_block" />
 
         <View
             android:id="@+id/item_swipe_left_indicator"
-            android:alpha="0"
             android:layout_width="150dp"
             android:layout_height="80dp"
             android:layout_margin="10dp"
+            android:alpha="0"
             android:background="@drawable/ic_white_like_block" />
 
     </android.support.v7.widget.CardView>
