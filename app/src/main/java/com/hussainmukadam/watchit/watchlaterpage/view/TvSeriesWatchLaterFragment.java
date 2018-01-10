@@ -41,8 +41,7 @@ public class TvSeriesWatchLaterFragment extends Fragment implements TvSeriesWatc
     Realm realm;
 
     public static TvSeriesWatchLaterFragment newInstance(){
-        TvSeriesWatchLaterFragment tvSeriesWatchLaterFragment = new TvSeriesWatchLaterFragment();
-        return tvSeriesWatchLaterFragment;
+        return new TvSeriesWatchLaterFragment();
     }
 
     @Nullable
@@ -53,7 +52,7 @@ public class TvSeriesWatchLaterFragment extends Fragment implements TvSeriesWatc
 
         realm = Realm.getDefaultInstance();
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         rvTvSeriesWatchLater.setLayoutManager(layoutManager);

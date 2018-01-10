@@ -29,7 +29,12 @@
         <activity android:name=".BaseActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".watchlaterpage.view.WatchLaterActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.hussainmukadam.watchit.BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hussainmukadam.watchit.BaseActivity" />
+        </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="" />

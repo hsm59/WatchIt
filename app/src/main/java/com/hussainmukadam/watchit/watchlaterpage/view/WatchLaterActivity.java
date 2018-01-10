@@ -3,6 +3,7 @@ package com.hussainmukadam.watchit.watchlaterpage.view;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,6 +23,8 @@ import butterknife.ButterKnife;
 public class WatchLaterActivity extends AppCompatActivity {
     @BindView(R.id.watchlater_viewpager)
     ViewPager watchLaterViewPager;
+    @BindView(R.id.sliding_tabs)
+    TabLayout slidingTabs;
 
     Bundle savedData = new Bundle();
 
@@ -32,6 +35,7 @@ public class WatchLaterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         watchLaterViewPager.setAdapter(new WatchLaterAdapter(getSupportFragmentManager()));
+        slidingTabs.setupWithViewPager(watchLaterViewPager);
 
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));

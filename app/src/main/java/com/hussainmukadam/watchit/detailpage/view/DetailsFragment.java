@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +67,8 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     List<TextView> textViewsList;
     @BindView(R.id.rv_genre)
     RecyclerView rvGenreList;
+    @BindView(R.id.details_toolbar)
+    Toolbar toolbar;
 
     private DetailsMVPContract.DetailsBasePresenter detailsBasePresenter;
     DetailsPresenter detailsPresenter;
@@ -84,7 +87,7 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
 
-        if(getActivity() instanceof BaseActivity) {
+        if (getActivity() instanceof BaseActivity) {
             baseActivity = (BaseActivity) getActivity();
             data = baseActivity.getData();
         } else {
@@ -124,15 +127,24 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
         initTransitionViews();
 
-        if (Util.isConnected(getContext())) {
-            if (isMovie) {
-                detailsPresenter.fetchMovieDetails(movie.getMovieId());
+        if (getContext() != null) {
+            if (Util.isConnected(getContext())) {
+                if (isMovie) {
+                    detailsPresenter.fetchMovieDetails(movie.getMovieId());
+                } else {
+                    detailsPresenter.fetchTvSeriesDetails(tvSeries.getTvId());
+                }
             } else {
-                detailsPresenter.fetchTvSeriesDetails(tvSeries.getTvId());
+                Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
 
         return view;
     }
@@ -175,7 +187,7 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
             tvReleaseDate.setText(tvSeries.getTvReleaseDate());
             textViewsList.get(0).setText(String.valueOf(tvSeries.getTvVoteAverage()));
-            if(!TextUtils.isEmpty(tvSeries.getTvOverview())) {
+            if (!TextUtils.isEmpty(tvSeries.getTvOverview())) {
                 textViewsList.get(1).setText(tvSeries.getTvOverview());
             } else {
                 tvOverviewPlaceholder.setText("No Overview");
@@ -199,7 +211,9 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
 
     @Override
     public void showError(String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        if (getContext() != null) {
+            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

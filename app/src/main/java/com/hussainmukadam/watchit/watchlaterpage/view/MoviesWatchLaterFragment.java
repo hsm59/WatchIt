@@ -40,8 +40,7 @@ public class MoviesWatchLaterFragment extends Fragment implements MoviesWatchLat
     Realm realm;
 
     public static MoviesWatchLaterFragment newInstance() {
-        MoviesWatchLaterFragment moviesWatchLaterFragment = new MoviesWatchLaterFragment();
-        return moviesWatchLaterFragment;
+        return new MoviesWatchLaterFragment();
     }
 
     @Nullable
@@ -52,8 +51,12 @@ public class MoviesWatchLaterFragment extends Fragment implements MoviesWatchLat
 
         realm = Realm.getDefaultInstance();
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
 
         rvMoviesWatchLater.setLayoutManager(layoutManager);
 
