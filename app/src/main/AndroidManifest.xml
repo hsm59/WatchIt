@@ -38,6 +38,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
         <receiver android:name=".notification.NotificationPublisher" />
         <receiver android:name=".notification.AlarmBootReceiver"
             android:enabled="false">

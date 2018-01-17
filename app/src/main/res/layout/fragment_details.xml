@@ -22,6 +22,7 @@
             app:expandedTitleMarginEnd="16dp"
             app:expandedTitleMarginStart="16dp"
             android:transitionName="titleName"
+            android:fontFamily="@font/abril_fatface"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <FrameLayout
@@ -104,6 +105,7 @@
                 android:transitionName="releaseDate"
                 tools:text="15-09-2017"
                 android:layout_marginLeft="8dp"
+                android:fontFamily="@font/abril_fatface"
                 android:layout_marginStart="8dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
@@ -131,6 +133,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 tools:text="5.6"
+                android:fontFamily="@font/abril_fatface"
                 app:layout_constraintTop_toBottomOf="@+id/tv_release_date"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/iv_vote_icon"/>
@@ -144,6 +147,7 @@
                 android:layout_marginTop="16dp"
                 android:contentDescription="Runtime Icon"
                 app:srcCompat="@drawable/ic_access_time_black_24dp"
+
                 app:layout_constraintTop_toBottomOf="@+id/iv_vote_icon"
                 app:layout_constraintLeft_toRightOf="@+id/iv_poster"
                 app:layout_constraintRight_toLeftOf="@+id/tv_runtime"/>
@@ -157,6 +161,7 @@
                 android:layout_marginTop="18dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:fontFamily="@font/abril_fatface"
                 tools:text="90 mins"
                 app:layout_constraintTop_toBottomOf="@+id/tv_vote_average_details"
                 app:layout_constraintRight_toRightOf="parent"
@@ -185,6 +190,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:fontFamily="@font/abril_fatface"
                 tools:text="A lamb gets lost in the multiverse ajhkdhal hljkadhfklasjhdflkasdhjflkasdfjhlaksdhjflkahdjflkasdhflkasdhjflkhjdflaksdjfhlaskdfh"
                 android:maxLines="4"
                 android:ellipsize="end"
@@ -219,6 +225,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="Overview: "
+                android:fontFamily="@font/abril_fatface"
                 app:layout_constraintTop_toBottomOf="@+id/rv_genre"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"/>
@@ -233,6 +240,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:fontFamily="@font/abril_fatface"
                 tools:text="A lamb gets lost in the multiverse dhjlfjasdflasdhflashdfkljhasdlfkhjadlkfhjlk haldsfhasdl kfhasd fjhsdlkjfhsdlkfjhsldkhjflaksdhjfkalshflkasdhf ldalhdfkashfksadhflkdhjflhdskfhskdfjhlskdhfalskdfjhalskdfjhalksdhjfkalshjdflkajhdflkashdfjshdlkfjhsakldfhsdlj adljfhsdljkfhsldkfjhklsdfhlksdhfksdjhfksdjhflkshdjflkhsdfl dskljfh sadkhfkshjfklahflkhdfklshdj A lamb gets lost in the multiverse dhjlfjasdflasdhflashdfkljhasdlfkhjadlkfhjlk haldsfhasdl kfhasd fjhsdlkjfhsdlkfjhsldkhjflaksdhjfkalshflkasdhf ldalhdfkashfksadhflkdhjflhdskfhskdfjhlskdhfalskdfjhalskdfjhalksdhjfkalshjdflkajhdflkashdfjshdlkfjhsakldfhsdlj adljfhsdljkfhsldkfjhklsdfhlksdhfksdjhfksdjhflkshdjflkhsdfl dskljfh sadkhfkshjfklahflkhdfklshdj A lamb gets lost in the multiverse dhjlfjasdflasdhflashdfkljhasdlfkhjadlkfhjlk haldsfhasdl kfhasd fjhsdlkjfhsdlkfjhsldkhjflaksdhjfkalshflkasdhf ldalhdfkashfksadhflkdhjflhdskfhskdfjhlskdhfalskdfjhalskdfjhalksdhjfkalshjdflkajhdflkashdfjshdlkfjhsakldfhsdlj adljfhsdljkfhsldkfjhklsdfhlksdhfksdjhfksdjhflkshdjflkhsdfl dskljfh sadkhfkshjfklahflkhdfklshdj"
                 app:layout_constraintTop_toBottomOf="@+id/tv_overview_placeholder"
                 app:layout_constraintRight_toRightOf="parent"

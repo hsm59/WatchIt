@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.adapter.MoviesGenreAdapter;
 import com.hussainmukadam.watchit.intropage.model.Genre;
+import com.hussainmukadam.watchit.util.Util;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(GenreAdapter.ViewHolder holder, int position) {
         Genre genre = genreList.get(position);
-        Log.d(TAG, "onBindViewHolder: "+genre.toString());
+        Util.debugLog(TAG, "onBindViewHolder: "+genre.toString());
         holder.tvGenre.setText(genre.getGenreName());
     }
 

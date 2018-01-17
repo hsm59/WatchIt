@@ -14,6 +14,7 @@ import com.hussainmukadam.watchit.mainpage.model.TvResponse;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.network.ApiClient;
 import com.hussainmukadam.watchit.network.ApiInterface;
+import com.hussainmukadam.watchit.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
     @Override
     public void fetchFirstPageMoviesByGenres(final String genreIdsByMovies, int pageNumber) {
 
-        Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdsByMovies);
+        Util.debugLog(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdsByMovies);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -61,7 +62,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 int totalPages = 0;
                 int nextPg = 0;
 
-                Log.d(TAG, "onResponse: Response Code " + response.code());
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     if (response.body().getMoviesList().size() != 0) {
                         mView.hideProgress();
@@ -70,7 +71,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         if (totalPages > 1) {
                             Random random = new Random();
                             nextPg = random.nextInt(totalPages) + 1;
-                            Log.d(TAG, " NextPageNo: " + nextPg);
+                            Util.debugLog(TAG, " NextPageNo: " + nextPg);
                         } else {
                             mView.showMovieResponseError("Not enough Pages");
                         }
@@ -107,14 +108,14 @@ public class MainPresenter implements MainMVPContract.Presenter {
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mView.hideProgress();
                 mView.showMovieResponseError(t.getMessage());
-                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
     }
 
     @Override
     public void fetchNextPageMoviesByGenres(String genreIdsByMovies, int pageNumber) {
-        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number " + pageNumber);
+        Util.debugLog(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdsByMovies + "Page Number " + pageNumber);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -123,7 +124,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                Log.d(TAG, "onResponse: Response Code " + response.code());
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
                 int totalPages = 0;
 
                 if (response.isSuccessful()) {
@@ -134,7 +135,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
                         realm = Realm.getDefaultInstance();
                         RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
-                        Log.d(TAG, "onResponse: Realm Data Stored " + allMoviesResults.size());
+                        Util.debugLog(TAG, "onResponse: Realm Data Stored " + allMoviesResults.size());
                         List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
 
                         List<Movie> newMovieList = response.body().getMoviesList();
@@ -146,8 +147,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         }
 
                         mView.displayNextPageMovies(newMovieList, totalPages);
-                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
-                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());
+                        Util.debugLog(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
+                        Util.debugLog(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
                         mView.showMovieResponseError("Couldn't find any movies");
                         mView.hideProgress();
@@ -162,7 +163,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mView.hideProgress();
                 mView.showMovieResponseError(t.getMessage());
-                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
     }
@@ -173,19 +174,19 @@ public class MainPresenter implements MainMVPContract.Presenter {
         movie.setWatchLater(isWatchLater);
 
         if (isWatchLater) {
-            Log.d(TAG, "storeMovieData: Movie has to be Notified " + isWatchLater);
+            Util.debugLog(TAG, "storeMovieData: Movie has to be Notified " + isWatchLater);
             movie.setNotified(false);
         } else {
             movie.setNotified(true);
         }
 
-        Log.d(TAG, "storeMovieData: Inside Store Movie Data " + isWatchLater);
+        Util.debugLog(TAG, "storeMovieData: Inside Store Movie Data " + isWatchLater);
         new RealmStoreTask(null, movie, true).execute();
     }
 
     @Override
     public void fetchFirstPageTvSeriesByGenres(final String genreIdByTv, int pageNumber) {
-        Log.d(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdByTv);
+        Util.debugLog(TAG, "fetchMoviesBasedOnGenres: GenreIds " + genreIdByTv);
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -196,19 +197,19 @@ public class MainPresenter implements MainMVPContract.Presenter {
             public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
                 int totalPages, nextPg = 0;
 
-                Log.d(TAG, "onResponse: Response Code " + response.code());
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     if (response.body().getTvList().size() != 0) {
                         //mView.hideProgress();
                         totalPages = response.body().getTotalPages();
 
                         if (totalPages > 0) {
-                            Log.d(TAG, "onResponse: Total Page Nubmers " + totalPages);
+                            Util.debugLog(TAG, "onResponse: Total Page Nubmers " + totalPages);
                             Random random = new Random();
                             nextPg = random.nextInt(totalPages) + 1;
-                            Log.d(TAG, "onResponse: Next Page " + nextPg);
+                            Util.debugLog(TAG, "onResponse: Next Page " + nextPg);
                         } else {
-                            Log.d(TAG, "onResponse: Total Page is not more than 0");
+                            Util.debugLog(TAG, "onResponse: Total Page is not more than 0");
                             mView.showTvSeriesResponseError("Not enough Pages");
                         }
                     } else {
@@ -228,14 +229,14 @@ public class MainPresenter implements MainMVPContract.Presenter {
             public void onFailure(Call<TvResponse> call, Throwable t) {
                 mView.hideProgress();
                 mView.showTvSeriesResponseError(t.getMessage());
-                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
     }
 
     @Override
     public void fetchNextPageTvSeriesByGenres(String genreIdByTv, int pageNumber) {
-        Log.d(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdByTv + "Page Number " + pageNumber);
+        Util.debugLog(TAG, "fetchNextPageMoviesByGenres: GenreIds " + genreIdByTv + "Page Number " + pageNumber);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -244,7 +245,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         call.enqueue(new Callback<TvResponse>() {
             @Override
             public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
-                Log.d(TAG, "onResponse: Response Code " + response.code());
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
                 if (response.isSuccessful()) {
                     mView.hideProgress();
                     if (response.body().getTvList().size() != 0) {
@@ -252,7 +253,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
                         realm = Realm.getDefaultInstance();
                         RealmResults<TvSeries> allTvsResults = realm.where(TvSeries.class).findAll();
-                        Log.d(TAG, "onResponse: Realm Data Stored " + allTvsResults.size());
+                        Util.debugLog(TAG, "onResponse: Realm Data Stored " + allTvsResults.size());
                         List<TvSeries> existingTvList = new ArrayList<>(allTvsResults);
 
                         List<TvSeries> newTvList = response.body().getTvList();
@@ -264,22 +265,22 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         }
 
                         if (newTvList.size() > 1) {
-                            Log.d(TAG, "onResponse: When the New TV List size is more than 1");
+                            Util.debugLog(TAG, "onResponse: When the New TV List size is more than 1");
                             mView.displayNextPageTvSeries(newTvList, totalPages);
                         } else {
-                            Log.d(TAG, "onResponse: When the new TV List size is not more than 1");
+                            Util.debugLog(TAG, "onResponse: When the new TV List size is not more than 1");
                             mView.showTvSeriesResponseError("Try Refreshing again");
                         }
 
-                        Log.d(TAG, "onResponse: Existing Tv List " + existingTvList.size());
-                        Log.d(TAG, "onResponse: Tv List " + newTvList.size());
+                        Util.debugLog(TAG, "onResponse: Existing Tv List " + existingTvList.size());
+                        Util.debugLog(TAG, "onResponse: Tv List " + newTvList.size());
                     } else {
-                        Log.d(TAG, "onResponse: When TV List Size is equal to 0");
+                        Util.debugLog(TAG, "onResponse: When TV List Size is equal to 0");
                         mView.showTvSeriesResponseError("Couldn't find any tv series");
                         mView.hideProgress();
                     }
                 } else {
-                    Log.d(TAG, "onResponse: When TV List Response is not successful");
+                    Util.debugLog(TAG, "onResponse: When TV List Response is not successful");
                     mView.showTvSeriesResponseError("Some Error Occurred");
                     mView.hideProgress();
                 }
@@ -288,7 +289,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             @Override
             public void onFailure(Call<TvResponse> call, Throwable t) {
                 mView.showTvSeriesResponseError(t.getMessage());
-                Log.d(TAG, "onFailure: Failure Occurred " + t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
             }
         });
     }
@@ -304,7 +305,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
             tvSeries.setNotified(true);
         }
 
-        Log.d(TAG, "storeTvData: Inside Store TvSeries Data " + isWatchLater);
+        Util.debugLog(TAG, "storeTvData: Inside Store TvSeries Data " + isWatchLater);
         new RealmStoreTask(tvSeries, null, false).execute();
     }
 
@@ -337,7 +338,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     });
 
                     RealmQuery<Movie> realmQuery = realm.where(Movie.class).findAll().where().equalTo("isWatchLater", true);
-                    Log.d(TAG, "execute: First Movie Saved " + realmQuery.count());
+                    Util.debugLog(TAG, "execute: First Movie Saved " + realmQuery.count());
 
                     status = "Movie stored Count " + realmQuery.count();
                 } else {
@@ -349,7 +350,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     });
 
                     RealmQuery<TvSeries> realmQuery = realm.where(TvSeries.class).findAll().where().equalTo("isWatchLater", true);
-                    Log.d(TAG, "execute: First TV Saved " + realmQuery.count());
+                    Util.debugLog(TAG, "execute: First TV Saved " + realmQuery.count());
 
                     status = "TV stored Count " + realmQuery.count();
                 }
@@ -365,7 +366,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.d(TAG, "onPostExecute: Stored TV Data " + s);
+            Util.debugLog(TAG, "onPostExecute: Stored TV Data " + s);
         }
     }
 }

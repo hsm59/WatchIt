@@ -8,6 +8,7 @@ import com.hussainmukadam.watchit.detailpage.model.MovieDetails;
 import com.hussainmukadam.watchit.detailpage.model.TvSeriesDetails;
 import com.hussainmukadam.watchit.network.ApiClient;
 import com.hussainmukadam.watchit.network.ApiInterface;
+import com.hussainmukadam.watchit.util.Util;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,14 +42,14 @@ public class DetailsPresenter implements DetailsMVPContract.DetailsBasePresenter
         call.enqueue(new Callback<MovieDetails>() {
             @Override
             public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
-                Log.d(TAG, "onResponse: "+response.body());
+                Util.debugLog(TAG, "onResponse: "+response.body());
                 mView.showProgress(false);
                 mView.displayMovieDetails(response.body());
             }
 
             @Override
             public void onFailure(Call<MovieDetails> call, Throwable t) {
-                Log.d(TAG, "onFailure: "+t.getMessage());
+                Util.debugLog(TAG, "onFailure: "+t.getMessage());
                 mView.showProgress(false);
                 mView.showError(t.getMessage());
             }
@@ -66,14 +67,14 @@ public class DetailsPresenter implements DetailsMVPContract.DetailsBasePresenter
         call.enqueue(new Callback<TvSeriesDetails>() {
             @Override
             public void onResponse(Call<TvSeriesDetails> call, Response<TvSeriesDetails> response) {
-                Log.d(TAG, "onResponse: "+response.body());
+                Util.debugLog(TAG, "onResponse: "+response.body());
                 mView.showProgress(false);
                 mView.displayTvDetails(response.body());
             }
 
             @Override
             public void onFailure(Call<TvSeriesDetails> call, Throwable t) {
-                Log.d(TAG, "onFailure: "+t.getMessage());
+                Util.debugLog(TAG, "onFailure: "+t.getMessage());
                 mView.showProgress(false);
                 mView.showError(t.getMessage());
             }

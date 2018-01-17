@@ -88,7 +88,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
         isMovies = getArguments().getBoolean("IS_MOVIES");
-        Log.d(TAG, "onCreateView: Boolean " + isMovies);
+        Util.debugLog(TAG,"onCreateView: Boolean " + isMovies);
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
@@ -139,7 +139,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                         builder.append(",");
                     }
 
-                    Log.d(TAG, "onCreateView: Movie String " + builder.toString());
+                    Util.debugLog(TAG, "onCreateView: Movie String " + builder.toString());
                 }
                 return builder.toString();
             } else {
@@ -163,7 +163,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                         builder.append(",");
                     }
 
-                    Log.d(TAG, "onCreateView: TV String " + builder.toString());
+                    Util.debugLog(TAG, "onCreateView: TV String " + builder.toString());
                 }
                 return builder.toString();
             } else {
@@ -222,7 +222,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
 
     private void setupSwipeFlingAdapterViewForMovies(final List<Movie> movieList) {
-        Log.d(TAG, "displayMoviesCards: Movies List " + movieList.size());
+        Util.debugLog(TAG, "displayMoviesCards: Movies List " + movieList.size());
 
         movieAdapter = new MovieAdapter(getContext(), R.layout.main_item, movieList);
 
@@ -236,7 +236,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
+                Util.debugLog("LIST", "removed object!");
                 if (movieList.size() != 0) {
                     movieList.remove(0);
                     movieAdapter.notifyDataSetChanged();
@@ -255,7 +255,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Util.debugLog(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 Movie movie = (Movie) dataObject;
                 mainPresenter.storeMovieData(true, movie);
             }
@@ -263,7 +263,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
+                Util.debugLog(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
@@ -295,7 +295,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 if (dataObject instanceof Movie) {
                     DetailsFragment detailsFragment = new DetailsFragment();
 
-                    Log.d(TAG, "onItemClicked: The dataObject is Movie " + ((Movie) dataObject).getBackdropPath());
+                    Util.debugLog(TAG, "onItemClicked: The dataObject is Movie " + ((Movie) dataObject).getBackdropPath());
                     Movie movie = (Movie) dataObject;
 
                     Bundle bundle = new Bundle();
@@ -314,7 +314,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     }
 
     private void setupSwipeFlingAdapterViewForTv(final List<TvSeries> tvSeriesList) {
-        Log.d(TAG, "displayMoviesCards: Tv Series List " + tvSeriesList.size());
+        Util.debugLog(TAG, "displayMoviesCards: Tv Series List " + tvSeriesList.size());
 
         tvSeriesAdapter = new TvSeriesAdapter(getContext(), R.layout.main_item, tvSeriesList);
 
@@ -328,7 +328,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
+                Util.debugLog("LIST", "removed object!");
                 if (tvSeriesList.size() != 0) {
                     tvSeriesList.remove(0);
                     tvSeriesAdapter.notifyDataSetChanged();
@@ -340,14 +340,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Util.debugLog(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 TvSeries tvSeries = (TvSeries) dataObject;
                 mainPresenter.storeTvData(false, tvSeries);
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Util.debugLog(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 TvSeries tvSeries = (TvSeries) dataObject;
                 mainPresenter.storeTvData(true, tvSeries);
             }
@@ -355,7 +355,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
+                Util.debugLog(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
@@ -383,12 +383,12 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Log.d(TAG, "onItemClicked: Item clicked");
+                Util.debugLog(TAG, "onItemClicked: Item clicked");
 
                 if (dataObject instanceof TvSeries) {
                     DetailsFragment detailsFragment = new DetailsFragment();
 
-                    Log.d(TAG, "onItemClicked: The dataObject is Movie " + ((TvSeries) dataObject).getTvPosterPath());
+                    Util.debugLog(TAG, "onItemClicked: The dataObject is Movie " + ((TvSeries) dataObject).getTvPosterPath());
                     TvSeries tvSeries = (TvSeries) dataObject;
 
                     Bundle bundle = new Bundle();

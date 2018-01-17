@@ -48,8 +48,8 @@ public class MoviesWatchLaterAdapter extends RealmRecyclerViewAdapter<Movie, Mov
                 .error(R.drawable.ic_broken_image_black_24dp)
                 .into(holder.ivWatchLaterPoster);
 
-        holder.tvWatchLaterTitle.setText(movie.getMovieTitle());
-        holder.tvWatchLaterRelease.setText(movie.getReleaseDate());
+//        holder.tvWatchLaterTitle.setText(movie.getMovieTitle());
+//        holder.tvWatchLaterRelease.setText(movie.getReleaseDate());
 
         holder.ivWatchLaterPoster.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,10 +62,10 @@ public class MoviesWatchLaterAdapter extends RealmRecyclerViewAdapter<Movie, Mov
     public static class MoviesWatchLaterViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.iv_watchlater_poster)
         ImageView ivWatchLaterPoster;
-        @BindView(R.id.tv_watchlater_title)
-        TextView tvWatchLaterTitle;
-        @BindView(R.id.tv_watchlater_release)
-        TextView tvWatchLaterRelease;
+//        @BindView(R.id.tv_watchlater_title)
+//        TextView tvWatchLaterTitle;
+//        @BindView(R.id.tv_watchlater_release)
+//        TextView tvWatchLaterRelease;
 
         public MoviesWatchLaterViewHolder(View itemView) {
             super(itemView);

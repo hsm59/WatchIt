@@ -49,8 +49,8 @@ public class TvSeriesWatchLaterAdapter extends RealmRecyclerViewAdapter<TvSeries
                 .error(R.drawable.ic_broken_image_black_24dp)
                 .into(holder.ivWatchLaterPoster);
 
-        holder.tvWatchLaterTitle.setText(tvSeries.getTvTitle());
-        holder.tvWatchLaterRelease.setText(tvSeries.getTvReleaseDate());
+//        holder.tvWatchLaterTitle.setText(tvSeries.getTvTitle());
+//        holder.tvWatchLaterRelease.setText(tvSeries.getTvReleaseDate());
 
         holder.ivWatchLaterPoster.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,10 +63,10 @@ public class TvSeriesWatchLaterAdapter extends RealmRecyclerViewAdapter<TvSeries
     public static class TvSeriesWatchLaterViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.iv_watchlater_poster)
         ImageView ivWatchLaterPoster;
-        @BindView(R.id.tv_watchlater_title)
-        TextView tvWatchLaterTitle;
-        @BindView(R.id.tv_watchlater_release)
-        TextView tvWatchLaterRelease;
+//        @BindView(R.id.tv_watchlater_title)
+//        TextView tvWatchLaterTitle;
+//        @BindView(R.id.tv_watchlater_release)
+//        TextView tvWatchLaterRelease;
 
         public TvSeriesWatchLaterViewHolder(View itemView) {
             super(itemView);

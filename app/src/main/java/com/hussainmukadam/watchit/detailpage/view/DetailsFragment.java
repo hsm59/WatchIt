@@ -109,19 +109,18 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
         backdropTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Log.d(TAG, "onBitmapLoaded: ");
                 ivBackdropPoster.setImageBitmap(bitmap);
-                createPaletteAsync(bitmap);
+                if (Build.VERSION.SDK_INT >= 21) {
+                    createPaletteAsync(bitmap);
+                }
             }
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-                Log.d(TAG, "onBitmapFailed: ");
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-                Log.d(TAG, "onPrepareLoad: ");
             }
         };
 
@@ -142,7 +141,9 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().popBackStack();
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
             }
         });
 
@@ -203,9 +204,9 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     @Override
     public void showProgress(boolean isLoading) {
         if (isLoading) {
-            Log.d(TAG, "showProgress: Loading Started");
+            Util.debugLog(TAG,"showProgress: Loading Started");
         } else {
-            Log.d(TAG, "showProgress: Loading Stopped");
+            Util.debugLog(TAG,"showProgress: Loading Stopped");
         }
     }
 
@@ -269,7 +270,6 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     // Generate palette asynchronously and use it on a different
     // thread using onGenerated()
     public void createPaletteAsync(Bitmap bitmap) {
-        Log.d(TAG, "createPaletteAsync: ");
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onGenerated(Palette p) {
@@ -280,10 +280,8 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
                 if (darkVibrantSwatch != null && vibrantSwatch != null) {
                     Window window = getActivity().getWindow();
 
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        window.setStatusBarColor(darkVibrantSwatch.getRgb());
-                        collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
-                    }
+                    window.setStatusBarColor(darkVibrantSwatch.getRgb());
+                    collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
                 }
             }
         });
