@@ -53,7 +53,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en", "popularity.desc");
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -72,25 +72,10 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             Random random = new Random();
                             nextPg = random.nextInt(totalPages) + 1;
                             Util.debugLog(TAG, " NextPageNo: " + nextPg);
+                            fetchNextPageMoviesByGenres(genreIdsByMovies, nextPg);
                         } else {
                             mView.showMovieResponseError("Not enough Pages");
                         }
-
-                       /* realm = Realm.getDefaultInstance();
-                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
-
-                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
-                        newMovieList = response.body().getMoviesList();
-
-                        for (Movie e : existingMovieList) {
-                            if (newMovieList.contains(e)) {
-                                newMovieList.remove(e);
-                            }
-                        }
-
-
-                        Log.d(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
-                        Log.d(TAG, "onResponse: Movies List " + newMovieList.size());*/
                     } else {
                         mView.showMovieResponseError("Couldn't find any movies");
                         mView.hideProgress();
@@ -101,7 +86,6 @@ public class MainPresenter implements MainMVPContract.Presenter {
                 }
 
                 // mView.displayFirstPageMovies(newMovieList, totalPages);
-                fetchNextPageMoviesByGenres(genreIdsByMovies, nextPg);
             }
 
             @Override
@@ -119,7 +103,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en", "popularity.desc");
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -146,7 +130,11 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             }
                         }
 
-                        mView.displayNextPageMovies(newMovieList, totalPages);
+                        if(newMovieList.size()>1) {
+                            mView.displayNextPageMovies(newMovieList, totalPages);
+                        } else {
+                            mView.showMovieResponseError("No new movies");
+                        }
                         Util.debugLog(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Util.debugLog(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
@@ -190,7 +178,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en-US", "popularity.desc");
+        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en", "popularity.desc");
 
         call.enqueue(new Callback<TvResponse>() {
             @Override
@@ -208,6 +196,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
                             Random random = new Random();
                             nextPg = random.nextInt(totalPages) + 1;
                             Util.debugLog(TAG, "onResponse: Next Page " + nextPg);
+                            fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
                         } else {
                             Util.debugLog(TAG, "onResponse: Total Page is not more than 0");
                             mView.showTvSeriesResponseError("Not enough Pages");
@@ -220,9 +209,6 @@ public class MainPresenter implements MainMVPContract.Presenter {
                     mView.showTvSeriesResponseError("Some Error Occurred");
                     mView.hideProgress();
                 }
-
-
-                fetchNextPageTvSeriesByGenres(genreIdByTv, nextPg);
             }
 
             @Override
@@ -240,7 +226,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en-US", "popularity.desc");
+        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en", "popularity.desc");
 
         call.enqueue(new Callback<TvResponse>() {
             @Override

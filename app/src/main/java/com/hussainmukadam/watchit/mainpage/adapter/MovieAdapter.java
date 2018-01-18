@@ -45,9 +45,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             viewHolder = new ViewHolder();
 
 
-            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
-            viewHolder.tvMovieRelease = (TextView) convertView.findViewById(R.id.tv_release);
+            viewHolder.tvMovieTitle = convertView.findViewById(R.id.tv_title);
+            viewHolder.ivPosterImage = convertView.findViewById(R.id.iv_poster);
+            viewHolder.tvMovieRelease = convertView.findViewById(R.id.tv_release);
 
             convertView.setTag(viewHolder);
         } else {

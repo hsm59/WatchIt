@@ -45,9 +45,9 @@ public class TvSeriesAdapter extends ArrayAdapter<TvSeries> {
             viewHolder = new TvSeriesAdapter.ViewHolder();
 
 
-            viewHolder.tvTvSeriesTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
-            viewHolder.tvTvSeriesRelease = (TextView) convertView.findViewById(R.id.tv_release);
+            viewHolder.tvTvSeriesTitle = convertView.findViewById(R.id.tv_title);
+            viewHolder.ivPosterImage = convertView.findViewById(R.id.iv_poster);
+            viewHolder.tvTvSeriesRelease = convertView.findViewById(R.id.tv_release);
 
             convertView.setTag(viewHolder);
         } else {

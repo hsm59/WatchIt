@@ -15,6 +15,7 @@ import android.view.Window;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
 import com.hussainmukadam.watchit.opensourcepage.OpenSourceFragment;
+import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterActivity;
 import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -70,7 +71,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        Log.d(TAG, "onItemClick: Position " + position);
+                        Util.debugLog(TAG, "onItemClick: Position " + position);
                         switch (position) {
                             case 1:
                                 Bundle bundleMovies = new Bundle();

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.util.WatchItConstants;
 
 import java.util.Calendar;
@@ -60,7 +61,7 @@ public class NotificationHelper {
     }
 
     private static void setRepeatingExactAlarm(long time, long interval, PendingIntent pIntent) {
-        Log.d(TAG, "setSingleExactAlarm: Alarm time " + time);
+        Util.debugLog(TAG, "setSingleExactAlarm: Alarm time " + time);
         alarmManagerRTC.setRepeating(AlarmManager.RTC, time, interval, pIntent);
     }
 
@@ -70,7 +71,7 @@ public class NotificationHelper {
 
     public static void cancelAlarmRTC() {
         if (alarmManagerRTC != null) {
-            Log.d(TAG, "cancelAlarmRTC: Alarm Manager Cancelled");
+            Util.debugLog(TAG, "cancelAlarmRTC: Alarm Manager Cancelled");
             alarmManagerRTC.cancel(alarmIntentRTC);
         }
     }

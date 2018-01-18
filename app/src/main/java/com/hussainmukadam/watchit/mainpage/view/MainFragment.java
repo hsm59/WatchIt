@@ -439,6 +439,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void showMovieResponseError(String errorMessage) {
+        Util.debugLog(TAG, errorMessage);
         if (getContext() != null) {
             if (Util.isConnected(getContext())) {
                 currentPage = PAGE_START;
@@ -451,6 +452,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
     @Override
     public void showTvSeriesResponseError(String errorMessage) {
+        Util.debugLog(TAG, errorMessage);
         if (getContext() != null) {
             if (Util.isConnected(getContext())) {
                 currentPage = PAGE_START;

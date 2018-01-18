@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.util.WatchItConstants;
 import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
@@ -42,7 +43,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         if(intent.getAction()!=null) {
             if (intent.getAction().equals(WatchItConstants.NOTIFICATION_MESSAGE)) {
 
-                Log.d(TAG, "onReceive: Inside Notification Receiver");
+                Util.debugLog(TAG, "onReceive: Inside Notification Receiver");
                 //Intent to invoke app when click on notification.
                 //In this sample, we want to start/launch this sample app when user clicks on notification
                 //TODO: Send the user to the detailFragment of the movie shown in the Notification
@@ -86,7 +87,7 @@ public class NotificationPublisher extends BroadcastReceiver {
             notificationBuilder = new NotificationCompat.Builder(context);
         }
 
-        Log.d(TAG, "buildNotification: RandomMovieorTVSeries is not null");
+        Util.debugLog(TAG, "buildNotification: RandomMovieorTVSeries is not null");
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_normal_layout);
         expandedView = new RemoteViews(context.getPackageName(), R.layout.notification_expanded_layout);
 
@@ -105,7 +106,7 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         repeatedNotification = notificationBuilder.build();
 
-        Log.d(TAG, "buildNotification: Content View is not null");
+        Util.debugLog(TAG, "buildNotification: Content View is not null");
         Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
                 .into(contentView, R.id.image, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
 
@@ -120,7 +121,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         //TODO: Add Random TV Series to fetch
         RealmResults<Movie> movieRealmResults = realm.where(Movie.class).equalTo("isNotified", false).findAll();
 
-        Log.d(TAG, "fetchRandomMovieOrTvSeries: Size of movies with isNotified false " + movieRealmResults.size());
+        Util.debugLog(TAG, "fetchRandomMovieOrTvSeries: Size of movies with isNotified false " + movieRealmResults.size());
 
         if (movieRealmResults.size() != 0) {
 
