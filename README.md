@@ -12,7 +12,9 @@ Movie/TV Series suggestions application, uses TheMovieDb API to fetch Movie/TV S
 </a>
 </div>
 </br></br>
+
 ## Screenshots
+
 <div style="display:flex;" >
 <img style="margin-left:10px;" src="screenshots/screenshot1.png" width="29%" >
 <img style="margin-left:10px;" src="screenshots/screenshot2.png" width="29%" >
