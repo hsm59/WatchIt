@@ -12,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by hussain on 7/23/17.
  */
 
-public class Movie extends RealmObject implements Parcelable{
+public class Movie extends RealmObject implements Parcelable {
     @PrimaryKey
     @SerializedName("id")
     private int movieId;
@@ -35,7 +35,8 @@ public class Movie extends RealmObject implements Parcelable{
     private boolean isWatchLater;
     private boolean isNotified;
 
-    public Movie(){}
+    public Movie() {
+    }
 
     public Movie(Parcel parcel) {
         super();
@@ -127,11 +128,11 @@ public class Movie extends RealmObject implements Parcelable{
         dest.writeString(releaseDate);
         dest.writeString(backdropPath);
         dest.writeFloat(moviePopularity);
-        dest.writeByte((byte) (isWatchLater? 0: 1));
-        dest.writeByte((byte)(isNotified? 0: 1));
+        dest.writeByte((byte) (isWatchLater ? 0 : 1));
+        dest.writeByte((byte) (isNotified ? 0 : 1));
     }
 
-    public void readFromParcel(Parcel parcel){
+    public void readFromParcel(Parcel parcel) {
         movieId = parcel.readInt();
         movieVoteCount = parcel.readInt();
         movieVoteAverage = parcel.readFloat();
@@ -141,8 +142,8 @@ public class Movie extends RealmObject implements Parcelable{
         releaseDate = parcel.readString();
         backdropPath = parcel.readString();
         moviePopularity = parcel.readFloat();
-        isWatchLater = parcel.readByte()!=0;
-        isNotified = parcel.readByte()!=0;
+        isWatchLater = parcel.readByte() != 0;
+        isNotified = parcel.readByte() != 0;
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -156,4 +157,13 @@ public class Movie extends RealmObject implements Parcelable{
             return new Movie[0];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if (obj != null && obj instanceof Movie) {
+            isEqual = (this.movieId == ((Movie) obj).getMovieId());
+        }
+        return isEqual;
+    }
 }

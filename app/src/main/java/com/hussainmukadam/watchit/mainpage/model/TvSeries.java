@@ -157,4 +157,13 @@ public class TvSeries extends RealmObject implements Parcelable{
             return new TvSeries[0];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if (obj != null && obj instanceof TvSeries) {
+            isEqual = (this.tvId == ((TvSeries) obj).getTvId());
+        }
+        return isEqual;
+    }
 }
