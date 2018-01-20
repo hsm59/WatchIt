@@ -1,21 +1,28 @@
 package com.hussainmukadam.watchit.mainpage.view;
 
-import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
+import com.hussainmukadam.watchit.detailpage.view.DetailsTransition;
 import com.hussainmukadam.watchit.intropage.model.Genre;
+import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.MainMVPContract;
 import com.hussainmukadam.watchit.mainpage.adapter.MovieAdapter;
 import com.hussainmukadam.watchit.mainpage.adapter.TvSeriesAdapter;
@@ -32,26 +39,32 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by hussain on 7/23/17.
  */
 
-public class MainFragment extends Fragment implements MainMVPContract.View, View.OnClickListener {
+public class MainFragment extends Fragment implements MainMVPContract.View {
     private static final String TAG = "MainFragment";
     private static final int PAGE_START = 1;
     @BindView(R.id.swiping_layout)
     SwipeFlingAdapterView swipeFlingAdapterView;
     @BindView(R.id.animated_progress_bar)
     LottieAnimationView progressBar;
-    @BindView(R.id.ib_favorite)
-    ImageButton imageButtonFavorite;
-    @BindView(R.id.ib_cancel)
-    ImageButton imageButtonCancel;
+    @BindView(R.id.fab_favorite)
+    FloatingActionButton imageButtonFavorite;
+    @BindView(R.id.fab_cancel)
+    FloatingActionButton imageButtonCancel;
+    @BindView(R.id.menu_bar)
+    ImageView ivMenuBar;
+    @BindView(R.id.three_dots)
+    ImageView ivMenuPopup;
 
     private MovieAdapter movieAdapter;
     private TvSeriesAdapter tvSeriesAdapter;
     private MainMVPContract.Presenter presenter;
+    private OnMenuBarClicked onMenuBarClicked;
     private MainPresenter mainPresenter;
     private CustomSharedPreference prefs;
     private String genresList;
@@ -60,20 +73,25 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     private int currentPage = PAGE_START;
     //private Boolean isFirstFetch;
 
+    public interface OnMenuBarClicked {
+        void menuBarClicked();
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+
         isMovies = getArguments().getBoolean("IS_MOVIES");
-        Log.d(TAG, "onCreateView: Boolean " + isMovies);
+        Util.debugLog(TAG,"onCreateView: Boolean " + isMovies);
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
-
-        imageButtonFavorite.setOnClickListener(this);
-        imageButtonCancel.setOnClickListener(this);
 
         imageButtonFavorite.setEnabled(false);
         imageButtonCancel.setEnabled(false);
@@ -94,8 +112,15 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         return view;
     }
 
+    @OnClick(R.id.menu_bar)
+    public void menuBarClicked() {
+        onMenuBarClicked = (OnMenuBarClicked) getContext();
+        onMenuBarClicked.menuBarClicked();
+    }
+
+
     private String getGenres() {
-       // isFirstFetch = true;
+        // isFirstFetch = true;
         if (isMovies) {
             List<Genre> tempList = prefs.getMoviesGenrePreference();
             if (tempList.size() != 0) {
@@ -114,7 +139,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                         builder.append(",");
                     }
 
-                    Log.d(TAG, "onCreateView: Movie String " + builder.toString());
+                    Util.debugLog(TAG, "onCreateView: Movie String " + builder.toString());
                 }
                 return builder.toString();
             } else {
@@ -126,7 +151,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
                 List<Genre> tvList = new ArrayList<>();
                 Random r = new Random();
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 2; i++) {
                     tvList.add(tempList.get(r.nextInt(prefs.getTvGenrePreference().size())));
                 }
 
@@ -138,7 +163,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                         builder.append(",");
                     }
 
-                    Log.d(TAG, "onCreateView: TV String " + builder.toString());
+                    Util.debugLog(TAG, "onCreateView: TV String " + builder.toString());
                 }
                 return builder.toString();
             } else {
@@ -147,37 +172,57 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ib_favorite:
-                if (isMovies) {
-                    if (!movieAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectRight();
-                    }
-                } else {
-                    if (!tvSeriesAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectRight();
-                    }
-                }
-                break;
-            case R.id.ib_cancel:
-                if (isMovies) {
-                    if (!movieAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectLeft();
-                    }
-                } else {
-                    if (!tvSeriesAdapter.isEmpty()) {
-                        swipeFlingAdapterView.getTopCardListener().selectLeft();
-                    }
-                }
-                break;
+    @OnClick(R.id.fab_favorite)
+    public void itemFavorited() {
+        if (isMovies) {
+            if (!movieAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectRight();
+            }
+        } else {
+            if (!tvSeriesAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectRight();
+            }
         }
+    }
+
+    @OnClick(R.id.fab_cancel)
+    public void itemCancelled() {
+        if (isMovies) {
+            if (!movieAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+            }
+        } else {
+            if (!tvSeriesAdapter.isEmpty()) {
+                swipeFlingAdapterView.getTopCardListener().selectLeft();
+            }
+        }
+    }
+
+    @OnClick(R.id.three_dots)
+    public void popupMenu() {
+        PopupMenu popupMenu = new PopupMenu(getContext(), ivMenuPopup);
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (isMovies) {
+                    if (movieAdapter != null)
+                        movieAdapter.clear();
+                } else {
+                    if (tvSeriesAdapter != null)
+                        tvSeriesAdapter.clear();
+                }
+                return true;
+            }
+        });
+
+        popupMenu.show();
     }
 
 
     private void setupSwipeFlingAdapterViewForMovies(final List<Movie> movieList) {
-        Log.d(TAG, "displayMoviesCards: Movies List " + movieList.size());
+        Util.debugLog(TAG, "displayMoviesCards: Movies List " + movieList.size());
 
         movieAdapter = new MovieAdapter(getContext(), R.layout.main_item, movieList);
 
@@ -191,7 +236,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
+                Util.debugLog("LIST", "removed object!");
                 if (movieList.size() != 0) {
                     movieList.remove(0);
                     movieAdapter.notifyDataSetChanged();
@@ -210,7 +255,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Util.debugLog(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 Movie movie = (Movie) dataObject;
                 mainPresenter.storeMovieData(true, movie);
             }
@@ -218,10 +263,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
+                Util.debugLog(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-
-                //MANOJ'S CHANGES
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
@@ -230,38 +273,16 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
                 }
-                //END
-
-
-
-                /*if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = getPage(TOTAL_PAGES);
-                        isFirstFetch = false;
-                        mainPresenter.fetchNextPageMoviesByGenres(genresList, currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (itemsInAdapter == 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
             }
 
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-//                View view = swipeFlingAdapterView.getSelectedView();
-//                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                View view = swipeFlingAdapterView.getSelectedView();
+                if (view != null) {
+                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
             }
         });
 
@@ -270,13 +291,30 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Log.d(TAG, "onItemClicked: Item clicked");
+
+                if (dataObject instanceof Movie) {
+                    DetailsFragment detailsFragment = new DetailsFragment();
+
+                    Util.debugLog(TAG, "onItemClicked: The dataObject is Movie " + ((Movie) dataObject).getBackdropPath());
+                    Movie movie = (Movie) dataObject;
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("ITEM", movie);
+                    BaseActivity baseActivity = (BaseActivity) getActivity();
+                    baseActivity.saveData(bundle);
+
+                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.hide(MainFragment.this);
+                    ft.add(R.id.container, detailsFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
             }
         });
     }
 
     private void setupSwipeFlingAdapterViewForTv(final List<TvSeries> tvSeriesList) {
-        Log.d(TAG, "displayMoviesCards: Tv Series List " + tvSeriesList.size());
+        Util.debugLog(TAG, "displayMoviesCards: Tv Series List " + tvSeriesList.size());
 
         tvSeriesAdapter = new TvSeriesAdapter(getContext(), R.layout.main_item, tvSeriesList);
 
@@ -290,7 +328,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void removeFirstObjectInAdapter() {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
+                Util.debugLog("LIST", "removed object!");
                 if (tvSeriesList.size() != 0) {
                     tvSeriesList.remove(0);
                     tvSeriesAdapter.notifyDataSetChanged();
@@ -302,14 +340,14 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                 //Do something on the left!
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
-                Log.d(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Util.debugLog(TAG, "onLeftCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 TvSeries tvSeries = (TvSeries) dataObject;
                 mainPresenter.storeTvData(false, tvSeries);
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
-                Log.d(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
+                Util.debugLog(TAG, "onRightCardExit: dataObject " + dataObject.getClass().getSimpleName());
                 TvSeries tvSeries = (TvSeries) dataObject;
                 mainPresenter.storeTvData(true, tvSeries);
             }
@@ -317,9 +355,8 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                Log.d(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
+                Util.debugLog(TAG, "onAdapterAboutToEmpty: ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
 
-                //MANOJ'S CHANGES
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
@@ -328,36 +365,16 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
                 }
-                //END
-
-                /*if (itemsInAdapter == 0 && currentPage < TOTAL_PAGES && isFirstFetch) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside if ItemsInAdapter " + itemsInAdapter + " currentPage " + currentPage + " TOTAL PAGES " + TOTAL_PAGES);
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = getPage(TOTAL_PAGES);
-                        isFirstFetch = false;
-                        mainPresenter.fetchNextPageTvSeriesByGenres(genresList, currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (itemsInAdapter == 0) {
-                    Log.d(TAG, "onAdapterAboutToEmpty: Inside else");
-
-                    if (Util.isConnected(getContext())) {
-                        currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
-                    } else {
-                        Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-                    }
-                }*/
             }
 
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-//                View view = swipeFlingAdapterView.getSelectedView();
-//                view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-//                view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                View view = swipeFlingAdapterView.getSelectedView();
+                if (view != null) {
+                    view.findViewById(R.id.item_swipe_right_indicator).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.item_swipe_left_indicator).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
             }
         });
 
@@ -366,21 +383,27 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
         swipeFlingAdapterView.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Log.d(TAG, "onItemClicked: Item clicked");
+                Util.debugLog(TAG, "onItemClicked: Item clicked");
+
+                if (dataObject instanceof TvSeries) {
+                    DetailsFragment detailsFragment = new DetailsFragment();
+
+                    Util.debugLog(TAG, "onItemClicked: The dataObject is Movie " + ((TvSeries) dataObject).getTvPosterPath());
+                    TvSeries tvSeries = (TvSeries) dataObject;
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("ITEM", tvSeries);
+                    BaseActivity baseActivity = (BaseActivity) getActivity();
+                    baseActivity.saveData(bundle);
+
+                    final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.hide(MainFragment.this);
+                    ft.add(R.id.container, detailsFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
             }
         });
-    }
-
-    /*private int getPage(int totalPage) {
-        Random random = new Random();
-        int n = random.nextInt(totalPage) + 1;
-        Log.d(TAG, " NextPageNo: " + n);
-        return n;
-    }
-*/
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -399,58 +422,44 @@ public class MainFragment extends Fragment implements MainMVPContract.View, View
     }
 
     @Override
-    public void displayFirstPageMovies(List<Movie> movieList, int totalPages) {
-        setupSwipeFlingAdapterViewForMovies(movieList);
-        this.TOTAL_PAGES = totalPages;
-    }
-
-    @Override
     public void displayNextPageMovies(List<Movie> movieList, int totalPages) {
-        setupSwipeFlingAdapterViewForMovies(movieList);
-        this.TOTAL_PAGES = totalPages;
-    }
-
-    @Override
-    public void displayFirstPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        setupSwipeFlingAdapterViewForTv(tvSeriesList);
-        this.TOTAL_PAGES = totalPages;
+        if (getContext() != null) {
+            setupSwipeFlingAdapterViewForMovies(movieList);
+            this.TOTAL_PAGES = totalPages;
+        }
     }
 
     @Override
     public void displayNextPageTvSeries(List<TvSeries> tvSeriesList, int totalPages) {
-        setupSwipeFlingAdapterViewForTv(tvSeriesList);
-        this.TOTAL_PAGES = totalPages;
+        if (getContext() != null) {
+            setupSwipeFlingAdapterViewForTv(tvSeriesList);
+            this.TOTAL_PAGES = totalPages;
+        }
     }
 
     @Override
     public void showMovieResponseError(String errorMessage) {
-        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-        if (Util.isConnected(getContext())) {
-            currentPage = PAGE_START;
-            mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-        } else {
-            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        Util.debugLog(TAG, errorMessage);
+        if (getContext() != null) {
+            if (Util.isConnected(getContext())) {
+                currentPage = PAGE_START;
+                mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+            } else {
+                Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
         }
-
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-//        if(Util.isConnected(getContext())) {
-//            currentPage = PAGE_START;
-//            mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
-//        } else {
-//            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     @Override
     public void showTvSeriesResponseError(String errorMessage) {
-        Toast.makeText(getContext().getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
-        if (Util.isConnected(getContext())) {
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-        if(Util.isConnected(getContext())) {
-            currentPage = PAGE_START;
-            mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
-        } else {
-            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        Util.debugLog(TAG, errorMessage);
+        if (getContext() != null) {
+            if (Util.isConnected(getContext())) {
+                currentPage = PAGE_START;
+                mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+            } else {
+                Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

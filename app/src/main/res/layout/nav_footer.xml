@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/iv_powered_by_tmdb"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/ic_powered_by_tmdb"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:text="Ver 0.2.0.0 - beta"
+        android:textStyle="bold|italic"
+        android:textColor="@color/colorBlack"
+        />
+
+
+</android.support.constraint.ConstraintLayout>

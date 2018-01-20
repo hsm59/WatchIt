@@ -16,6 +16,7 @@ import android.util.Log;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.notification.NotificationHelper;
 import com.hussainmukadam.watchit.notification.NotificationPublisher;
+import com.hussainmukadam.watchit.util.Util;
 
 
 /**
@@ -38,16 +39,16 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnPref
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         Boolean isSuggestion = (Boolean) newValue;
-        Log.d(TAG, "onCreatePreferences: Suggestions are "+isSuggestion);
+        Util.debugLog(TAG, "onCreatePreferences: Suggestions are "+isSuggestion);
         if(isSuggestion){
             suggestions.setChecked(true);
-            Log.d(TAG, "onCreatePreferences: Is Checked "+isSuggestion);
+            Util.debugLog(TAG, "onCreatePreferences: Is Checked true");
             NotificationHelper.scheduleRepeatingRTCNotification(getContext());
             NotificationHelper.enableBootReceiver(getContext());
             return true;
         } else {
             suggestions.setChecked(false);
-            Log.d(TAG, "onCreatePreferences: Is Checked "+isSuggestion);
+            Util.debugLog(TAG, "onCreatePreferences: Is Checked "+isSuggestion);
             NotificationHelper.cancelAlarmRTC();
             NotificationHelper.disableBootReceiver(getContext());
             return false;

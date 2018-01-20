@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.text.TextUtilsCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.model.TvSeries;
+import com.hussainmukadam.watchit.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -42,9 +45,9 @@ public class TvSeriesAdapter extends ArrayAdapter<TvSeries> {
             viewHolder = new TvSeriesAdapter.ViewHolder();
 
 
-            viewHolder.tvTvSeriesTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
-            viewHolder.tvTvSeriesRelease = (TextView) convertView.findViewById(R.id.tv_release);
+            viewHolder.tvTvSeriesTitle = convertView.findViewById(R.id.tv_title);
+            viewHolder.ivPosterImage = convertView.findViewById(R.id.iv_poster);
+            viewHolder.tvTvSeriesRelease = convertView.findViewById(R.id.tv_release);
 
             convertView.setTag(viewHolder);
         } else {
@@ -55,9 +58,11 @@ public class TvSeriesAdapter extends ArrayAdapter<TvSeries> {
         if (item != null) {
             // My layout has only one TextView
             // do whatever you want with your string and long
-            Log.d(TAG, "getView: " + item.getTvBackdropPath());
+            Util.debugLog(TAG, "getView: " + item.getTvBackdropPath());
             viewHolder.tvTvSeriesTitle.setText(item.getTvTitle());
-            viewHolder.tvTvSeriesRelease.setText(item.getTvReleaseDate());
+            if (!TextUtils.isEmpty(item.getTvReleaseDate())) {
+                viewHolder.tvTvSeriesRelease.setText(item.getTvReleaseDate().substring(0, 4));
+            }
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + item.getTvPosterPath())
                     .error(R.drawable.ic_broken_image_black_24dp)

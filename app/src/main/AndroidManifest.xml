@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".WatchItApplication"
@@ -17,19 +18,38 @@
         tools:node="replace">
         <activity
             android:name=".intropage.view.IntroActivity"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mainpage.BaseActivity" />
-
+        <activity android:name=".BaseActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".watchlaterpage.view.WatchLaterActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.hussainmukadam.watchit.BaseActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hussainmukadam.watchit.BaseActivity" />
+        </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
+            android:value="" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
-            android:value="07ebecba1d66dde4bda8ea1a0abbc436" />
+        <receiver android:name=".notification.NotificationPublisher" />
+        <receiver android:name=".notification.AlarmBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+>>>>>>> 1b83d0c83d9cf21e8471817fa8ab0053b707b0e2
     </application>
 
 </manifest>

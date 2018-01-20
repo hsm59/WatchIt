@@ -1,9 +1,11 @@
 package com.hussainmukadam.watchit.mainpage.adapter;
 
 import android.content.Context;
+import android.icu.text.SimpleDateFormat;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
+import com.hussainmukadam.watchit.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -42,9 +45,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             viewHolder = new ViewHolder();
 
 
-            viewHolder.tvMovieTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            viewHolder.ivPosterImage = (ImageView) convertView.findViewById(R.id.iv_poster);
-            viewHolder.tvMovieRelease = (TextView) convertView.findViewById(R.id.tv_release);
+            viewHolder.tvMovieTitle = convertView.findViewById(R.id.tv_title);
+            viewHolder.ivPosterImage = convertView.findViewById(R.id.iv_poster);
+            viewHolder.tvMovieRelease = convertView.findViewById(R.id.tv_release);
 
             convertView.setTag(viewHolder);
         } else {
@@ -55,9 +58,11 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         if (item != null) {
             // My layout has only one TextView
             // do whatever you want with your string and long
-            Log.d(TAG, "getView: " + item.getBackdropPath());
+            Util.debugLog(TAG, "getView: " + item.getBackdropPath());
             viewHolder.tvMovieTitle.setText(item.getMovieTitle());
-            viewHolder.tvMovieRelease.setText(item.getReleaseDate());
+            if (!TextUtils.isEmpty(item.getReleaseDate())) {
+                viewHolder.tvMovieRelease.setText(item.getReleaseDate().substring(0, 4));
+            }
             Picasso.with(getContext())
                     .load(BuildConfig.imageBaseUrl + item.getPosterPath())
                     .error(R.drawable.ic_broken_image_black_24dp)
