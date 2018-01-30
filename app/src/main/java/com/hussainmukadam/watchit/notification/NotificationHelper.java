@@ -26,21 +26,20 @@ public class NotificationHelper {
     private static AlarmManager alarmManagerRTC;
     private static PendingIntent alarmIntentRTC;
 
-    /**
-     * This is the real time /wall clock time
-     *
-     * @param context
-     */
     public static void scheduleRepeatingRTCNotification(Context context) {
         //get calendar instance to be able to select what time notification should be scheduled
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
-        //TODO: Set it to only go off on Saturday nights
         calendar.set(Calendar.DAY_OF_WEEK, 7);
         calendar.set(Calendar.HOUR_OF_DAY, 20);
         calendar.set(Calendar.MINUTE, 30);
         calendar.set(Calendar.MILLISECOND, 0);
+
+        //TODO: Below code is for testing purpose only
+//        calendar.set(Calendar.HOUR_OF_DAY, 0);
+//        calendar.set(Calendar.MINUTE, 34);
+//        calendar.set(Calendar.MILLISECOND, 0);
 
         //Setting intent to class where Alarm broadcast message will be handled
         Intent intent = new Intent(context, NotificationPublisher.class);
@@ -62,7 +61,7 @@ public class NotificationHelper {
 
     private static void setRepeatingExactAlarm(long time, long interval, PendingIntent pIntent) {
         Util.debugLog(TAG, "setSingleExactAlarm: Alarm time " + time);
-        alarmManagerRTC.setRepeating(AlarmManager.RTC, time, interval, pIntent);
+        alarmManagerRTC.setRepeating(AlarmManager.RTC_WAKEUP, time, interval, pIntent);
     }
 
     public static NotificationManager getNotificationManager(Context context) {

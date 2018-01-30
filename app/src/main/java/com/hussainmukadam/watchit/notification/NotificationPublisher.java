@@ -1,11 +1,13 @@
 package com.hussainmukadam.watchit.notification;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -40,7 +42,7 @@ public class NotificationPublisher extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         //Get notification manager to manage/send notifications
 
-        if(intent.getAction()!=null) {
+        if (intent.getAction() != null) {
             if (intent.getAction().equals(WatchItConstants.NOTIFICATION_MESSAGE)) {
 
                 Util.debugLog(TAG, "onReceive: Inside Notification Receiver");
@@ -56,7 +58,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                         PendingIntent.getActivity(context, WatchItConstants.ALARM_TYPE_RTC, intentToRepeat, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 //Build notification
-//        Notification repeatedNotification = buildNotification(context, pendingIntent).build();
+//              Notification repeatedNotification = buildNotification(context, pendingIntent).build();
 
                 Movie randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
 
@@ -91,8 +93,26 @@ public class NotificationPublisher extends BroadcastReceiver {
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_normal_layout);
         expandedView = new RemoteViews(context.getPackageName(), R.layout.notification_expanded_layout);
 
-        contentView.setTextViewText(R.id.title, randomMovieOrTvSeries.getMovieTitle());
+        contentView.setTextViewText(R.id.notification_title, randomMovieOrTvSeries.getMovieTitle());
+        contentView.setTextViewText(R.id.notification_description, randomMovieOrTvSeries.getReleaseDate());
+        expandedView.setTextViewText(R.id.notification_title, randomMovieOrTvSeries.getMovieTitle());
+        expandedView.setTextViewText(R.id.notification_description, randomMovieOrTvSeries.getReleaseDate());
+        expandedView.setImageViewResource(R.id.iv_notification_small_image, R.mipmap.ic_launcher_round);
 
+        Intent doneIntent = new Intent(context, NotificationActionHandler.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("CHECK_ACTION", "done");
+        doneIntent.putExtras(bundle);
+        PendingIntent donePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, doneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        expandedView.setOnClickPendingIntent(R.id.button_notification_cancel, donePendingIntent);
+
+        Intent shareIntent = new Intent(context, NotificationActionHandler.class);
+        Bundle shareBundle = new Bundle();
+        shareBundle.putString("CHECK_ACTION", "share");
+        shareBundle.putParcelable("MOVIE_DATA", randomMovieOrTvSeries);
+        shareIntent.putExtras(shareBundle);
+        PendingIntent sharePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        expandedView.setOnClickPendingIntent(R.id.button_notification_share, sharePendingIntent);
 
         notificationBuilder
                 .setSmallIcon(R.drawable.ic_logo_notification)
@@ -108,10 +128,11 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         Util.debugLog(TAG, "buildNotification: Content View is not null");
         Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
-                .into(contentView, R.id.image, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
+                .into(contentView, R.id.iv_notification_small_image, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
 
         Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
                 .into(expandedView, R.id.iv_notification, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
+
 
         return repeatedNotification;
     }

@@ -22,7 +22,6 @@
             app:expandedTitleMarginEnd="16dp"
             app:expandedTitleMarginStart="16dp"
             android:transitionName="titleName"
-            android:fontFamily="@font/abril_fatface"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <FrameLayout

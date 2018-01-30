@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="240dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/notification_normal_layout"/>
 
     <ImageView
         android:id="@+id/iv_notification"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:src="@mipmap/ic_launcher"
-        android:scaleType="fitXY" />
+        android:layout_height="102dp"
+        app:srcCompat="@drawable/ic_image_black_24dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="1.0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/button_notification_cancel"
+            android:text="DONE"
+            android:textColor="@color/colorBlack"
+            android:drawableStart="@drawable/ic_done_black"
+            android:drawableLeft="@drawable/ic_done_black"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="45dp" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/button_notification_share"
+            android:drawableLeft="@drawable/ic_share_black"
+            android:drawableStart="@drawable/ic_share_black"
+            android:text="SHARE"
+            android:textColor="@color/colorBlack"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="45dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

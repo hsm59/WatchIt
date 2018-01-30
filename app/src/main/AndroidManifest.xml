@@ -43,6 +43,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <receiver android:name=".notification.NotificationPublisher" />
+        <receiver android:name=".notification.NotificationActionHandler"/>
         <receiver android:name=".notification.AlarmBootReceiver"
             android:enabled="false">
             <intent-filter>
