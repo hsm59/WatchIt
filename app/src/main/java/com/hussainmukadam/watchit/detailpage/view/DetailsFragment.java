@@ -1,10 +1,12 @@
 package com.hussainmukadam.watchit.detailpage.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -87,6 +89,79 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
 
+        if (getArguments() != null) {
+            if (getArguments().containsKey("NOTIFICATION_ITEM")) {
+                Log.d(TAG, "onCreateView: Inside Details Fragment contains ITEM");
+                Toast.makeText(getContext(), "From Notifications", Toast.LENGTH_SHORT).show();
+                startNotificationFlow(getArguments().getParcelable("NOTIFICATION_ITEM"));
+            }
+        } else {
+            startNormalFlow();
+        }
+
+
+        return view;
+    }
+
+    private void startNotificationFlow(Object arguments) {
+//        Movie data = (Movie) arguments;
+
+        detailsPresenter = new DetailsPresenter(this);
+        setupRecyclerView();
+
+        if (arguments instanceof Movie) {
+            isMovie = true;
+            this.movie = (Movie) arguments;
+        } else {
+            this.tvSeries = (TvSeries) arguments;
+        }
+
+        backdropTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                ivBackdropPoster.setImageBitmap(bitmap);
+                if (Build.VERSION.SDK_INT >= 21) {
+                    createPaletteAsync(bitmap);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        };
+
+        initTransitionViews();
+
+        if (getContext() != null) {
+            if (Util.isConnected(getContext())) {
+                if (isMovie) {
+                    detailsPresenter.fetchMovieDetails(movie.getMovieId());
+                } else {
+                    detailsPresenter.fetchTvSeriesDetails(tvSeries.getTvId());
+                }
+            } else {
+                Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null) {
+                    Intent i = new Intent(getContext(), BaseActivity.class);
+                    startActivity(i);
+                }
+            }
+        });
+
+
+    }
+
+    private void startNormalFlow() {
         if (getActivity() instanceof BaseActivity) {
             baseActivity = (BaseActivity) getActivity();
             data = baseActivity.getData();
@@ -147,7 +222,6 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
             }
         });
 
-        return view;
     }
 
     private void initTransitionViews() {
@@ -204,9 +278,9 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     @Override
     public void showProgress(boolean isLoading) {
         if (isLoading) {
-            Util.debugLog(TAG,"showProgress: Loading Started");
+            Util.debugLog(TAG, "showProgress: Loading Started");
         } else {
-            Util.debugLog(TAG,"showProgress: Loading Stopped");
+            Util.debugLog(TAG, "showProgress: Loading Stopped");
         }
     }
 

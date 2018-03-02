@@ -57,7 +57,6 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
         ButterKnife.bind(this);
 
         customSharedPreference = new CustomSharedPreference(this);
-        enableSuggestionNotifications();
 
         if(customSharedPreference.isIntroDisplayed()) {
             Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
@@ -140,6 +139,7 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
         if(customSharedPreference.getMoviesGenrePreference()!=null && customSharedPreference.getTvGenrePreference()!=null) {
             if(customSharedPreference.getMoviesGenrePreference().size() >= 3 && customSharedPreference.getTvGenrePreference().size() >= 3) {
                 customSharedPreference.setIntroDisplayed(true);
+                enableSuggestionNotifications();
                 Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
                 startActivity(startMainActivity);
                 finish();
@@ -152,6 +152,7 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
     }
 
     private void enableSuggestionNotifications(){
+        Toast.makeText(this, "Suggestion Notifications are turned on by default, goto settings for disabling them", Toast.LENGTH_LONG).show();
         NotificationHelper.scheduleRepeatingRTCNotification(this);
         NotificationHelper.enableBootReceiver(this);
     }

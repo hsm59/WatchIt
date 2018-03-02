@@ -11,9 +11,13 @@ import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.detailpage.view.DetailsFragment;
+import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
+import com.hussainmukadam.watchit.notification.NotificationHelper;
 import com.hussainmukadam.watchit.opensourcepage.OpenSourceFragment;
 import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterActivity;
@@ -31,7 +35,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
  * Created by hussain on 7/21/17.
  */
 
-public class BaseActivity extends AppCompatActivity implements MainFragment.OnMenuBarClicked{
+public class BaseActivity extends AppCompatActivity implements MainFragment.OnMenuBarClicked {
     private static final String TAG = "BaseActivity";
     Bundle savedData = new Bundle();
     Drawer drawer;
@@ -43,10 +47,44 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setupDrawer();
 
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("IS_MOVIES", true);
+        if (getIntent().hasExtra("NOTIFICATION_DETAIL")) {
+            Log.d(TAG, "onCreate: notification  detail");
 
-        switchFragment(new MainFragment(), bundle, "MOVIES_FRAG");
+            DetailsFragment detailsFragment = new DetailsFragment();
+            Bundle bundleData = new Bundle();
+            bundleData.putParcelable("NOTIFICATION_ITEM", getIntent().getParcelableExtra("NOTIFICATION_DETAIL"));
+            detailsFragment.setArguments(bundleData);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, detailsFragment, "DetailsFragment")
+                    .commitAllowingStateLoss();
+        } else {
+
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("IS_MOVIES", true);
+
+            switchFragment(new MainFragment(), bundle, "MOVIES_FRAG");
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if(extras != null){
+            if(extras.containsKey("NOTIFICATION_DETAIL"))
+            {
+                Log.d(TAG, "onNewIntent: Inside new Intent");
+                setContentView(R.layout.activity_main);
+                // extract the extra-data in the Notification
+
+                DetailsFragment detailsFragment = new DetailsFragment();
+                Bundle bundleData = new Bundle();
+                bundleData.putParcelable("NOTIFICATION_ITEM", extras.getParcelable("NOTIFICATION_DETAIL"));
+                detailsFragment.setArguments(bundleData);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, detailsFragment, "DetailsFragment")
+                        .commitAllowingStateLoss();
+            }
+        }
     }
 
     private void setupDrawer() {
@@ -114,7 +152,6 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                     .addToBackStack(null)
                     .commit();
         }
-
 
 
     }

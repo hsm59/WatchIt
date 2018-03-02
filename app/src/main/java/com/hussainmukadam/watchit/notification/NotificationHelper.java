@@ -31,30 +31,22 @@ public class NotificationHelper {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         //Setting time of the day (8am here) when notification will be sent every day (default)
-        calendar.set(Calendar.DAY_OF_WEEK, 7);
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 30);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        //TODO: Below code is for testing purpose only
-//        calendar.set(Calendar.HOUR_OF_DAY, 0);
-//        calendar.set(Calendar.MINUTE, 34);
+//        calendar.set(Calendar.DAY_OF_WEEK, 7);
+//        calendar.set(Calendar.HOUR_OF_DAY, 20);
+//        calendar.set(Calendar.MINUTE, 30);
 //        calendar.set(Calendar.MILLISECOND, 0);
 
-        //Setting intent to class where Alarm broadcast message will be handled
+        //TODO: Below code is for testing purpose only
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 48);
+        calendar.set(Calendar.MILLISECOND, 0);
+
         Intent intent = new Intent(context, NotificationPublisher.class);
         intent.setAction(WatchItConstants.NOTIFICATION_MESSAGE);
-        //Setting alarm pending intent
         alarmIntentRTC = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //getting instance of AlarmManager service
         alarmManagerRTC = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-        //Setting alarm to wake up device every day for clock time.
-        //AlarmManager.RTC_WAKEUP is responsible to wake up device for sure, which may not be good practice all the time.
-        // Use this when you know what you're doing.
-        //Use RTC when you don't need to wake up device, but want to deliver the notification whenever device is woke-up
-        //We'll be using RTC.WAKEUP for demo purpose only
         long interval = 7 * AlarmManager.INTERVAL_DAY;
         setRepeatingExactAlarm(calendar.getTimeInMillis(), interval, alarmIntentRTC);
     }

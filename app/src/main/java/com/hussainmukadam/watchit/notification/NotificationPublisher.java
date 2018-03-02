@@ -1,11 +1,14 @@
 package com.hussainmukadam.watchit.notification;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -15,12 +18,16 @@ import android.widget.Toast;
 
 import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.R;
+import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.util.WatchItConstants;
 import com.hussainmukadam.watchit.BaseActivity;
 import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,125 +45,257 @@ public class NotificationPublisher extends BroadcastReceiver {
     private static final String TAG = "NotificationPublisher";
     private static final String CHANNEL_ID = "1";
 
+
+    private NotificationManager notifManager;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        //Get notification manager to manage/send notifications
 
         if (intent.getAction() != null) {
+            Util.debugLog(TAG, "onReceive: Inside Notification Receiver Outside getAction()");
             if (intent.getAction().equals(WatchItConstants.NOTIFICATION_MESSAGE)) {
 
                 Util.debugLog(TAG, "onReceive: Inside Notification Receiver");
-                //Intent to invoke app when click on notification.
-                //In this sample, we want to start/launch this sample app when user clicks on notification
-                //TODO: Send the user to the detailFragment of the movie shown in the Notification
-                Intent intentToRepeat = new Intent(context, BaseActivity.class);
-                //set flag to restart/relaunch the app
-                intentToRepeat.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                //Pending intent to handle launch of Activity in intent above
-                PendingIntent pendingIntent =
-                        PendingIntent.getActivity(context, WatchItConstants.ALARM_TYPE_RTC, intentToRepeat, PendingIntent.FLAG_UPDATE_CURRENT);
+                Object randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
 
-                //Build notification
-//              Notification repeatedNotification = buildNotification(context, pendingIntent).build();
-
-                Movie randomMovieOrTvSeries = fetchRandomMovieOrTvSeries();
-
-                //Send local notification
-                if (randomMovieOrTvSeries != null) {
-                    NotificationHelper.getNotificationManager(context).notify(WatchItConstants.NOTIFICATION_ID, buildNotification(context, pendingIntent, randomMovieOrTvSeries));
+                if (randomMovieOrTvSeries != null && Util.isConnected(context)) {
+                    createSuggestionNotification(randomMovieOrTvSeries, context);
                 } else {
-                    Toast.makeText(context, "Suggestions notifications enabled", Toast.LENGTH_SHORT).show();
+                    Util.debugLog(TAG, "Inside else");
+                    createRetentionNotification(context);
                 }
             }
         }
     }
 
-    private Notification buildNotification(Context context, PendingIntent pendingIntent, Movie randomMovieOrTvSeries) {
-        Notification repeatedNotification;
-        RemoteViews contentView = null;
-        RemoteViews expandedView = null;
+    public void createSuggestionNotification(Object randomMovieOrTvSeries, Context context) {
+        final int NOTIFY_ID = 1002;
+        Movie movie = null;
+        TvSeries tvSeries = null;
 
-        Date date = new Date(System.currentTimeMillis());
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSS", Locale.US);
-        String dateFormatted = dateFormat.format(date);
 
-        NotificationCompat.Builder notificationBuilder;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        if (randomMovieOrTvSeries instanceof Movie) {
+            movie = (Movie) randomMovieOrTvSeries;
         } else {
-            notificationBuilder = new NotificationCompat.Builder(context);
+            tvSeries = (TvSeries) randomMovieOrTvSeries;
         }
 
-        Util.debugLog(TAG, "buildNotification: RandomMovieorTVSeries is not null");
-        contentView = new RemoteViews(context.getPackageName(), R.layout.notification_normal_layout);
-        expandedView = new RemoteViews(context.getPackageName(), R.layout.notification_expanded_layout);
+        // There are hardcoding only for show it's just strings
+        String name = "WatchIt Channels";
+        String id = "Suggestions"; // The user-visible name of the channel.
+        String description = "Movie/TV Series Suggestion on Weekends"; // The user-visible description of the channel.
 
-        contentView.setTextViewText(R.id.notification_title, randomMovieOrTvSeries.getMovieTitle());
-        contentView.setTextViewText(R.id.notification_description, randomMovieOrTvSeries.getReleaseDate());
-        expandedView.setTextViewText(R.id.notification_title, randomMovieOrTvSeries.getMovieTitle());
-        expandedView.setTextViewText(R.id.notification_description, randomMovieOrTvSeries.getReleaseDate());
-        expandedView.setImageViewResource(R.id.iv_notification_small_image, R.mipmap.ic_launcher_round);
-
-        Intent doneIntent = new Intent(context, NotificationActionHandler.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("CHECK_ACTION", "done");
-        doneIntent.putExtras(bundle);
-        PendingIntent donePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, doneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.id.button_notification_cancel, donePendingIntent);
-
-        Intent shareIntent = new Intent(context, NotificationActionHandler.class);
-        Bundle shareBundle = new Bundle();
-        shareBundle.putString("CHECK_ACTION", "share");
-        shareBundle.putParcelable("MOVIE_DATA", randomMovieOrTvSeries);
-        shareIntent.putExtras(shareBundle);
-        PendingIntent sharePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.id.button_notification_share, sharePendingIntent);
-
-        notificationBuilder
-                .setSmallIcon(R.drawable.ic_logo_notification)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentIntent(pendingIntent)
-                .setCustomContentView(contentView)
-                .setCustomBigContentView(expandedView)
-                .setTicker(dateFormatted)
-                .setAutoCancel(true);
+        Intent intent;
+        PendingIntent pendingIntent;
+        NotificationCompat.Builder builder;
 
 
-        repeatedNotification = notificationBuilder.build();
+        if (notifManager == null) {
+            notifManager = NotificationHelper.getNotificationManager(context);
+        }
 
-        Util.debugLog(TAG, "buildNotification: Content View is not null");
-        Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
-                .into(contentView, R.id.iv_notification_small_image, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
 
-        Picasso.with(context).load(BuildConfig.imageBaseUrl + randomMovieOrTvSeries.getPosterPath())
-                .into(expandedView, R.id.iv_notification, WatchItConstants.NOTIFICATION_ID, repeatedNotification);
+            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+
+            if (mChannel == null) {
+                mChannel = new NotificationChannel(id, name, importance);
+                mChannel.setDescription(description);
+                mChannel.enableVibration(true);
+                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                notifManager.createNotificationChannel(mChannel);
+            }
+
+            builder = new NotificationCompat.Builder(context, id);
+            //context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+            Intent launchIntent = new Intent(context, BaseActivity.class);
+            launchIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            if (movie != null) {
+                launchIntent.putExtra("NOTIFICATION_DETAIL", movie);
+            } else {
+                launchIntent.putExtra("NOTIFICATION_DETAIL", tvSeries);
+            }
+            pendingIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            if (movie != null) {
+                builder.setContentTitle(movie.getMovieTitle())
+                        .setTicker(movie.getMovieTitle());
+            } else {
+                builder.setContentTitle(tvSeries.getTvTitle())
+                        .setTicker(tvSeries.getTvTitle());
+            }
 
 
-        return repeatedNotification;
+            builder  // required
+                    .setSmallIcon(R.drawable.ic_logo_notification) // required
+                    .setContentText(context.getString(R.string.app_name))  // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        } else {
+
+            builder = new NotificationCompat.Builder(context);
+
+            intent = new Intent(context, BaseActivity.class);
+            if (movie != null) {
+                intent.putExtra("NOTIFICATION_DETAIL", movie);
+            } else {
+                intent.putExtra("NOTIFICATION_DETAIL", tvSeries);
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+            if (movie != null) {
+                builder.setContentTitle(movie.getMovieTitle())
+                        .setTicker(movie.getMovieTitle());
+            } else {
+                builder.setContentTitle(tvSeries.getTvTitle())
+                        .setTicker(tvSeries.getTvTitle());
+            }
+
+            builder
+                    .setSmallIcon(R.drawable.ic_logo_notification) // required
+                    .setContentText(context.getString(R.string.app_name))  // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setPriority(Notification.PRIORITY_HIGH);
+        }
+
+        Notification notification = builder.build();
+        notifManager.notify(NOTIFY_ID, notification);
+
     }
 
-    private Movie fetchRandomMovieOrTvSeries() {
+    private void createRetentionNotification(Context context) {
+        final int NOTIFY_ID = 1004;
+
+        // There are hardcoding only for show it's just strings
+        String name = "WatchIt Channels";
+        String id = "Retention"; // The user-visible name of the channel.
+        String description = "Check out Watch it! Discover new Movies/TV Series to Watch"; // The user-visible description of the channel.
+
+        Intent intent;
+        PendingIntent pendingIntent;
+        NotificationCompat.Builder builder;
+
+        if (notifManager == null) {
+            notifManager = NotificationHelper.getNotificationManager(context);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+
+            if (mChannel == null) {
+                mChannel = new NotificationChannel(id, name, importance);
+                mChannel.setDescription(description);
+                mChannel.enableVibration(true);
+                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                notifManager.createNotificationChannel(mChannel);
+            }
+
+            builder = new NotificationCompat.Builder(context, id);
+
+            intent = new Intent(context, BaseActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentTitle(description)  // required
+                    .setSmallIcon(R.drawable.ic_logo_notification) // required
+                    .setContentText(context.getString(R.string.app_name))  // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setTicker(context.getString(R.string.app_name))
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        } else {
+
+            builder = new NotificationCompat.Builder(context);
+
+            intent = new Intent(context, BaseActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentTitle(description)                           // required
+                    .setSmallIcon(R.drawable.ic_logo_notification) // required
+                    .setContentText(context.getString(R.string.app_name))  // required
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setTicker(context.getString(R.string.app_name))
+                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
+                    .setPriority(Notification.PRIORITY_HIGH);
+        }
+
+        Notification notification = builder.build();
+        notifManager.notify(NOTIFY_ID, notification);
+
+    }
+
+
+    private Object fetchRandomMovieOrTvSeries() {
         Realm realm = Realm.getDefaultInstance();
         //TODO: Add Random TV Series to fetch
         RealmResults<Movie> movieRealmResults = realm.where(Movie.class).equalTo("isNotified", false).findAll();
+
+        RealmResults<TvSeries> tvSeriesRealmResults = realm.where(TvSeries.class).equalTo("isNotified", false).findAll();
 
         Util.debugLog(TAG, "fetchRandomMovieOrTvSeries: Size of movies with isNotified false " + movieRealmResults.size());
 
         if (movieRealmResults.size() != 0) {
 
-            Random r = new Random();
-            int randomNumber = r.nextInt(movieRealmResults.size());
+            if (tvSeriesRealmResults.size() != 0) {
 
-            Movie movie = movieRealmResults.get(randomNumber);
+                if (movieRealmResults.size() > tvSeriesRealmResults.size()) {
+                    Random r = new Random();
+                    int randomNumber = r.nextInt(movieRealmResults.size());
 
-            realm.beginTransaction();
-            movieRealmResults.get(randomNumber).setNotified(true);
-            realm.commitTransaction();
+                    Movie movie = movieRealmResults.get(randomNumber);
+
+                    realm.beginTransaction();
+                    movieRealmResults.get(randomNumber).setNotified(true);
+                    realm.commitTransaction();
 
 
-            return movie;
+                    return movie;
+
+                } else {
+
+                    Random r = new Random();
+                    int randomNumber = r.nextInt(tvSeriesRealmResults.size());
+
+                    TvSeries tvSeries = tvSeriesRealmResults.get(randomNumber);
+
+                    realm.beginTransaction();
+                    tvSeriesRealmResults.get(randomNumber).setNotified(true);
+                    realm.commitTransaction();
+
+
+                    return tvSeries;
+                }
+
+            } else {
+
+                Random r = new Random();
+                int randomNumber = r.nextInt(movieRealmResults.size());
+
+                Movie movie = movieRealmResults.get(randomNumber);
+
+                realm.beginTransaction();
+                movieRealmResults.get(randomNumber).setNotified(true);
+                realm.commitTransaction();
+
+
+                return movie;
+            }
+
         } else {
             return null;
         }
