@@ -38,10 +38,11 @@ android {
         applicationId "com.hussainmukadam.watchit"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 7
-        versionName "0.2.0.0"
+        versionCode 8
+        versionName "1.0.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        manifestPlaceholders = [api_key_crashlytics: FABRIC_API_KEY]
     }
     buildTypes {
         debug {
@@ -49,7 +50,7 @@ android {
 //            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String',   'apiKey', '""'
+            buildConfigField 'String', 'apiKey', TMDB_API_KEY
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w342/"'
         }
         release {
@@ -57,7 +58,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'baseUrl', '"https://api.themoviedb.org/3/"'
-            buildConfigField 'String', 'apiKey', '""'
+            buildConfigField 'String', 'apiKey', TMDB_API_KEY
             buildConfigField 'String', 'imageBaseUrl', '"http://image.tmdb.org/t/p/w342/"'
         }
     }

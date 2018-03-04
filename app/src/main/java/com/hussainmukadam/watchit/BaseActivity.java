@@ -69,9 +69,8 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
     @Override
     protected void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
-        if(extras != null){
-            if(extras.containsKey("NOTIFICATION_DETAIL"))
-            {
+        if (extras != null) {
+            if (extras.containsKey("NOTIFICATION_DETAIL")) {
                 Log.d(TAG, "onNewIntent: Inside new Intent");
                 setContentView(R.layout.activity_main);
                 // extract the extra-data in the Notification

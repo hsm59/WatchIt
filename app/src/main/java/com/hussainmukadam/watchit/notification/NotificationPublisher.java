@@ -70,15 +70,45 @@ public class NotificationPublisher extends BroadcastReceiver {
     }
 
     public void createSuggestionNotification(Object randomMovieOrTvSeries, Context context) {
-        final int NOTIFY_ID = 1002;
+        NotificationImageTask notificationImageTask = new NotificationImageTask(context);
         Movie movie = null;
         TvSeries tvSeries = null;
+        Bitmap largeIconBitmap = null;
+        PendingIntent sharePendingIntent;
+
+        Intent doneIntent = new Intent(context, NotificationActionHandler.class);
+        Bundle bundle = new Bundle();
+        doneIntent.setAction("DONE_ACTION");
+        doneIntent.putExtras(bundle);
+        PendingIntent donePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, doneIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         if (randomMovieOrTvSeries instanceof Movie) {
             movie = (Movie) randomMovieOrTvSeries;
+            Intent shareIntent = new Intent(context, NotificationActionHandler.class);
+            Bundle shareBundle = new Bundle();
+            shareBundle.putParcelable("NOTIF_DATA", movie);
+            shareIntent.setAction("SHARE_ACTION");
+            shareIntent.putExtras(shareBundle);
+            sharePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            try {
+                largeIconBitmap = notificationImageTask.execute(BuildConfig.imageBaseUrl + movie.getPosterPath()).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             tvSeries = (TvSeries) randomMovieOrTvSeries;
+            Intent shareIntent = new Intent(context, NotificationActionHandler.class);
+            Bundle shareBundle = new Bundle();
+            shareBundle.putParcelable("NOTIF_DATA", tvSeries);
+            shareIntent.setAction("SHARE_ACTION");
+            shareIntent.putExtras(shareBundle);
+            sharePendingIntent = PendingIntent.getBroadcast(context, WatchItConstants.ALARM_TYPE_RTC, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            try {
+                largeIconBitmap = notificationImageTask.execute(BuildConfig.imageBaseUrl + tvSeries.getTvPosterPath()).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         // There are hardcoding only for show it's just strings
@@ -99,6 +129,7 @@ public class NotificationPublisher extends BroadcastReceiver {
             int importance = NotificationManager.IMPORTANCE_HIGH;
 
             NotificationChannel mChannel = notifManager.getNotificationChannel(id);
+
 
             if (mChannel == null) {
                 mChannel = new NotificationChannel(id, name, importance);
@@ -121,22 +152,27 @@ public class NotificationPublisher extends BroadcastReceiver {
 
             if (movie != null) {
                 builder.setContentTitle(movie.getMovieTitle())
-                        .setTicker(movie.getMovieTitle());
+                        .setTicker(movie.getMovieTitle())
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(largeIconBitmap));
             } else {
                 builder.setContentTitle(tvSeries.getTvTitle())
-                        .setTicker(tvSeries.getTvTitle());
+                        .setTicker(tvSeries.getTvTitle())
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(largeIconBitmap));
             }
 
 
-            builder  // required
-                    .setSmallIcon(R.drawable.ic_logo_notification) // required
-                    .setContentText(context.getString(R.string.app_name))  // required
+            builder.setSmallIcon(R.drawable.ic_logo_notification)
+                    .setContentText(context.getString(R.string.app_name))
+                    .addAction(R.drawable.ic_done_black_24dp, "DONE", donePendingIntent)
+                    .addAction(R.drawable.ic_share_black_24dp, "SHARE", sharePendingIntent)
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
                     .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
         } else {
-
+            Log.d(TAG, "createSuggestionNotification: Inside Else lower SDK");
             builder = new NotificationCompat.Builder(context);
 
             intent = new Intent(context, BaseActivity.class);
@@ -148,33 +184,29 @@ public class NotificationPublisher extends BroadcastReceiver {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
             if (movie != null) {
                 builder.setContentTitle(movie.getMovieTitle())
-                        .setTicker(movie.getMovieTitle());
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(largeIconBitmap));
             } else {
                 builder.setContentTitle(tvSeries.getTvTitle())
-                        .setTicker(tvSeries.getTvTitle());
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(largeIconBitmap));
             }
 
-            builder
-                    .setSmallIcon(R.drawable.ic_logo_notification) // required
-                    .setContentText(context.getString(R.string.app_name))  // required
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true)
+            builder.setSmallIcon(R.drawable.ic_logo_notification)
+                    .setContentText(context.getString(R.string.app_name))
+                    .addAction(R.drawable.ic_done_black, "DONE", donePendingIntent)
+                    .addAction(R.drawable.ic_share_black, "SHARE", sharePendingIntent)
                     .setContentIntent(pendingIntent)
-                    .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400})
                     .setPriority(Notification.PRIORITY_HIGH);
         }
 
-        Notification notification = builder.build();
-        notifManager.notify(NOTIFY_ID, notification);
+        notifManager.notify(WatchItConstants.NOTIFICATION_ID, builder.build());
 
     }
 
     private void createRetentionNotification(Context context) {
-        final int NOTIFY_ID = 1004;
-
         // There are hardcoding only for show it's just strings
         String name = "WatchIt Channels";
         String id = "Retention"; // The user-visible name of the channel.
@@ -235,7 +267,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         }
 
         Notification notification = builder.build();
-        notifManager.notify(NOTIFY_ID, notification);
+        notifManager.notify(WatchItConstants.NOTIFICATION_ID, notification);
 
     }
 

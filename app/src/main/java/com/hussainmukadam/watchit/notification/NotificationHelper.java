@@ -30,16 +30,16 @@ public class NotificationHelper {
         //get calendar instance to be able to select what time notification should be scheduled
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        //Setting time of the day (8am here) when notification will be sent every day (default)
-//        calendar.set(Calendar.DAY_OF_WEEK, 7);
-//        calendar.set(Calendar.HOUR_OF_DAY, 20);
-//        calendar.set(Calendar.MINUTE, 30);
-//        calendar.set(Calendar.MILLISECOND, 0);
+
+        calendar.set(Calendar.DAY_OF_WEEK, 7);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         //TODO: Below code is for testing purpose only
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 48);
-        calendar.set(Calendar.MILLISECOND, 0);
+//        calendar.set(Calendar.HOUR_OF_DAY, 13);
+//        calendar.set(Calendar.MINUTE, 5);
+//        calendar.set(Calendar.MILLISECOND, 0);
 
         Intent intent = new Intent(context, NotificationPublisher.class);
         intent.setAction(WatchItConstants.NOTIFICATION_MESSAGE);

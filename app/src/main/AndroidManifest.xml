@@ -37,7 +37,7 @@
         </activity>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="" />
+            android:value="${api_key_crashlytics}" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

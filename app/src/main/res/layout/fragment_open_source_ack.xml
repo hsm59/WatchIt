@@ -22,11 +22,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:textColor="@color/colorWhite"
                 android:text="@string/app_includes_libraries" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -36,6 +38,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2013_square_inc" />
@@ -43,6 +46,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -61,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
+                android:textColor="@color/colorWhite"
                 android:layout_marginStart="8dp"
                 android:text="@string/os_picasso"
                 android:textStyle="bold" />
@@ -68,6 +73,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2013_square_inc" />
@@ -75,6 +81,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -91,6 +98,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -100,6 +108,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2013_square_inc" />
@@ -107,6 +116,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -123,6 +133,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -132,6 +143,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2013_jake_wharton" />
@@ -139,6 +151,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -146,6 +159,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
@@ -155,6 +169,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -164,6 +179,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2014_dionysis_lorentzos" />
@@ -171,6 +187,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -187,6 +204,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -196,6 +214,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2016_airbnb_inc" />
@@ -203,6 +222,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -219,6 +239,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
@@ -228,6 +249,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/copyright_2016_mike_penz" />
@@ -235,6 +257,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/license_apache_2_0" />
@@ -251,6 +274,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"

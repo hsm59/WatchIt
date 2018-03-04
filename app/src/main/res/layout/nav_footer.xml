@@ -19,7 +19,7 @@
         android:paddingTop="8dp"
         android:paddingLeft="8dp"
         android:paddingStart="8dp"
-        android:text="Ver 0.2.0.0 - beta"
+        android:text="Ver 1.0.0.0"
         android:textStyle="bold|italic"
         android:textColor="@color/colorBlack"
         />

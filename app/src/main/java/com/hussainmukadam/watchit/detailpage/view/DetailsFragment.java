@@ -73,6 +73,7 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
     Toolbar toolbar;
 
     private DetailsMVPContract.DetailsBasePresenter detailsBasePresenter;
+    Toolbar customToolbar;
     DetailsPresenter detailsPresenter;
     Movie movie;
     TvSeries tvSeries;
@@ -167,6 +168,8 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
             data = baseActivity.getData();
         } else {
             watchLaterActivity = (WatchLaterActivity) getActivity();
+            customToolbar = watchLaterActivity.findViewById(R.id.toolbar_main);
+            customToolbar.setVisibility(View.GONE);
             data = watchLaterActivity.getData();
         }
 

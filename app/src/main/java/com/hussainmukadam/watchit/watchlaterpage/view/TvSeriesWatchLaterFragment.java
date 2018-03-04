@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class TvSeriesWatchLaterFragment extends Fragment implements TvSeriesWatc
     @BindView(R.id.rv_tvseries_watch_later)
     RecyclerView rvTvSeriesWatchLater;
 
+    Toolbar toolbarMain;
     Realm realm;
 
     public static TvSeriesWatchLaterFragment newInstance(){
@@ -75,5 +77,12 @@ public class TvSeriesWatchLaterFragment extends Fragment implements TvSeriesWatc
         ft.hide(TvSeriesWatchLaterFragment.this);
         ft.addToBackStack(null);
         ft.commit();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        toolbarMain = getActivity().findViewById(R.id.toolbar_main);
+        toolbarMain.setVisibility(View.VISIBLE);
     }
 }

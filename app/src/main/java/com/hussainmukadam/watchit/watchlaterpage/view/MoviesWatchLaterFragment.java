@@ -9,6 +9,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class MoviesWatchLaterFragment extends Fragment implements MoviesWatchLat
     @BindView(R.id.rv_movies_watch_later)
     RecyclerView rvMoviesWatchLater;
 
+    Toolbar toolbarMain;
     Realm realm;
 
     public static MoviesWatchLaterFragment newInstance() {
@@ -80,5 +82,12 @@ public class MoviesWatchLaterFragment extends Fragment implements MoviesWatchLat
         ft.addToBackStack(null);
         ft.commit();
 
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        toolbarMain = getActivity().findViewById(R.id.toolbar_main);
+        toolbarMain.setVisibility(View.VISIBLE);
     }
 }

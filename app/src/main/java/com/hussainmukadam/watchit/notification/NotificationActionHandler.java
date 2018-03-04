@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.hussainmukadam.watchit.mainpage.model.Movie;
+import com.hussainmukadam.watchit.mainpage.model.TvSeries;
 import com.hussainmukadam.watchit.util.WatchItConstants;
 
 /**
@@ -20,13 +21,14 @@ public class NotificationActionHandler extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getExtras() != null) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                Log.d(TAG, "onReceive: " + bundle.getString("CHECK_ACTION"));
-                if (bundle.getString("CHECK_ACTION").equals("done")) {
+            String action = intent.getAction();
+
+            if (action != null) {
+                if (action.equals("DONE_ACTION")) {
                     handleNotificationDone(context);
                 } else {
-                    Movie randomMovie = bundle.getParcelable("MOVIE_DATA");
+                    Bundle bundle = intent.getExtras();
+                    Object randomMovie = bundle.getParcelable("NOTIF_DATA");
                     handleNotificationShare(context, randomMovie);
                 }
             }
@@ -37,13 +39,20 @@ public class NotificationActionHandler extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) mContext
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(WatchItConstants.NOTIFICATION_ID);
+        mContext.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
     }
 
-    private void handleNotificationShare(Context mContext, Movie randomMovieData) {
+    private void handleNotificationShare(Context mContext, Object randomMovieData) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Let's watch "+randomMovieData.getMovieTitle()+ " together!");
+        if (randomMovieData instanceof Movie) {
+            Movie movie = (Movie) randomMovieData;
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Let's watch " + movie.getMovieTitle() + " together!");
+        } else {
+            TvSeries tvSeries = (TvSeries) randomMovieData;
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Let's watch " + tvSeries.getTvTitle() + " together!");
+        }
         sendIntent.setType("text/plain");
         mContext.startActivity(sendIntent);
         handleNotificationDone(mContext);
