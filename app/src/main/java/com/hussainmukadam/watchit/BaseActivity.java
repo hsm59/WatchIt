@@ -3,14 +3,23 @@ package com.hussainmukadam.watchit;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hussainmukadam.watchit.R;
@@ -23,15 +32,9 @@ import com.hussainmukadam.watchit.preferencepage.GenreFragment;
 import com.hussainmukadam.watchit.preferencepage.PreferenceFragment;
 import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterActivity;
-import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
-import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by hussain on 7/21/17.
@@ -40,18 +43,20 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 public class BaseActivity extends AppCompatActivity implements MainFragment.OnMenuBarClicked {
     private static final String TAG = "BaseActivity";
     Bundle savedData = new Bundle();
-    Drawer drawer;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.navi_view)
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        setupDrawer();
+        ButterKnife.bind(this);
+
 
         if (getIntent().hasExtra("NOTIFICATION_DETAIL")) {
-            Log.d(TAG, "onCreate: notification  detail");
-
             DetailsFragment detailsFragment = new DetailsFragment();
             Bundle bundleData = new Bundle();
             bundleData.putParcelable("NOTIFICATION_ITEM", getIntent().getParcelableExtra("NOTIFICATION_DETAIL"));
@@ -60,12 +65,12 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                     .replace(R.id.container, detailsFragment, "DetailsFragment")
                     .commitAllowingStateLoss();
         } else {
-
             Bundle bundle = new Bundle();
             bundle.putBoolean("IS_MOVIES", true);
-
             switchFragment(new MainFragment(), bundle, "MOVIES_FRAG");
         }
+
+        handleNavigationDrawerItems();
     }
 
     @Override
@@ -86,57 +91,6 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                         .commitAllowingStateLoss();
             }
         }
-    }
-
-    private void setupDrawer() {
-        drawer = new DrawerBuilder()
-                .withActivity(this)
-                .withTranslucentStatusBar(true)
-                .withFooterDivider(false)
-                .withStickyFooter(R.layout.nav_footer)
-                .addDrawerItems(
-                        new SectionDrawerItem().withName("Explore").withDivider(false),
-                        new PrimaryDrawerItem().withName("Movies")
-                                .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_movie_alt).sizeDp(24)),
-                        new PrimaryDrawerItem().withName("TV Series")
-                                .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_tv_alt_play).sizeDp(24)),
-                        new PrimaryDrawerItem().withName("Watch Later")
-                                .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_calendar_check).sizeDp(24)),
-                        new SectionDrawerItem().withName("About"),
-                        new SecondaryDrawerItem().withName("Settings")
-                                .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_settings).sizeDp(24).colorRes(R.color.colorLightGray)),
-                        new SecondaryDrawerItem().withName("Open Source Acknowledgements")
-                                .withIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_github_alt).sizeDp(24).colorRes(R.color.colorLightGray)))
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        Util.debugLog(TAG, "onItemClick: Position " + position);
-                        switch (position) {
-                            case 1:
-                                Bundle bundleMovies = new Bundle();
-                                bundleMovies.putBoolean("IS_MOVIES", true);
-                                switchFragment(new MainFragment(), bundleMovies, "MOVIES_FRAG");
-                                break;
-                            case 2:
-                                Bundle bundleTv = new Bundle();
-                                bundleTv.putBoolean("IS_MOVIES", false);
-                                switchFragment(new MainFragment(), bundleTv, "TV_FRAG");
-                                break;
-                            case 3:
-                                Intent watchLaterIntent = new Intent(BaseActivity.this, WatchLaterActivity.class);
-                                startActivity(watchLaterIntent);
-                                break;
-                            case 5:
-                                switchFragment(new PreferenceFragment(), null, "SETTINGS_FRAG");
-                                break;
-                            case 6:
-                                switchFragment(new OpenSourceFragment(), null, "OPEN_SOURCE_FRAG");
-                                break;
-                        }
-                        return false;
-                    }
-                })
-                .build();
     }
 
     private void switchFragment(Fragment mFragment, Bundle bundle, String tag) {
@@ -172,7 +126,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
 
     @Override
     public void menuBarClicked() {
-        drawer.openDrawer();
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     @Override
@@ -181,5 +135,62 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+    }
+
+    private void handleNavigationDrawerItems() {
+        final TextView tvNavMovies = findViewById(R.id.tv_nav_movies);
+        final TextView tvNavTvSeries = findViewById(R.id.tv_nav_tv_series);
+        SwitchCompat switchCompat = findViewById(R.id.switch_movies_tv);
+        LinearLayout llFavorites = findViewById(R.id.ll_favorites);
+        LinearLayout llPreference = findViewById(R.id.ll_preference);
+        LinearLayout llOpenSource = findViewById(R.id.ll_open_source);
+
+        tvNavMovies.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+                    tvNavMovies.setTextColor(getResources().getColor(R.color.colorLighterGray));
+                    tvNavTvSeries.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                    Bundle bundleTv = new Bundle();
+                    bundleTv.putBoolean("IS_MOVIES", false);
+                    switchFragment(new MainFragment(), bundleTv, "TV_FRAG");
+                } else {
+                    tvNavMovies.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                    tvNavTvSeries.setTextColor(getResources().getColor(R.color.colorLighterGray));
+                    Bundle bundleMovies = new Bundle();
+                    bundleMovies.putBoolean("IS_MOVIES", true);
+                    switchFragment(new MainFragment(), bundleMovies, "MOVIES_FRAG");
+                }
+                drawerLayout.closeDrawers();
+            }
+        });
+
+        llFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent watchLaterIntent = new Intent(BaseActivity.this, WatchLaterActivity.class);
+                startActivity(watchLaterIntent);
+                drawerLayout.closeDrawers();
+            }
+        });
+
+
+        llPreference.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchFragment(new PreferenceFragment(), null, "SETTINGS_FRAG");
+                drawerLayout.closeDrawers();
+            }
+        });
+
+        llOpenSource.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switchFragment(new OpenSourceFragment(), null, "OPEN_SOURCE_FRAG");
+                drawerLayout.closeDrawers();
+            }
+        });
     }
 }

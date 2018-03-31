@@ -16,4 +16,13 @@
         <item name="colorControlHighlight">@color/colorPrimaryDark</item>
         <item name="colorControlNormal">@color/colorWhite</item>
     </style>
+
+    <style name="CustomSwitchTheme" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/colorPrimaryDark</item>
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">@color/colorMaroon</item>
+    </style>
 </resources>

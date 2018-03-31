@@ -9,5 +9,8 @@
     <color name="colorLighterGray">#FFD2D2D2</color>
     <color name="colorDarkGray">#464545</color>
     <color name="colorMaroon">#A33D54</color>
+    <color name="colorDarker">#535871</color>
+    <color name="colorNavDrawer">#364154</color>
+    <color name="colorLighter">#FF6E7181</color>
     <color name="colorTransparent">#10000000</color>
 </resources>
