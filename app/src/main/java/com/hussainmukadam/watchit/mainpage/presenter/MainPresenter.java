@@ -298,6 +298,221 @@ public class MainPresenter implements MainMVPContract.Presenter {
         new RealmStoreTask(tvSeries, null, false).execute();
     }
 
+    @Override
+    public void fetchFirstPageTopRatedMovies(int pageNumber) {
+        mView.showProgress();
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<MovieResponse> call = apiService.getTopRatedMovies(BuildConfig.apiKey, pageNumber, "en-US");
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> newMovieList = new ArrayList<>();
+                int totalPages = 0;
+                int nextPg = 0;
+
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
+                if (response.isSuccessful()) {
+                    if (response.body().getMoviesList().size() != 0) {
+                        mView.hideProgress();
+                        totalPages = response.body().getTotalPages();
+
+                        if (totalPages > 1) {
+                            Random random = new Random();
+                            nextPg = random.nextInt(totalPages) + 1;
+                            Util.debugLog(TAG, " NextPageNo: " + nextPg);
+                            fetchNextPageTopRatedMovies(nextPg);
+                        } else {
+                            mView.showMovieResponseError("Not enough Pages");
+                        }
+                    } else {
+                        mView.showMovieResponseError("Couldn't find any movies");
+                        mView.hideProgress();
+                    }
+                } else {
+                    mView.showMovieResponseError("Some Error Occurred");
+                    mView.hideProgress();
+                }
+
+                // mView.displayFirstPageMovies(newMovieList, totalPages);
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                mView.hideProgress();
+                mView.showMovieResponseError(t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void fetchNextPageTopRatedMovies(int pageNumber) {
+        mView.showProgress();
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<MovieResponse> call = apiService.getTopRatedMovies(BuildConfig.apiKey, pageNumber, "en-US");
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
+                int totalPages = 0;
+
+                if (response.isSuccessful()) {
+                    if (response.body().getMoviesList().size() != 0) {
+                        mView.hideProgress();
+                        totalPages = response.body().getTotalPages();
+
+
+                        realm = Realm.getDefaultInstance();
+                        RealmResults<Movie> allMoviesResults = realm.where(Movie.class).findAll();
+                        Util.debugLog(TAG, "onResponse: Realm Data Stored " + allMoviesResults.size());
+                        List<Movie> existingMovieList = new ArrayList<>(allMoviesResults);
+
+                        List<Movie> newMovieList = response.body().getMoviesList();
+
+                        for (Movie e : existingMovieList) {
+                            if (newMovieList.contains(e)) {
+                                newMovieList.remove(e);
+                            }
+                        }
+
+                        if(newMovieList.size()>1) {
+                            mView.displayNextPageMovies(newMovieList, totalPages);
+                        } else {
+                            mView.showMovieResponseError("No new movies");
+                        }
+
+
+                        Util.debugLog(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
+                        Util.debugLog(TAG, "onResponse: Movies List " + newMovieList.size());
+                    } else {
+                        mView.showMovieResponseError("Couldn't find any movies");
+                        mView.hideProgress();
+                    }
+                } else {
+                    mView.showMovieResponseError("Some Error Occurred");
+                    mView.hideProgress();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                mView.hideProgress();
+                mView.showMovieResponseError(t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void fetchFirstPageTopRatedTvSeries(int pageNumber) {
+        mView.showProgress();
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<TvResponse> call = apiService.getTopRatedTvSeries(BuildConfig.apiKey, pageNumber, "en-US");
+
+        call.enqueue(new Callback<TvResponse>() {
+            @Override
+            public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
+                int totalPages, nextPg = 0;
+
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
+                if (response.isSuccessful()) {
+                    if (response.body().getTvList().size() != 0) {
+                        //mView.hideProgress();
+                        totalPages = response.body().getTotalPages();
+
+                        if (totalPages > 0) {
+                            Util.debugLog(TAG, "onResponse: Total Page Nubmers " + totalPages);
+                            Random random = new Random();
+                            nextPg = random.nextInt(totalPages) + 1;
+                            Util.debugLog(TAG, "onResponse: Next Page " + nextPg);
+                            fetchNextPageTopRatedTvSeries(nextPg);
+                        } else {
+                            Util.debugLog(TAG, "onResponse: Total Page is not more than 0");
+                            mView.showTvSeriesResponseError("Not enough Pages");
+                        }
+                    } else {
+                        mView.showTvSeriesResponseError("Couldn't find any tv series");
+                        mView.hideProgress();
+                    }
+                } else {
+                    mView.showTvSeriesResponseError("Some Error Occurred");
+                    mView.hideProgress();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TvResponse> call, Throwable t) {
+                mView.hideProgress();
+                mView.showTvSeriesResponseError(t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void fetchNextPageTopRatedTvSeries(int pageNumber) {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<TvResponse> call = apiService.getTopRatedTvSeries(BuildConfig.apiKey, pageNumber, "en-US");
+
+        call.enqueue(new Callback<TvResponse>() {
+            @Override
+            public void onResponse(Call<TvResponse> call, Response<TvResponse> response) {
+                Util.debugLog(TAG, "onResponse: Response Code " + response.code());
+                if (response.isSuccessful()) {
+                    mView.hideProgress();
+                    if (response.body().getTvList().size() != 0) {
+                        int totalPages = response.body().getTotalPages();
+
+                        realm = Realm.getDefaultInstance();
+                        RealmResults<TvSeries> allTvsResults = realm.where(TvSeries.class).findAll();
+                        Util.debugLog(TAG, "onResponse: Realm Data Stored " + allTvsResults.size());
+                        List<TvSeries> existingTvList = new ArrayList<>(allTvsResults);
+
+                        List<TvSeries> newTvList = response.body().getTvList();
+
+                        for (TvSeries e : existingTvList) {
+                            if (newTvList.contains(e)) {
+                                newTvList.remove(e);
+                            }
+                        }
+
+                        if (newTvList.size() > 1) {
+                            Util.debugLog(TAG, "onResponse: When the New TV List size is more than 1");
+                            mView.displayNextPageTvSeries(newTvList, totalPages);
+                        } else {
+                            Util.debugLog(TAG, "onResponse: When the new TV List size is not more than 1");
+                            mView.showTvSeriesResponseError("Try Refreshing again");
+                        }
+
+                        Util.debugLog(TAG, "onResponse: Existing Tv List " + existingTvList.size());
+                        Util.debugLog(TAG, "onResponse: Tv List " + newTvList.size());
+                    } else {
+                        Util.debugLog(TAG, "onResponse: When TV List Size is equal to 0");
+                        mView.showTvSeriesResponseError("Couldn't find any tv series");
+                        mView.hideProgress();
+                    }
+                } else {
+                    Util.debugLog(TAG, "onResponse: When TV List Response is not successful");
+                    mView.showTvSeriesResponseError("Some Error Occurred");
+                    mView.hideProgress();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TvResponse> call, Throwable t) {
+                mView.showTvSeriesResponseError(t.getMessage());
+                Util.debugLog(TAG, "onFailure: Failure Occurred " + t.getMessage());
+            }
+        });
+    }
+
     static class RealmStoreTask extends AsyncTask<Void, Void, String> {
         TvSeries tvSeries;
         Movie movie;

@@ -42,6 +42,14 @@ public interface MainMVPContract {
 
         void storeTvData(boolean isWatchLater, TvSeries tvSeries);
 
+        void fetchFirstPageTopRatedMovies(int pageNumber);
+
+        void fetchNextPageTopRatedMovies(int pageNumber);
+
+        void fetchFirstPageTopRatedTvSeries(int pageNumber);
+
+        void fetchNextPageTopRatedTvSeries(int pageNumber);
+
     }
 
 }

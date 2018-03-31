@@ -102,9 +102,15 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
 
         if (Util.isConnected(getContext())) {
             if (isMovies) {
-                mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
+                if (customSharedPreference.isTopRatedOnly())
+                    mainPresenter.fetchFirstPageTopRatedMovies(currentPage);
+                else
+                    mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
             } else {
-                mainPresenter.fetchFirstPageTvSeriesByGenres(genresList, currentPage);
+                if (customSharedPreference.isTopRatedOnly())
+                    mainPresenter.fetchFirstPageTopRatedTvSeries(currentPage);
+                else
+                    mainPresenter.fetchFirstPageTvSeriesByGenres(genresList, currentPage);
             }
         } else {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
@@ -215,21 +221,37 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                         if (isMovies) {
                             if (movieAdapter != null)
                                 movieAdapter.clear();
+
                         } else {
                             if (tvSeriesAdapter != null)
                                 tvSeriesAdapter.clear();
                         }
-                    break;
+                        break;
 
                     case R.id.top_rated_movies_menu:
-                        if(item.isChecked()) {
+                        if (item.isChecked()) {
                             item.setChecked(false);
                             customSharedPreference.setTopRatedUrl(false);
+                            if (isMovies) {
+                                if (movieAdapter != null)
+                                    movieAdapter.clear();
+                            } else {
+                                if (tvSeriesAdapter != null)
+                                    tvSeriesAdapter.clear();
+                            }
+
                         } else {
                             item.setChecked(true);
                             customSharedPreference.setTopRatedUrl(true);
+                            if (isMovies) {
+                                if (movieAdapter != null)
+                                    movieAdapter.clear();
+                            } else {
+                                if (tvSeriesAdapter != null)
+                                    tvSeriesAdapter.clear();
+                            }
                         }
-                    break;
+                        break;
                 }
 
                 return true;
@@ -295,7 +317,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                        if (customSharedPreference.isTopRatedOnly())
+                            mainPresenter.fetchFirstPageTopRatedMovies(currentPage);
+                        else
+                            mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
                     } else {
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
@@ -387,7 +412,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
                 if (itemsInAdapter == 0) {
                     if (Util.isConnected(getContext())) {
                         currentPage = PAGE_START;
-                        mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+                        if (customSharedPreference.isTopRatedOnly())
+                            mainPresenter.fetchFirstPageTopRatedTvSeries(currentPage);
+                        else
+                            mainPresenter.fetchFirstPageTvSeriesByGenres(genresList, currentPage);
                     } else {
                         Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
                     }
@@ -470,7 +498,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         if (getContext() != null) {
             if (Util.isConnected(getContext())) {
                 currentPage = PAGE_START;
-                mainPresenter.fetchFirstPageMoviesByGenres(getGenres(), currentPage);
+                if (customSharedPreference.isTopRatedOnly())
+                    mainPresenter.fetchFirstPageTopRatedMovies(currentPage);
+                else
+                    mainPresenter.fetchFirstPageMoviesByGenres(genresList, currentPage);
             } else {
                 Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
@@ -483,7 +514,10 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         if (getContext() != null) {
             if (Util.isConnected(getContext())) {
                 currentPage = PAGE_START;
-                mainPresenter.fetchFirstPageTvSeriesByGenres(getGenres(), currentPage);
+                if (customSharedPreference.isTopRatedOnly())
+                    mainPresenter.fetchFirstPageTopRatedTvSeries(currentPage);
+                else
+                    mainPresenter.fetchFirstPageTvSeriesByGenres(genresList, currentPage);
             } else {
                 Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
