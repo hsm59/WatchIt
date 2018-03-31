@@ -5,4 +5,12 @@
         android:id="@+id/refresh_menu"
         app:srcCompat="@drawable/ic_refresh_black_24dp"
         android:title="Refresh" />
+
+    <item
+        android:id="@+id/top_rated_movies_menu"
+        android:checkable="true"
+        android:checked="true"
+        app:srcCompat="@drawable/ic_filter_list_black_24dp"
+        android:title="Only Top Rated" />
+
 </menu>

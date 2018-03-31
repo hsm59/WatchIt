@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IntroMVPContract {
 
-    interface IntroMoviesView extends BaseView<IntroMoviesPresenter>{
+    interface IntroMoviesView extends BaseView<Object>{
 
         void displayGenresByMovies(List<Genre> genreMovieList);
 
@@ -23,7 +23,7 @@ public interface IntroMVPContract {
         void showError(String errorMessage);
     }
 
-    interface IntroTvView extends BaseView<IntroTvPresenter>{
+    interface IntroTvView extends BaseView<Object>{
 
         void displayGenresByTV(List<Genre> genreTVList);
 

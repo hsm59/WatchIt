@@ -94,16 +94,10 @@ public class IntroTvSeriesFragment extends Fragment implements IntroMVPContract.
     }
 
     @Override
-    public void setPresenter(IntroMVPContract.IntroTvPresenter presenter) {
-        this.introTvPresenter = presenter;
-    }
-
-    @Override
     public void displayGenresByTV(List<Genre> genreTVList) {
         tvGenreAdapter = new TvGenreAdapter(genreTVList, this);
         rvGenreTv.setAdapter(tvGenreAdapter);
         tvGenreAdapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "TVs Fetched", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -131,13 +125,16 @@ public class IntroTvSeriesFragment extends Fragment implements IntroMVPContract.
     public void onTvListItemSelected(Genre genre) {
         selectedTvGenres.add(genre);
         customSharedPreference.setTvGenrePreference(selectedTvGenres);
-        Log.d(TAG, "onTvListItemSelected: Selected Genre Size " + selectedTvGenres.size());
     }
 
     @Override
     public void onTvListItemUnSelected(Genre genre) {
         selectedTvGenres.remove(genre);
         customSharedPreference.setTvGenrePreference(selectedTvGenres);
-        Log.d(TAG, "onTvListItemUnSelected: Selected Genre Size " + selectedTvGenres.size());
+    }
+
+    @Override
+    public void setPresenter(Object presenter) {
+        this.introTvPresenter = (IntroTvPresenter) presenter;
     }
 }

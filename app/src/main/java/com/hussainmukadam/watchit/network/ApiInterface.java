@@ -40,4 +40,10 @@ public interface ApiInterface {
 
     @GET("tv/{tv_id}")
     Call<TvSeriesDetails> getTvSeriesDetails(@Path("tv_id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/top_rated")
+    Call<MovieResponse> getTopRatedMovies(@Query("api_key") String apiKey, @Query("page") int pageNo, @Query("language") String language);
+
+    @GET("tv/top_rated")
+    Call<TvResponse> getTopRatedTvSeries(@Query("api_key") String apiKey, @Query("page") int pageNo, @Query("language") String language);
 }

@@ -10,7 +10,11 @@ import com.hussainmukadam.watchit.BuildConfig;
 import com.hussainmukadam.watchit.intropage.model.Genre;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -36,12 +40,8 @@ public class CustomSharedPreference {
         Gson gson = new Gson();
         String json = gson.toJson(genreArrayList);
 
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setMoviesGenrePreference: JSON String of TV " + json);
-        }
-
         preferenceEditor.putString("TV_GENRE_DATA", json);
-        preferenceEditor.commit();
+        preferenceEditor.apply();
     }
 
 
@@ -53,11 +53,7 @@ public class CustomSharedPreference {
         }.getType();
         List<Genre> genreList = gson.fromJson(json, type);
 
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "getGenrePreference: Genre List " + genreList);
-        }
-
-        if(genreList!=null) {
+        if (genreList != null) {
             if (genreList.size() != 0) {
                 return genreList;
             } else {
@@ -68,16 +64,82 @@ public class CustomSharedPreference {
         }
     }
 
+    public void deleteTvGenrePreference(Genre genre) {
+        Gson gson = new Gson();
+        String json = preference.getString("TV_GENRE_DATA", "");
+
+        Type type = new TypeToken<List<Genre>>() {
+        }.getType();
+        List<Genre> genreList = gson.fromJson(json, type);
+
+        for (Iterator<Genre> iterator = genreList.iterator(); iterator.hasNext(); ) {
+            Genre existingGenre = iterator.next();
+            if (existingGenre.getGenreId() == genre.getGenreId())
+                iterator.remove();
+        }
+
+        String newJson = gson.toJson(genreList);
+        Util.debugLog("Deleting Genres ", newJson);
+        preferenceEditor.putString("TV_GENRE_DATA", newJson);
+        preferenceEditor.apply();
+    }
+
+    public void addTvGenrePreference(Genre genre) {
+        Gson gson = new Gson();
+        String json = preference.getString("TV_GENRE_DATA", "");
+
+        Type type = new TypeToken<List<Genre>>() {
+        }.getType();
+        List<Genre> genreList = gson.fromJson(json, type);
+
+        genreList.add(genre);
+
+        String newJson = gson.toJson(genreList);
+        preferenceEditor.putString("TV_GENRE_DATA", newJson);
+        preferenceEditor.apply();
+    }
+
+    public void deleteMoviesGenrePreference(Genre genre) {
+        Gson gson = new Gson();
+        String json = preference.getString("MOVIES_GENRE_DATA", "");
+
+        Type type = new TypeToken<List<Genre>>() {
+        }.getType();
+        List<Genre> genreList = gson.fromJson(json, type);
+
+        for (Iterator<Genre> iterator = genreList.iterator(); iterator.hasNext(); ) {
+            Genre existingGenre = iterator.next();
+            if (existingGenre.getGenreId() == genre.getGenreId())
+                iterator.remove();
+        }
+
+        String newJson = gson.toJson(genreList);
+        Util.debugLog("Deleting Genres ", newJson);
+        preferenceEditor.putString("MOVIES_GENRE_DATA", newJson);
+        preferenceEditor.apply();
+    }
+
+    public void addMoviesGenrePreference(Genre genre) {
+        Gson gson = new Gson();
+        String json = preference.getString("MOVIES_GENRE_DATA", "");
+
+        Type type = new TypeToken<List<Genre>>() {
+        }.getType();
+        List<Genre> genreList = gson.fromJson(json, type);
+
+        genreList.add(genre);
+
+        String newJson = gson.toJson(genreList);
+        preferenceEditor.putString("MOVIES_GENRE_DATA", newJson);
+        preferenceEditor.apply();
+    }
+
     public void setMoviesGenrePreference(List<Genre> genreArrayList) {
         Gson gson = new Gson();
         String json = gson.toJson(genreArrayList);
 
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setMoviesGenrePreference: JSON String of Movies " + json);
-        }
-
         preferenceEditor.putString("MOVIES_GENRE_DATA", json);
-        preferenceEditor.commit();
+        preferenceEditor.apply();
     }
 
     public List<Genre> getMoviesGenrePreference() {
@@ -87,10 +149,6 @@ public class CustomSharedPreference {
         Type type = new TypeToken<List<Genre>>() {
         }.getType();
         List<Genre> genreList = gson.fromJson(json, type);
-
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "getGenrePreference: Genre List " + genreList);
-        }
 
         if (genreList != null) {
             if (genreList.size() != 0) {
@@ -109,8 +167,21 @@ public class CustomSharedPreference {
 
     public void setIntroDisplayed(boolean introDisplayed) {
         preferenceEditor.putBoolean("HAS_INTRO_DISPLAYED", introDisplayed).commit();
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setLogin: " + introDisplayed);
-        }
+    }
+
+    public void setTopRatedUrl(boolean topRatedOnly) {
+        preferenceEditor.putBoolean("TOP_RATED_ONLY", topRatedOnly).commit();
+    }
+
+    public boolean isTopRatedOnly() {
+        return preference.getBoolean("TOP_RATED_ONLY", false);
+    }
+
+    public void setSuggestNotificationFlag(boolean suggestNotification) {
+        preferenceEditor.putBoolean("SUGGEST_NOTIFICATION", suggestNotification).commit();
+    }
+
+    public boolean suggestNotification() {
+        return preference.getBoolean("SUGGEST_NOTIFICATION", false);
     }
 }

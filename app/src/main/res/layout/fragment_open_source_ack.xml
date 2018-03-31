@@ -55,6 +55,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:textColor="@color/colorWhite"
+                android:textColorLink="@color/colorWhite"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:autoLink="web"
@@ -89,6 +91,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textColorLink="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
@@ -124,6 +128,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textColorLink="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
@@ -160,6 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
+                android:textColorLink="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
@@ -195,6 +202,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textColorLink="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
@@ -230,9 +239,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
+                android:textColorLink="@color/colorWhite"
                 android:autoLink="web"
                 android:text="Website: github.com/airbnb/lottie-android" />
 
@@ -265,10 +276,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:autoLink="web"
+                android:textColorLink="@color/colorWhite"
                 android:text="Website: github.com/mikepenz/MaterialDrawer" />
 
             <TextView

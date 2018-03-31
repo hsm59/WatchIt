@@ -355,10 +355,13 @@ public class DetailsFragment extends Fragment implements DetailsMVPContract.Deta
                 Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
 
                 if (darkVibrantSwatch != null && vibrantSwatch != null) {
-                    Window window = getActivity().getWindow();
 
-                    window.setStatusBarColor(darkVibrantSwatch.getRgb());
-                    collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
+                    if (getActivity() != null) {
+                        Window window = getActivity().getWindow();
+
+                        window.setStatusBarColor(darkVibrantSwatch.getRgb());
+                        collapsingToolbarLayout.setContentScrimColor(vibrantSwatch.getRgb());
+                    }
                 }
             }
         });

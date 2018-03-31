@@ -19,6 +19,8 @@ import com.hussainmukadam.watchit.mainpage.model.Movie;
 import com.hussainmukadam.watchit.mainpage.view.MainFragment;
 import com.hussainmukadam.watchit.notification.NotificationHelper;
 import com.hussainmukadam.watchit.opensourcepage.OpenSourceFragment;
+import com.hussainmukadam.watchit.preferencepage.GenreFragment;
+import com.hussainmukadam.watchit.preferencepage.PreferenceFragment;
 import com.hussainmukadam.watchit.util.Util;
 import com.hussainmukadam.watchit.watchlaterpage.view.WatchLaterActivity;
 import com.hussainmukadam.watchit.preferencepage.SettingsFragment;
@@ -125,7 +127,7 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                                 startActivity(watchLaterIntent);
                                 break;
                             case 5:
-                                switchFragment(new SettingsFragment(), null, "SETTINGS_FRAG");
+                                switchFragment(new PreferenceFragment(), null, "SETTINGS_FRAG");
                                 break;
                             case 6:
                                 switchFragment(new OpenSourceFragment(), null, "OPEN_SOURCE_FRAG");
@@ -139,6 +141,10 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
 
     private void switchFragment(Fragment mFragment, Bundle bundle, String tag) {
         FragmentManager manager = getSupportFragmentManager();
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+
+        if (currentFragment != null)
+            Log.d(TAG, "switchFragment: current Fragment " + currentFragment.getTag());
 
         if (bundle != null) {
             mFragment.setArguments(bundle);
@@ -147,7 +153,8 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
                     .commit();
         } else {
             manager.beginTransaction()
-                    .replace(R.id.container, mFragment, tag)
+                    .add(R.id.container, mFragment, tag)
+                    .hide(currentFragment)
                     .addToBackStack(null)
                     .commit();
         }

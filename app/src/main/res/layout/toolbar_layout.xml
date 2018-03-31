@@ -8,7 +8,7 @@
         android:id="@+id/toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorMaroon"
+        android:background="@color/colorPrimaryDark"
         app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
         android:elevation="8dp"/>
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.model.Genre;
+import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.hussainmukadam.watchit.util.Util;
 
 import java.util.List;
@@ -26,8 +27,9 @@ public class MoviesGenreAdapter extends RecyclerView.Adapter<MoviesGenreAdapter.
     private List<Genre> genreList;
     private final MoviesListItemClickListener onClickListener;
 
-    public interface MoviesListItemClickListener{
+    public interface MoviesListItemClickListener {
         void onMovieListItemSelect(Genre genre);
+
         void onMovieListItemUnselect(Genre genre);
     }
 
@@ -45,19 +47,32 @@ public class MoviesGenreAdapter extends RecyclerView.Adapter<MoviesGenreAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Genre genre = genreList.get(position);
-        Util.debugLog(TAG, "onBindViewHolder: "+genre.toString());
+        Util.debugLog(TAG, "onBindViewHolder: " + genre.toString());
         holder.tvGenre.setText(genre.getGenreName());
+
+        CustomSharedPreference sharedPreference = new CustomSharedPreference(holder.tvGenre.getContext());
+
+        if (sharedPreference.getMoviesGenrePreference() != null) {
+            if (sharedPreference.getMoviesGenrePreference().size() != 0) {
+                for (Genre existingGenre : sharedPreference.getMoviesGenrePreference()) {
+                    if (genre.getGenreId() == existingGenre.getGenreId()) {
+                        holder.tvGenre.setSelected(true);
+                        holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorWhite));
+                    }
+                }
+            }
+        }
 
         holder.tvGenre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.tvGenre.isSelected()){
+                if (holder.tvGenre.isSelected()) {
                     holder.tvGenre.setSelected(false);
                     holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorBlack));
                     onClickListener.onMovieListItemUnselect(genre);
                 } else {
                     holder.tvGenre.setSelected(true);
-                    holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorPrimary));
+                    holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorWhite));
                     onClickListener.onMovieListItemSelect(genre);
                 }
             }
@@ -70,7 +85,7 @@ public class MoviesGenreAdapter extends RecyclerView.Adapter<MoviesGenreAdapter.
         return genreList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.chip_genre)
         TextView tvGenre;
 
@@ -79,7 +94,7 @@ public class MoviesGenreAdapter extends RecyclerView.Adapter<MoviesGenreAdapter.
             ButterKnife.bind(this, itemView);
         }
 
-        public void setOnClickListener(View.OnClickListener onClickListener){
+        public void setOnClickListener(View.OnClickListener onClickListener) {
             tvGenre.setOnClickListener(onClickListener);
         }
     }

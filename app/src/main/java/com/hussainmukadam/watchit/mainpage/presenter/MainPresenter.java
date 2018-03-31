@@ -23,6 +23,7 @@ import java.util.Random;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +54,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en", "popularity.desc");
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -103,7 +104,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en", "popularity.desc");
+        Call<MovieResponse> call = apiService.getMoviesByGenre(BuildConfig.apiKey, pageNumber, genreIdsByMovies, "en-US", "popularity.desc");
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -135,6 +136,8 @@ public class MainPresenter implements MainMVPContract.Presenter {
                         } else {
                             mView.showMovieResponseError("No new movies");
                         }
+
+
                         Util.debugLog(TAG, "onResponse: Existing Movies List " + existingMovieList.size());
                         Util.debugLog(TAG, "onResponse: Movies List " + newMovieList.size());
                     } else {
@@ -178,7 +181,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
         mView.showProgress();
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en", "popularity.desc");
+        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en-US", "popularity.desc");
 
         call.enqueue(new Callback<TvResponse>() {
             @Override
@@ -226,7 +229,7 @@ public class MainPresenter implements MainMVPContract.Presenter {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en", "popularity.desc");
+        Call<TvResponse> call = apiService.getTvSeriesByGenre(BuildConfig.apiKey, pageNumber, genreIdByTv, "en-US", "popularity.desc");
 
         call.enqueue(new Callback<TvResponse>() {
             @Override

@@ -61,6 +61,7 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
     @BindView(R.id.three_dots)
     ImageView ivMenuPopup;
 
+    CustomSharedPreference customSharedPreference;
     private MovieAdapter movieAdapter;
     private TvSeriesAdapter tvSeriesAdapter;
     private MainMVPContract.Presenter presenter;
@@ -87,8 +88,9 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
+        customSharedPreference = new CustomSharedPreference(getContext());
         isMovies = getArguments().getBoolean("IS_MOVIES");
-        Util.debugLog(TAG,"onCreateView: Boolean " + isMovies);
+        Util.debugLog(TAG, "onCreateView: Boolean " + isMovies);
 
         prefs = new CustomSharedPreference(getContext());
         mainPresenter = new MainPresenter(this);
@@ -206,18 +208,43 @@ public class MainFragment extends Fragment implements MainMVPContract.View {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (isMovies) {
-                    if (movieAdapter != null)
-                        movieAdapter.clear();
-                } else {
-                    if (tvSeriesAdapter != null)
-                        tvSeriesAdapter.clear();
+
+                switch (item.getItemId()) {
+
+                    case R.id.refresh_menu:
+                        if (isMovies) {
+                            if (movieAdapter != null)
+                                movieAdapter.clear();
+                        } else {
+                            if (tvSeriesAdapter != null)
+                                tvSeriesAdapter.clear();
+                        }
+                    break;
+
+                    case R.id.top_rated_movies_menu:
+                        if(item.isChecked()) {
+                            item.setChecked(false);
+                            customSharedPreference.setTopRatedUrl(false);
+                        } else {
+                            item.setChecked(true);
+                            customSharedPreference.setTopRatedUrl(true);
+                        }
+                    break;
                 }
+
                 return true;
             }
         });
 
         popupMenu.show();
+
+        if (customSharedPreference.isTopRatedOnly()) {
+            popupMenu.getMenu().findItem(R.id.top_rated_movies_menu).setChecked(true);
+            customSharedPreference.setTopRatedUrl(true);
+        } else {
+            popupMenu.getMenu().findItem(R.id.top_rated_movies_menu).setChecked(false);
+            customSharedPreference.setTopRatedUrl(false);
+        }
     }
 
 

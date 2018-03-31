@@ -32,12 +32,10 @@ import butterknife.OnClick;
  * Created by hussain on 7/21/17.
  */
 
-public class IntroActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener{
+public class IntroActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
     private static final String TAG = "IntroActivity";
     PagerAdapter pagerAdapter;
     CustomSharedPreference customSharedPreference;
-    List<Genre> moviesGenresList = new ArrayList<>();
-    List<Genre> tvGenresList = new ArrayList<>();
 
     @BindView(R.id.intro_viewpager)
     ViewPager introViewpager;
@@ -58,7 +56,7 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
 
         customSharedPreference = new CustomSharedPreference(this);
 
-        if(customSharedPreference.isIntroDisplayed()) {
+        if (customSharedPreference.isIntroDisplayed()) {
             Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
             startActivity(startMainActivity);
             finish();
@@ -80,8 +78,8 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
 
     @Override
     public void onPageSelected(int position) {
-        Log.d(TAG, "onPageSelected: Position of Page "+position);
-        switch(position) {
+        Log.d(TAG, "onPageSelected: Position of Page " + position);
+        switch (position) {
             case 0:
                 introButtonRight.setVisibility(View.VISIBLE);
                 introButtonLeft.setVisibility(View.GONE);
@@ -100,7 +98,7 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
 
     }
 
-    public static class PagerAdapter extends FragmentPagerAdapter{
+    public static class PagerAdapter extends FragmentPagerAdapter {
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -108,7 +106,7 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
 
         @Override
         public Fragment getItem(int position) {
-            switch(position){
+            switch (position) {
                 case 0:
                     return IntroMoviesFragment.newInstance("MOVIES", 0);
                 case 1:
@@ -125,19 +123,19 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
     }
 
     @OnClick(R.id.intro_button_right)
-    public void nextPage(){
-        introViewpager.setCurrentItem(introViewpager.getCurrentItem()+1);
+    public void nextPage() {
+        introViewpager.setCurrentItem(introViewpager.getCurrentItem() + 1);
     }
 
     @OnClick(R.id.intro_button_left)
-    public void previousPage(){
-        introViewpager.setCurrentItem(introViewpager.getCurrentItem()-1);
+    public void previousPage() {
+        introViewpager.setCurrentItem(introViewpager.getCurrentItem() - 1);
     }
 
     @OnClick(R.id.intro_button_done)
-    public void donePage(){
-        if(customSharedPreference.getMoviesGenrePreference()!=null && customSharedPreference.getTvGenrePreference()!=null) {
-            if(customSharedPreference.getMoviesGenrePreference().size() >= 3 && customSharedPreference.getTvGenrePreference().size() >= 3) {
+    public void donePage() {
+        if (customSharedPreference.getMoviesGenrePreference() != null && customSharedPreference.getTvGenrePreference() != null) {
+            if (customSharedPreference.getMoviesGenrePreference().size() >= 3 && customSharedPreference.getTvGenrePreference().size() >= 3) {
                 customSharedPreference.setIntroDisplayed(true);
                 enableSuggestionNotifications();
                 Intent startMainActivity = new Intent(IntroActivity.this, BaseActivity.class);
@@ -151,9 +149,10 @@ public class IntroActivity extends AppCompatActivity implements ViewPager.OnPage
         }
     }
 
-    private void enableSuggestionNotifications(){
+    private void enableSuggestionNotifications() {
         Toast.makeText(this, "Suggestion Notifications are turned on by default, goto settings for disabling them", Toast.LENGTH_LONG).show();
         NotificationHelper.scheduleRepeatingRTCNotification(this);
         NotificationHelper.enableBootReceiver(this);
+        customSharedPreference.setSuggestNotificationFlag(true);
     }
 }

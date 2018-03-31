@@ -10,4 +10,10 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
     </style>
 
+    <!--Custom Popup Style Theme-->
+    <style name="CustomPopupTheme" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+        <item name="colorControlNormal">@color/colorWhite</item>
+    </style>
 </resources>

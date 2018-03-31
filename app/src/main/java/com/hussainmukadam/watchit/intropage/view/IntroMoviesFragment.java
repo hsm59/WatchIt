@@ -92,16 +92,10 @@ public class IntroMoviesFragment extends Fragment implements IntroMVPContract.In
     }
 
     @Override
-    public void setPresenter(IntroMVPContract.IntroMoviesPresenter presenter) {
-        this.introMoviesPresenter = presenter;
-    }
-
-    @Override
     public void displayGenresByMovies(List<Genre> genreMovieList) {
         moviesGenreAdapter = new MoviesGenreAdapter(genreMovieList, this);
         rvGenreMovies.setAdapter(moviesGenreAdapter);
         moviesGenreAdapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "Movies Fetched", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -129,13 +123,16 @@ public class IntroMoviesFragment extends Fragment implements IntroMVPContract.In
     public void onMovieListItemSelect(Genre genre) {
         selectedMoviesGenres.add(genre);
         customSharedPreference.setMoviesGenrePreference(selectedMoviesGenres);
-        Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size " + selectedMoviesGenres.size());
     }
 
     @Override
     public void onMovieListItemUnselect(Genre genre) {
         selectedMoviesGenres.remove(genre);
         customSharedPreference.setMoviesGenrePreference(selectedMoviesGenres);
-        Log.d(TAG, "onMovieListItemUnSelected: Selected Genre Size " + selectedMoviesGenres.size());
+    }
+
+    @Override
+    public void setPresenter(Object presenter) {
+        this.introMoviesPresenter = (IntroMVPContract.IntroMoviesPresenter) presenter;
     }
 }

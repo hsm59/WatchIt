@@ -48,6 +48,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_cancel"
+        app:backgroundTint="@color/colorWhite"
         android:layout_width="56dp"
         android:layout_height="56dp"
         app:srcCompat="@drawable/ic_close_black_24dp"
@@ -60,6 +61,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_favorite"
+        app:backgroundTint="@color/colorWhite"
         app:srcCompat="@drawable/ic_star_black_24dp"
         android:layout_width="56dp"
         android:layout_height="56dp"

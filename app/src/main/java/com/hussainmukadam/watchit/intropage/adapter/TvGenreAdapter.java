@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.hussainmukadam.watchit.R;
 import com.hussainmukadam.watchit.intropage.model.Genre;
+import com.hussainmukadam.watchit.util.CustomSharedPreference;
 import com.hussainmukadam.watchit.util.Util;
 
 import java.util.List;
@@ -48,6 +49,19 @@ public class TvGenreAdapter extends RecyclerView.Adapter<TvGenreAdapter.ViewHold
         Util.debugLog(TAG, "onBindViewHolder: "+genre.toString());
         holder.tvGenre.setText(genre.getGenreName());
 
+        CustomSharedPreference sharedPreference = new CustomSharedPreference(holder.tvGenre.getContext());
+
+        if (sharedPreference.getTvGenrePreference() != null) {
+            if (sharedPreference.getTvGenrePreference().size() != 0) {
+                for (Genre existingGenre : sharedPreference.getTvGenrePreference()) {
+                    if (genre.getGenreId() == existingGenre.getGenreId()) {
+                        holder.tvGenre.setSelected(true);
+                        holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorWhite));
+                    }
+                }
+            }
+        }
+
         holder.tvGenre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +71,7 @@ public class TvGenreAdapter extends RecyclerView.Adapter<TvGenreAdapter.ViewHold
                     onClickListener.onTvListItemUnSelected(genre);
                 } else {
                     holder.tvGenre.setSelected(true);
-                    holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorPrimary));
+                    holder.tvGenre.setTextColor(ContextCompat.getColor(holder.tvGenre.getContext(), R.color.colorWhite));
                     onClickListener.onTvListItemSelected(genre);
                 }
             }
