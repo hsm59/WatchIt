@@ -38,8 +38,8 @@ android {
         applicationId "com.hussainmukadam.watchit"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 8
-        versionName "1.0.0.0"
+        versionCode 9
+        versionName "1.1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [api_key_crashlytics: FABRIC_API_KEY]
@@ -74,6 +74,7 @@ ext {
     lottieVersion = "2.1.0"
     swipeCardsVersion = "1.0.9@aar"
     realmAdapterVersion = "2.1.0"
+    roomLibVersion = "1.0.0"
 }
 
 dependencies {
@@ -123,4 +124,8 @@ dependencies {
 
     //Realm Adapter
     implementation "io.realm:android-adapters:${realmAdapterVersion}"
+
+    //Room Persistence Library
+    implementation "android.arch.persistence.room:runtime:${roomLibVersion}"
+    annotationProcessor "android.arch.persistence.room:compiler:${roomLibVersion}"
 }

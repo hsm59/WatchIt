@@ -140,17 +140,33 @@ public class BaseActivity extends AppCompatActivity implements MainFragment.OnMe
     private void handleNavigationDrawerItems() {
         final TextView tvNavMovies = findViewById(R.id.tv_nav_movies);
         final TextView tvNavTvSeries = findViewById(R.id.tv_nav_tv_series);
-        SwitchCompat switchCompat = findViewById(R.id.switch_movies_tv);
+        final SwitchCompat switchCompat = findViewById(R.id.switch_movies_tv);
         LinearLayout llFavorites = findViewById(R.id.ll_favorites);
         LinearLayout llPreference = findViewById(R.id.ll_preference);
         LinearLayout llOpenSource = findViewById(R.id.ll_open_source);
 
         tvNavMovies.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
+        tvNavMovies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (switchCompat.isChecked())
+                    switchCompat.performClick();
+            }
+        });
+
+        tvNavTvSeries.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!switchCompat.isChecked())
+                    switchCompat.performClick();
+            }
+        });
+
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     tvNavMovies.setTextColor(getResources().getColor(R.color.colorLighterGray));
                     tvNavTvSeries.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                     Bundle bundleTv = new Bundle();

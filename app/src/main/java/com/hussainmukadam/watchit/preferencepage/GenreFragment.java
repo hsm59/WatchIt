@@ -90,13 +90,10 @@ public class GenreFragment extends Fragment implements IntroMVPContract.IntroMov
 
         view.setFocusableInTouchMode(true);
         view.requestFocus();
-        view.setOnKeyListener( new View.OnKeyListener()
-        {
+        view.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public boolean onKey( View v, int keyCode, KeyEvent event )
-            {
-                if( keyCode == KeyEvent.KEYCODE_BACK )
-                {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
                     if (customSharedPreference.getMoviesGenrePreference().size() >= 3 && customSharedPreference.getTvGenrePreference().size() >= 3) {
                         if (getActivity() != null)
                             getActivity().onBackPressed();
@@ -106,7 +103,7 @@ public class GenreFragment extends Fragment implements IntroMVPContract.IntroMov
                 }
                 return false;
             }
-        } );
+        });
 
         return view;
     }
@@ -149,7 +146,8 @@ public class GenreFragment extends Fragment implements IntroMVPContract.IntroMov
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        if (progressBar != null)
+            progressBar.setVisibility(View.GONE);
     }
 
     @Override

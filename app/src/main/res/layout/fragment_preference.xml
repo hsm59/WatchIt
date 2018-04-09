@@ -25,7 +25,7 @@
         android:id="@+id/tv_explain_suggestion_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="By Enabling this you'll get Notifications to watch Movies on Weekends"
+        android:text="By Enabling this you'll get Notifications of your favorite Movies/TV Series to watch on Weekends"
         android:textColor="@color/colorWhite"
         android:textSize="14sp"
         android:paddingLeft="8dp"

@@ -59,7 +59,6 @@ public class MainPresenter implements MainMVPContract.Presenter {
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<Movie> newMovieList = new ArrayList<>();
                 int totalPages = 0;
                 int nextPg = 0;
 
