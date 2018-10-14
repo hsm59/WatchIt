@@ -50,6 +50,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+>>>>>>> 1b83d0c83d9cf21e8471817fa8ab0053b707b0e2
     </application>
 
 </manifest>
